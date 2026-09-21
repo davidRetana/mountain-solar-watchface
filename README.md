@@ -1,14 +1,22 @@
 # Mountain Solar Watchface
 
-Render estático para Garmin fēnix 7 Solar de 47 mm: perfil `fenix7`, pantalla MIP circular de 260 × 260 px. Referencia actual: [watchface3.jpg](watchface3.jpg).
+Primera etapa dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
 
-## Diseño implementado
+## Ramas
 
-Fecha en arco, barra solar con horas en los extremos justo debajo de la fecha, ciudad con marcador y temperatura con sol en una misma fila, hora grande, pasos con barra ámbar y tres columnas inferiores con iconos sobre los valores. Los iconos son dibujos vectoriales, no caracteres dependientes de una fuente. Se usan fuentes del dispositivo, cargadas una sola vez, y colores de la paleta MIP. El blanco sustituye al blanco cálido del mockup por las limitaciones de color de la pantalla.
+- `main`: commit inicial vacío.
+- `feature/static-version`: diseño estático aprobado, guardado en `c7980f8`.
+- `feature/dynamic-data`: integración progresiva de datos reales.
 
-Todos los datos son ejemplos fijos: MIÉ 16 SEP, MADRID, 23°C, 14:37, 8.426 / 10.000 pasos, 07:52–20:17, 68 pulsaciones, 667 m y 12 d de batería. La barra de pasos representa el 84,26 %. La posición solar es ilustrativa. El texto «5 MIN» reproduce la referencia; todavía no existe un refresco de sensores. La batería verde tampoco representa una lectura real.
+## Datos conectados
 
-No se leen sensores, ubicación, hora del sistema ni Weather. No se declaran permisos, temporizadores, animaciones ni actualizaciones de segundos. `DataProvider.mc`, `WatchData.mc` y `Formatters.mc` quedan reservados para la fase dinámica.
+Hora local en formato de 24 horas y fecha en español, pasos y objetivo de ActivityMonitor, y batería de System.getSystemStats(). Se muestran días completos de batería cuando están disponibles (`<1 d` para menos de un día), con porcentaje como alternativa. Color verde desde el 30 %, ámbar desde el 10 % y rojo por debajo. El relleno del icono refleja el porcentaje.
+
+La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra vacía. El texto utiliza separadores de miles y reduce su tamaño si la fila resulta demasiado larga.
+
+`DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas, nuevos permisos ni actualizaciones parciales de segundos. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
+
+Ciudad, temperatura, pulsaciones, altitud y horas solares todavía muestran `--`. La barra solar permanece gris sin posición solar ficticia. Los iconos de esos campos se conservan para mantener la composición.
 
 ## Compilación
 
@@ -31,14 +39,19 @@ monkeydo bin/mountainsolarwatchface.prg fenix7
 
 En el simulador, comprobar que la fecha curva, la hora, los textos solares y las tres columnas no se recortan ni se solapan. Revisar también memoria y comportamiento en modo de bajo consumo antes de dar por terminada la validación en dispositivo.
 
-Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión muestra siempre los mismos valores, incluida la hora.
+Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta hora, fecha, pasos y batería; los demás campos muestran datos ausentes.
 
 ## Validación de esta iteración
 
-- Compilación para `fenix7`: `BUILD SUCCESSFUL`.
-- PRG generado en `bin/mountainsolarwatchface.prg`.
-- Se intentó abrir el simulador y cargar el PRG, pero el entorno de ejecución no permitió obtener una captura ni confirmar la carga. La comparación visual, la memoria en ejecución y el consumo quedan pendientes; no se ha verificado la ejecución en reloj físico.
+Compilación correcta para `fenix7` con Connect IQ SDK 9.2.0. El PRG se genera en `bin/mountainsolarwatchface.prg`. La ejecución y el consumo en simulador/reloj quedan pendientes de comprobación; compilar no verifica las lecturas reales.
+
+Antes de conectar la siguiente etapa, comprobar:
+
+- Cambio de minuto, medianoche, mes y fecha en español.
+- Pasos a cero, objetivo alcanzado o superado, y cifras de seis dígitos.
+- Batería al 9, 10, 29 y 30 %, y alternativa a porcentaje sin estimación de días.
+- Legibilidad de la hora y batería, actualización en bajo consumo y memoria.
 
 ## Próximas etapas
 
-Conectar por separado hora y fecha, pasos y batería, SensorHistory y finalmente Garmin Weather. Incorporar fallbacks `--`, colores de batería según porcentaje y refresco de pulsaciones cada cinco minutos al implementar los datos reales.
+Conectar SensorHistory para pulsaciones (cada cinco minutos) y altitud, sin forzar sensores ni GPS. Después integrar Garmin Weather, datos antiguos o ausentes, amanecer, puesta y posición solar, incluyendo la presentación nocturna.

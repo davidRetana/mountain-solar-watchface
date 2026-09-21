@@ -2,6 +2,7 @@ using Toybox.Graphics;
 using Toybox.WatchUi;
 
 class MountainWatchView extends WatchUi.WatchFace {
+    var provider;
     var dateFont;
     var timeFont;
     var labelFont;
@@ -10,7 +11,8 @@ class MountainWatchView extends WatchUi.WatchFace {
 
     function initialize() {
         WatchFace.initialize();
-        // Cache fonts once; the static stage performs no sensor or network work.
+        provider = new DataProvider();
+        // Cache fonts once; data queries are cached separately by the provider.
         dateFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>18});
         timeFont = Graphics.getVectorFont({:face=>"BionicBold", :size=>86});
         labelFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>15});
@@ -19,44 +21,56 @@ class MountainWatchView extends WatchUi.WatchFace {
     }
 
     function onUpdate(dc) {
+        var data = provider.refresh();
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
         // Layout coordinates target the fenix7's 260 x 260 display.
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawRadialText(130, 130, dateFont, "MIÉ 16 SEP",
+        dc.drawRadialText(130, 130, dateFont, data.dateText,
             Graphics.TEXT_JUSTIFY_CENTER, 90, 109,
             Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
 
-        SolarBar.drawStatic(dc, labelFont);
+        SolarBar.drawUnavailable(dc, labelFont);
 
         drawPin(dc, 54, 74);
-        drawCentered(dc, 89, 74, labelFont, "MADRID", Theme.MUTED);
+        drawCentered(dc, 89, 74, labelFont, "--", Theme.MUTED);
         SolarBar.drawSun(dc, 169, 74, Theme.MUTED, 4);
-        drawCentered(dc, 202, 74, labelFont, "23°C", Theme.TEXT);
+        drawCentered(dc, 202, 74, labelFont, "--°C", Theme.TEXT);
 
-        drawCentered(dc, 130, 126, timeFont, "14:37", Theme.TEXT);
+        drawCentered(dc, 130, 126, timeFont, data.timeText, Theme.TEXT);
 
         drawStepsIcon(dc, 72, 171);
-        // Separate colors for current steps and target, as in the reference.
+        var stepsText = Formatters.count(data.steps);
+        var goalText = " / " + Formatters.count(data.stepGoal);
+        var stepsFont = labelFont;
+        if (dc.getTextWidthInPixels(stepsText + goalText, stepsFont) > 116) {
+            stepsFont = smallFont;
+        }
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawText(94, 173, labelFont, "8.426", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(90, 173, stepsFont, stepsText, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(133, 173, labelFont, "/ 10.000", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(90 + dc.getTextWidthInPixels(stepsText, stepsFont), 173, stepsFont, goalText,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
         dc.fillRoundedRectangle(58, 186, 144, 5, 5);
         dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
-        dc.fillRoundedRectangle(58, 186, 121, 5, 5);
+        var progress = Formatters.progress(data.steps, data.stepGoal, 144);
+        if (progress >= 5) {
+            dc.fillRoundedRectangle(58, 186, progress, 5, 5);
+        } else if (progress > 0) {
+            dc.fillRectangle(58, 186, progress, 5);
+        }
 
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
         dc.drawLine(100, 201, 100, 233);
         dc.drawLine(160, 201, 160, 233);
         drawHeart(dc, 74, 204);
-        drawCentered(dc, 74, 221, valueFont, "68", Theme.RED);
-        drawCentered(dc, 74, 236, smallFont, "5 MIN", Theme.MUTED);
+        drawCentered(dc, 74, 221, valueFont, "--", Theme.RED);
+        drawCentered(dc, 74, 236, smallFont, "--", Theme.MUTED);
         drawMountain(dc, 130, 207);
-        drawCentered(dc, 130, 224, valueFont, "667 m", Theme.TEXT);
-        drawBattery(dc, 179, 202);
-        drawCentered(dc, 186, 224, valueFont, "12 d", Theme.GREEN);
+        drawCentered(dc, 130, 224, valueFont, "-- m", Theme.TEXT);
+        drawBattery(dc, 179, 202, data.battery);
+        drawCentered(dc, 186, 224, valueFont, Formatters.batteryText(data), Formatters.batteryColor(data.battery));
     }
 
     function drawCentered(dc, x, y, font, label, color) {
@@ -94,10 +108,11 @@ class MountainWatchView extends WatchUi.WatchFace {
             [x, y - 6], [x + 4, y + 1], [x + 6, y - 1], [x + 10, y + 6]]);
     }
 
-    function drawBattery(dc, x, y) {
-        dc.setColor(Theme.GREEN, Graphics.COLOR_BLACK);
+    function drawBattery(dc, x, y, percent) {
+        dc.setColor(Formatters.batteryColor(percent), Graphics.COLOR_BLACK);
         dc.drawRectangle(x, y, 16, 10);
         dc.fillRectangle(x + 16, y + 3, 2, 4);
-        dc.fillRectangle(x + 2, y + 2, 12, 6);
+        var fill = Formatters.progress(percent, 100, 12);
+        if (fill > 0) { dc.fillRectangle(x + 2, y + 2, fill, 6); }
     }
 }
