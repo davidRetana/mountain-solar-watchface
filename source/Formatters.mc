@@ -1,3 +1,7 @@
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.Math;
+
 module Formatters {
     const DAYS = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
     const MONTHS = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
@@ -22,6 +26,27 @@ module Formatters {
         if (steps == null || goal == null || goal <= 0 || steps <= 0) { return 0; }
         if (steps >= goal) { return width; }
         return (width * steps.toFloat() / goal).toNumber();
+    }
+
+    function solarTime(moment) {
+        if (moment == null) { return "--:--"; }
+        var info = Gregorian.info(moment, Time.FORMAT_SHORT);
+        return info.hour.format("%02d") + ":" + info.min.format("%02d");
+    }
+
+    function temperature(value) {
+        if (value == null) { return "--°C"; }
+        return Math.round(value).toNumber().toString() + "°C";
+    }
+
+    function city(value, dc, font, width) {
+        if (value == null || value.length() == 0) { return "--"; }
+        var label = value.toUpper();
+        if (dc.getTextWidthInPixels(label, font) <= width) { return label; }
+        while (label.length() > 0 && dc.getTextWidthInPixels(label + "...", font) > width) {
+            label = label.substring(0, label.length() - 1);
+        }
+        return label + "...";
     }
 
     function heartAge(when, now) {

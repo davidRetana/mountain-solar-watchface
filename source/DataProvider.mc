@@ -1,5 +1,6 @@
 using Toybox.ActivityMonitor;
 using Toybox.System;
+using Toybox.Weather;
 using Toybox.SensorHistory;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
@@ -9,6 +10,9 @@ class DataProvider {
     var lastHistoryUpdate = null;
     const HEART_MAX_AGE = 900;
     const ELEVATION_MAX_AGE = 1800;
+    var lastWeatherUpdate = null;
+    var weatherDay = null;
+    const WEATHER_MAX_AGE = 7200;
     var lastMinute = null;
 
     function initialize() {
@@ -51,7 +55,50 @@ class DataProvider {
             // Keep the missing-data presentation if system stats are unavailable.
         }
         refreshHistory(now.value());
+        refreshWeather(now, info);
         return data;
+    }
+
+    function clearWeather() {
+        data.city = null;
+        data.temperature = null;
+        data.weatherWhen = null;
+        data.sunrise = null;
+        data.sunset = null;
+    }
+
+    function refreshWeather(now, info) {
+        var seconds = now.value();
+        var day = info.year * 10000 + info.month * 100 + info.day;
+        if (lastWeatherUpdate == null || seconds < lastWeatherUpdate ||
+            seconds - lastWeatherUpdate >= 900 || day != weatherDay) {
+            lastWeatherUpdate = seconds;
+            weatherDay = day;
+            clearWeather();
+            try {
+                var weather = Weather.getCurrentConditions();
+                if (weather != null && weather.observationTime != null) {
+                    var age = seconds - weather.observationTime.value();
+                    if (age >= 0 && age <= WEATHER_MAX_AGE) {
+                        data.weatherWhen = weather.observationTime.value();
+                        data.temperature = weather.temperature;
+                        data.city = weather.observationLocationName;
+                        // Use the weather station location without acquiring GPS.
+                        if (weather.observationLocationPosition != null) {
+                            data.sunrise = Weather.getSunrise(weather.observationLocationPosition, now);
+                            data.sunset = Weather.getSunset(weather.observationLocationPosition, now);
+                        }
+                    }
+                }
+            } catch (e) {
+                // Weather and solar availability are independent of other readings.
+                data.sunrise = null;
+                data.sunset = null;
+            }
+        }
+        if (data.weatherWhen != null && (seconds < data.weatherWhen || seconds - data.weatherWhen > WEATHER_MAX_AGE)) {
+            clearWeather();
+        }
     }
 
     function refreshHistory(now) {

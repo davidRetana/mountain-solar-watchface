@@ -31,12 +31,12 @@ class MountainWatchView extends WatchUi.WatchFace {
             Graphics.TEXT_JUSTIFY_CENTER, 90, 109,
             Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
 
-        SolarBar.drawUnavailable(dc, labelFont);
+        SolarBar.draw(dc, labelFont, data, Time.now().value());
 
         drawPin(dc, 54, 74);
-        drawCentered(dc, 89, 74, labelFont, "--", Theme.MUTED);
-        SolarBar.drawSun(dc, 169, 74, Theme.MUTED, 4);
-        drawCentered(dc, 202, 74, labelFont, "--°C", Theme.TEXT);
+        drawCentered(dc, 89, 74, labelFont, Formatters.city(data.city, dc, labelFont, 66), Theme.MUTED);
+        drawThermometer(dc, 169, 74);
+        drawCentered(dc, 202, 74, labelFont, Formatters.temperature(data.temperature), Theme.TEXT);
 
         drawCentered(dc, 130, 126, timeFont, data.timeText, Theme.TEXT);
 
@@ -81,6 +81,13 @@ class MountainWatchView extends WatchUi.WatchFace {
         dc.setColor(color, Graphics.COLOR_BLACK);
         dc.drawText(x, y, font, label,
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    function drawThermometer(dc, x, y) {
+        dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
+        dc.drawRoundedRectangle(x - 2, y - 7, 5, 12, 3);
+        dc.fillCircle(x, y + 5, 3);
+        dc.drawLine(x, y - 3, x, y + 5);
     }
 
     function drawPin(dc, x, y) {

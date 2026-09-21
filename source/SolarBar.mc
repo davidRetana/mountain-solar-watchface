@@ -1,12 +1,22 @@
 using Toybox.Graphics;
 
 class SolarBar {
-    // Weather and sunrise/sunset are connected in a later stage.
-    static function drawUnavailable(dc, font) {
+    // Show today's daylight interval; at night keep the track muted.
+    static function draw(dc, font, data, now) {
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(38, 54, font, "--:--", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(222, 54, font, "--:--", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(38, 54, font, Formatters.solarTime(data.sunrise), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(222, 54, font, Formatters.solarTime(data.sunset), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.fillRectangle(80, 53, 100, 2);
+        if (data.sunrise == null || data.sunset == null) { return; }
+        var start = data.sunrise.value();
+        var end = data.sunset.value();
+        if (end <= start || now < start || now > end) { return; }
+        dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
+        dc.fillRectangle(90, 53, 80, 2);
+        var x = 90 + ((now - start).toFloat() * 80 / (end - start)).toNumber();
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        dc.fillCircle(x, 54, 9);
+        drawSun(dc, x, 54, Theme.AMBER, 4);
     }
 
     static function drawSun(dc, x, y, color, radius) {

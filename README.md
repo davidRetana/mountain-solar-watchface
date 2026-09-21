@@ -1,6 +1,6 @@
 # Mountain Solar Watchface
 
-Segunda etapa dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
+Esfera dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
 
 ## Ramas
 
@@ -16,7 +16,13 @@ La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra v
 
 `DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas ni actualizaciones parciales de segundos. Se declara únicamente el permiso `SensorHistory`. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
 
-Ciudad, temperatura y horas solares todavía muestran `--`. La barra solar permanece gris sin posición solar ficticia. Los iconos de esos campos se conservan para mantener la composición.
+## Meteorología y barra solar
+
+Garmin Weather proporciona temperatura en °C y nombre de la estación o ciudad, que puede diferir de la ubicación exacta del usuario. Se consulta la caché de Garmin cada 15 minutos y al cambiar de fecha local. Observaciones sin fecha, futuras o de más de dos horas se presentan como datos ausentes. No se realizan peticiones a servicios externos ni se requiere un permiso adicional.
+
+Amanecer y puesta se calculan con Garmin Weather para la fecha actual y la ubicación de la observación, sin activar GPS. Las horas se muestran en la zona horaria local del reloj. Durante el día, el sol avanza linealmente entre ambos extremos: es una aproximación temporal, no una trayectoria astronómica. Antes del amanecer y después de la puesta, el recorrido queda gris sin marcador solar. Si faltan eventos (incluidas situaciones polares), se muestran los disponibles y no se dibuja una posición ficticia.
+
+La temperatura se redondea al entero más cercano. Su icono es un termómetro para no sugerir cielo despejado independientemente del tiempo. Los nombres largos se recortan con puntos suspensivos dentro del espacio disponible.
 
 ## Pulsaciones y altitud
 
@@ -45,11 +51,11 @@ monkeydo bin/mountainsolarwatchface.prg fenix7
 
 En el simulador, comprobar que la fecha curva, la hora, los textos solares y las tres columnas no se recortan ni se solapan. Revisar también memoria y comportamiento en modo de bajo consumo antes de dar por terminada la validación en dispositivo.
 
-Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta hora, fecha, pasos, batería, pulsaciones y altitud; los demás campos muestran datos ausentes.
+Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta todos los campos previstos; las lecturas no disponibles se muestran con `--`.
 
 ## Validación de esta iteración
 
-Compilación correcta para `fenix7` con Connect IQ SDK 9.2.0. El PRG se genera en `bin/mountainsolarwatchface.prg`. Hora, fecha, pasos y batería han sido validados por el usuario en el simulador. La nueva etapa de SensorHistory compila; su ejecución, lecturas y consumo quedan pendientes de comprobación.
+Compilación correcta para `fenix7` con Connect IQ SDK 9.2.0. El PRG se genera en `bin/mountainsolarwatchface.prg`. Hora, fecha, pasos, batería, pulsaciones y altitud han sido validados por el usuario en el simulador. La nueva etapa de Weather compila; su ejecución y lecturas quedan pendientes de comprobación. La memoria y el consumo en reloj físico siguen pendientes.
 
 Antes de conectar la siguiente etapa, comprobar:
 
@@ -60,6 +66,8 @@ Antes de conectar la siguiente etapa, comprobar:
 
 Para validar SensorHistory en el simulador, proporcionar un historial de pulsaciones y altitud (modificar solo un valor instantáneo puede no crear muestras históricas). Comprobar la primera lectura, el refresco tras cinco minutos, historial vacío, caducidad, altitud negativa y cifras largas. Confirmar las lecturas también en el reloj físico.
 
-## Próximas etapas
+## Validación pendiente de Weather
 
-Integrar Garmin Weather, datos antiguos o ausentes, amanecer, puesta y posición solar, incluyendo la presentación nocturna.
+En el simulador, proporcionar condiciones meteorológicas con fecha de observación y ubicación. Comprobar temperatura negativa, ciudad larga, datos ausentes o caducados, amanecer, mediodía, puesta, noche y cambio de fecha. Los cambios en Weather pueden tardar hasta 15 minutos en aparecer; reiniciar la esfera fuerza una primera consulta.
+
+Finalmente, validar todos los datos en reloj físico con Garmin Connect conectado y desconectado, y revisar memoria y comportamiento en bajo consumo antes de considerar cerrado el MVP.
