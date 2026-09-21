@@ -1,7 +1,23 @@
 using Toybox.Graphics;
 
 class SolarBar {
-    // Show today's daylight interval; at night keep the track muted.
+    // Prefer the daylight interval containing now; at night show the next one.
+    static function selectInterval(rises, sets, now) {
+        var next = null;
+        for (var i = 0; i < rises.size(); i += 1) {
+            var start = rises[i];
+            var end = null;
+            for (var j = 0; j < sets.size(); j += 1) {
+                if (sets[j] > start && (end == null || sets[j] < end)) { end = sets[j]; }
+            }
+            if (end == null) { continue; }
+            if (start <= now && now <= end) { return [start, end]; }
+            if (start > now && (next == null || start < next[0])) { next = [start, end]; }
+        }
+        return next;
+    }
+
+    // At night keep the track muted.
     static function draw(dc, font, data, now) {
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
         dc.drawText(38, 54, font, Formatters.solarTime(data.sunrise), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);

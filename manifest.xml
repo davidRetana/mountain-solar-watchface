@@ -9,6 +9,7 @@
         </iq:languages>
         <iq:permissions>
             <iq:uses-permission id="SensorHistory"/>
+            <iq:uses-permission id="Positioning"/>
         </iq:permissions>
         <iq:barrels/>
     </iq:application>

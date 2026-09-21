@@ -85,8 +85,7 @@ class DataProvider {
                         data.city = weather.observationLocationName;
                         // Use the weather station location without acquiring GPS.
                         if (weather.observationLocationPosition != null) {
-                            data.sunrise = Weather.getSunrise(weather.observationLocationPosition, now);
-                            data.sunset = Weather.getSunset(weather.observationLocationPosition, now);
+                            refreshSolar(weather.observationLocationPosition, now);
                         }
                     }
                 }
@@ -98,6 +97,25 @@ class DataProvider {
         }
         if (data.weatherWhen != null && (seconds < data.weatherWhen || seconds - data.weatherWhen > WEATHER_MAX_AGE)) {
             clearWeather();
+        }
+    }
+
+    function refreshSolar(location, now) {
+        // Weather events may fall on different dates in the watch's time zone.
+        // Ask for actual adjacent-day events rather than shifting a sunset by 24h.
+        var rises = [];
+        var sets = [];
+        for (var offset = -1; offset <= 1; offset += 1) {
+            var date = new Time.Moment(now.value() + offset * 86400);
+            var rise = Weather.getSunrise(location, date);
+            var setting = Weather.getSunset(location, date);
+            if (rise != null) { rises.add(rise.value()); }
+            if (setting != null) { sets.add(setting.value()); }
+        }
+        var interval = SolarBar.selectInterval(rises, sets, now.value());
+        if (interval != null) {
+            data.sunrise = new Time.Moment(interval[0]);
+            data.sunset = new Time.Moment(interval[1]);
         }
     }
 

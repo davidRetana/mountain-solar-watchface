@@ -14,13 +14,13 @@ Hora local en formato de 24 horas y fecha en español, pasos y objetivo de Activ
 
 La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra vacía. El texto utiliza separadores de miles y reduce su tamaño si la fila resulta demasiado larga.
 
-`DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas ni actualizaciones parciales de segundos. Se declara únicamente el permiso `SensorHistory`. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
+`DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas ni actualizaciones parciales de segundos. Se declaran `SensorHistory` y `Positioning`. Este último permite leer el nombre y las coordenadas de la estación meteorológica; no se solicita ninguna adquisición GPS. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
 
 ## Meteorología y barra solar
 
-Garmin Weather proporciona temperatura en °C y nombre de la estación o ciudad, que puede diferir de la ubicación exacta del usuario. Se consulta la caché de Garmin cada 15 minutos y al cambiar de fecha local. Observaciones sin fecha, futuras o de más de dos horas se presentan como datos ausentes. No se realizan peticiones a servicios externos ni se requiere un permiso adicional.
+Garmin Weather proporciona temperatura en °C y nombre de la estación o ciudad, que puede diferir de la ubicación exacta del usuario. Se consulta la caché de Garmin cada 15 minutos y al cambiar de fecha local. Observaciones sin fecha, futuras o de más de dos horas se presentan como datos ausentes. No se realizan peticiones a servicios externos. Garmin exige el permiso `Positioning` para proporcionar `observationLocationName` y `observationLocationPosition`, aunque se lean desde Weather.
 
-Amanecer y puesta se calculan con Garmin Weather para la fecha actual y la ubicación de la observación, sin activar GPS. Las horas se muestran en la zona horaria local del reloj. Durante el día, el sol avanza linealmente entre ambos extremos: es una aproximación temporal, no una trayectoria astronómica. Antes del amanecer y después de la puesta, el recorrido queda gris sin marcador solar. Si faltan eventos (incluidas situaciones polares), se muestran los disponibles y no se dibuja una posición ficticia.
+Amanecer y puesta se calculan con Garmin Weather para la ubicación de la observación, sin activar GPS. Se consultan el día actual y los adyacentes para emparejar cada amanecer con la siguiente puesta real. Se muestra el intervalo que contiene el instante actual o, de noche, el siguiente. Esto admite intervalos diurnos que cruzan medianoche en la zona horaria del reloj. Las horas se muestran en la zona horaria local del reloj. Durante el día, el sol avanza linealmente entre ambos extremos: es una aproximación temporal, no una trayectoria astronómica. Antes del amanecer y después de la puesta, el recorrido queda gris sin marcador solar. Si faltan eventos (incluidas situaciones polares), se muestran los disponibles y no se dibuja una posición ficticia.
 
 La temperatura se redondea al entero más cercano. Su icono es un termómetro para no sugerir cielo despejado independientemente del tiempo. Los nombres largos se recortan con puntos suspensivos dentro del espacio disponible.
 
@@ -68,6 +68,6 @@ Para validar SensorHistory en el simulador, proporcionar un historial de pulsaci
 
 ## Validación pendiente de Weather
 
-En el simulador, proporcionar condiciones meteorológicas con fecha de observación y ubicación. Comprobar temperatura negativa, ciudad larga, datos ausentes o caducados, amanecer, mediodía, puesta, noche y cambio de fecha. Los cambios en Weather pueden tardar hasta 15 minutos en aparecer; reiniciar la esfera fuerza una primera consulta.
+En el simulador, proporcionar condiciones meteorológicas con fecha de observación y ubicación mediante Settings → Set Weather. Configurar tanto el nombre de la estación como sus coordenadas. Tras cambios en los permisos, recompilar y detener y volver a ejecutar la esfera. La temperatura puede estar disponible aunque falte la ubicación; en ese caso, las horas solares permanecen ausentes. El proveedor también puede no proporcionar un nombre de estación, incluso con el permiso habilitado. Comprobar temperatura negativa, ciudad larga, datos ausentes o caducados, amanecer, mediodía, puesta, noche y cambio de fecha. Los cambios en Weather pueden tardar hasta 15 minutos en aparecer; reiniciar la esfera fuerza una primera consulta.
 
 Finalmente, validar todos los datos en reloj físico con Garmin Connect conectado y desconectado, y revisar memoria y comportamiento en bajo consumo antes de considerar cerrado el MVP.
