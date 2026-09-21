@@ -24,6 +24,18 @@ module Formatters {
         return (width * steps.toFloat() / goal).toNumber();
     }
 
+    function heartAge(when, now) {
+        if (when == null || now < when) { return "--"; }
+        var minutes = ((now - when) / 60).toNumber();
+        if (minutes == 0) { return "<1 MIN"; }
+        return minutes.toString() + " MIN";
+    }
+
+    function elevation(value) {
+        if (value == null) { return "-- m"; }
+        return value.toNumber().toString() + " m";
+    }
+
     function batteryText(data) {
         if (data.batteryDays != null) {
             if (data.batteryDays < 1) { return "<1 d"; }

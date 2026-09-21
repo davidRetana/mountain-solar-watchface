@@ -1,5 +1,6 @@
 using Toybox.Graphics;
 using Toybox.WatchUi;
+using Toybox.Time;
 
 class MountainWatchView extends WatchUi.WatchFace {
     var provider;
@@ -65,10 +66,13 @@ class MountainWatchView extends WatchUi.WatchFace {
         dc.drawLine(100, 201, 100, 233);
         dc.drawLine(160, 201, 160, 233);
         drawHeart(dc, 74, 204);
-        drawCentered(dc, 74, 221, valueFont, "--", Theme.RED);
-        drawCentered(dc, 74, 236, smallFont, "--", Theme.MUTED);
+        drawCentered(dc, 74, 221, valueFont, Formatters.count(data.heartRate), Theme.RED);
+        drawCentered(dc, 74, 236, smallFont, Formatters.heartAge(data.heartRateWhen, Time.now().value()), Theme.MUTED);
         drawMountain(dc, 130, 207);
-        drawCentered(dc, 130, 224, valueFont, "-- m", Theme.TEXT);
+        var elevationText = Formatters.elevation(data.elevation);
+        var elevationFont = valueFont;
+        if (dc.getTextWidthInPixels(elevationText, elevationFont) > 56) { elevationFont = labelFont; }
+        drawCentered(dc, 130, 224, elevationFont, elevationText, Theme.TEXT);
         drawBattery(dc, 179, 202, data.battery);
         drawCentered(dc, 186, 224, valueFont, Formatters.batteryText(data), Formatters.batteryColor(data.battery));
     }

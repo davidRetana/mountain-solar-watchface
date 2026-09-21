@@ -1,6 +1,6 @@
 # Mountain Solar Watchface
 
-Primera etapa dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
+Segunda etapa dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
 
 ## Ramas
 
@@ -14,9 +14,15 @@ Hora local en formato de 24 horas y fecha en español, pasos y objetivo de Activ
 
 La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra vacía. El texto utiliza separadores de miles y reduce su tamaño si la fila resulta demasiado larga.
 
-`DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas, nuevos permisos ni actualizaciones parciales de segundos. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
+`DataProvider` consulta los datos como máximo una vez por minuto cuando Garmin solicita actualizar la esfera. `WatchData` conserva la instantánea y `Formatters` prepara textos y progreso. No hay temporizadores, peticiones externas ni actualizaciones parciales de segundos. Se declara únicamente el permiso `SensorHistory`. Las consultas fallidas eliminan la lectura anterior y muestran `--`.
 
-Ciudad, temperatura, pulsaciones, altitud y horas solares todavía muestran `--`. La barra solar permanece gris sin posición solar ficticia. Los iconos de esos campos se conservan para mantener la composición.
+Ciudad, temperatura y horas solares todavía muestran `--`. La barra solar permanece gris sin posición solar ficticia. Los iconos de esos campos se conservan para mantener la composición.
+
+## Pulsaciones y altitud
+
+Se consulta SensorHistory al iniciar y después cada cinco minutos. Se busca la muestra válida más reciente dentro de un historial acotado, omitiendo muestras nulas y pulsaciones no positivas. La altitud admite cero y valores negativos, en metros. No se inicia GPS ni lectura óptica.
+
+El texto bajo el corazón muestra la antigüedad real de la muestra (`<1 MIN`, `2 MIN`, etc.), no el intervalo de consulta. Se descartan pulsaciones de más de 15 minutos y altitudes de más de 30 minutos. Estos umbrales son decisiones de presentación de esta versión. La caducidad se comprueba cada minuto, incluso entre consultas. Historial vacío o permisos denegados producen `--` de manera independiente para cada sensor.
 
 ## Compilación
 
@@ -39,11 +45,11 @@ monkeydo bin/mountainsolarwatchface.prg fenix7
 
 En el simulador, comprobar que la fecha curva, la hora, los textos solares y las tres columnas no se recortan ni se solapan. Revisar también memoria y comportamiento en modo de bajo consumo antes de dar por terminada la validación en dispositivo.
 
-Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta hora, fecha, pasos y batería; los demás campos muestran datos ausentes.
+Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta hora, fecha, pasos, batería, pulsaciones y altitud; los demás campos muestran datos ausentes.
 
 ## Validación de esta iteración
 
-Compilación correcta para `fenix7` con Connect IQ SDK 9.2.0. El PRG se genera en `bin/mountainsolarwatchface.prg`. La ejecución y el consumo en simulador/reloj quedan pendientes de comprobación; compilar no verifica las lecturas reales.
+Compilación correcta para `fenix7` con Connect IQ SDK 9.2.0. El PRG se genera en `bin/mountainsolarwatchface.prg`. Hora, fecha, pasos y batería han sido validados por el usuario en el simulador. La nueva etapa de SensorHistory compila; su ejecución, lecturas y consumo quedan pendientes de comprobación.
 
 Antes de conectar la siguiente etapa, comprobar:
 
@@ -52,6 +58,8 @@ Antes de conectar la siguiente etapa, comprobar:
 - Batería al 9, 10, 29 y 30 %, y alternativa a porcentaje sin estimación de días.
 - Legibilidad de la hora y batería, actualización en bajo consumo y memoria.
 
+Para validar SensorHistory en el simulador, proporcionar un historial de pulsaciones y altitud (modificar solo un valor instantáneo puede no crear muestras históricas). Comprobar la primera lectura, el refresco tras cinco minutos, historial vacío, caducidad, altitud negativa y cifras largas. Confirmar las lecturas también en el reloj físico.
+
 ## Próximas etapas
 
-Conectar SensorHistory para pulsaciones (cada cinco minutos) y altitud, sin forzar sensores ni GPS. Después integrar Garmin Weather, datos antiguos o ausentes, amanecer, puesta y posición solar, incluyendo la presentación nocturna.
+Integrar Garmin Weather, datos antiguos o ausentes, amanecer, puesta y posición solar, incluyendo la presentación nocturna.
