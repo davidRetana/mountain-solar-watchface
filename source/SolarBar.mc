@@ -3,15 +3,15 @@ using Toybox.Graphics;
 class SolarBar {
     static function drawStatic(dc, font) {
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawText(29, 188, font, "07:52", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(231, 188, font, "20:17", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(38, 54, font, "07:52", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(222, 54, font, "20:17", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.fillRectangle(72, 187, 116, 2);
+        dc.fillRectangle(80, 53, 100, 2);
         dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
-        dc.fillRectangle(85, 187, 81, 2);
+        dc.fillRectangle(92, 53, 76, 2);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-        dc.fillCircle(145, 188, 9);
-        drawSun(dc, 145, 188, Theme.AMBER, 4);
+        dc.fillCircle(144, 54, 9);
+        drawSun(dc, 144, 54, Theme.AMBER, 4);
     }
 
     static function drawSun(dc, x, y, color, radius) {

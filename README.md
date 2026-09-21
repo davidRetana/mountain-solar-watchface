@@ -1,10 +1,10 @@
 # Mountain Solar Watchface
 
-Render estático para Garmin fēnix 7 Solar de 47 mm: perfil `fenix7`, pantalla MIP circular de 260 × 260 px. Referencia actual: [watchface2.jpg](watchface2.jpg).
+Render estático para Garmin fēnix 7 Solar de 47 mm: perfil `fenix7`, pantalla MIP circular de 260 × 260 px. Referencia actual: [watchface3.jpg](watchface3.jpg).
 
 ## Diseño implementado
 
-Fecha en arco, ciudad con marcador y temperatura con sol en una misma fila, hora grande, pasos con barra ámbar, barra solar con horas en los extremos y tres columnas inferiores con iconos sobre los valores. Los iconos son dibujos vectoriales, no caracteres dependientes de una fuente. Se usan fuentes del dispositivo, cargadas una sola vez, y colores de la paleta MIP. El blanco sustituye al blanco cálido del mockup por las limitaciones de color de la pantalla.
+Fecha en arco, barra solar con horas en los extremos justo debajo de la fecha, ciudad con marcador y temperatura con sol en una misma fila, hora grande, pasos con barra ámbar y tres columnas inferiores con iconos sobre los valores. Los iconos son dibujos vectoriales, no caracteres dependientes de una fuente. Se usan fuentes del dispositivo, cargadas una sola vez, y colores de la paleta MIP. El blanco sustituye al blanco cálido del mockup por las limitaciones de color de la pantalla.
 
 Todos los datos son ejemplos fijos: MIÉ 16 SEP, MADRID, 23°C, 14:37, 8.426 / 10.000 pasos, 07:52–20:17, 68 pulsaciones, 667 m y 12 d de batería. La barra de pasos representa el 84,26 %. La posición solar es ilustrativa. El texto «5 MIN» reproduce la referencia; todavía no existe un refresco de sensores. La batería verde tampoco representa una lectura real.
 

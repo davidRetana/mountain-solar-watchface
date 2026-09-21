@@ -27,25 +27,25 @@ class MountainWatchView extends WatchUi.WatchFace {
             Graphics.TEXT_JUSTIFY_CENTER, 90, 109,
             Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
 
-        drawPin(dc, 54, 54);
-        drawCentered(dc, 89, 54, labelFont, "MADRID", Theme.MUTED);
-        SolarBar.drawSun(dc, 169, 54, Theme.MUTED, 4);
-        drawCentered(dc, 202, 54, labelFont, "23°C", Theme.TEXT);
+        SolarBar.drawStatic(dc, labelFont);
 
-        drawCentered(dc, 130, 106, timeFont, "14:37", Theme.TEXT);
+        drawPin(dc, 54, 74);
+        drawCentered(dc, 89, 74, labelFont, "MADRID", Theme.MUTED);
+        SolarBar.drawSun(dc, 169, 74, Theme.MUTED, 4);
+        drawCentered(dc, 202, 74, labelFont, "23°C", Theme.TEXT);
 
-        drawStepsIcon(dc, 72, 151);
+        drawCentered(dc, 130, 126, timeFont, "14:37", Theme.TEXT);
+
+        drawStepsIcon(dc, 72, 171);
         // Separate colors for current steps and target, as in the reference.
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawText(94, 153, labelFont, "8.426", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(94, 173, labelFont, "8.426", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(133, 153, labelFont, "/ 10.000", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(133, 173, labelFont, "/ 10.000", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
-        dc.fillRoundedRectangle(58, 166, 144, 5, 5);
+        dc.fillRoundedRectangle(58, 186, 144, 5, 5);
         dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
-        dc.fillRoundedRectangle(58, 166, 121, 5, 5);
-
-        SolarBar.drawStatic(dc, labelFont);
+        dc.fillRoundedRectangle(58, 186, 121, 5, 5);
 
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
         dc.drawLine(100, 201, 100, 233);
