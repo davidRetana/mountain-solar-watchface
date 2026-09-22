@@ -9,8 +9,7 @@ class WatchData {
     var city = null;
     var temperature = null;
     var weatherWhen = null;
-    var sunrise = null;
-    var sunset = null;
+    var solarInterval = null;
     var steps = null;
     var stepGoal = null;
     var battery = null;

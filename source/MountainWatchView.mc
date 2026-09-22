@@ -15,7 +15,7 @@ class MountainWatchView extends WatchUi.WatchFace {
         provider = new DataProvider();
         // Cache fonts once; data queries are cached separately by the provider.
         dateFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>18});
-        timeFont = Graphics.getVectorFont({:face=>"BionicBold", :size=>86});
+        timeFont = null;
         labelFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>15});
         valueFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>21});
         smallFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>11});
@@ -25,6 +25,17 @@ class MountainWatchView extends WatchUi.WatchFace {
         var data = provider.refresh();
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
+        // The large font's background includes padding above/below the digits.
+        // Paint it first so it cannot erase the weather and solar rows.
+        if (timeFont == null) {
+            // Scale both axes equally and size against the widest time once.
+            for (var size = 138; size >= 86; size -= 2) {
+                timeFont = Graphics.getVectorFont({:face=>"BionicBold", :size=>size});
+                if (dc.getTextWidthInPixels("00:00", timeFont) <= 232) { break; }
+            }
+        }
+        drawCentered(dc, 130, 124, timeFont, data.timeText, Theme.TEXT);
+
         // Layout coordinates target the fenix7's 260 x 260 display.
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
         dc.drawRadialText(130, 130, dateFont, data.dateText,
@@ -38,28 +49,28 @@ class MountainWatchView extends WatchUi.WatchFace {
         drawThermometer(dc, 169, 74);
         drawCentered(dc, 202, 74, labelFont, Formatters.temperature(data.temperature), Theme.TEXT);
 
-        drawCentered(dc, 130, 126, timeFont, data.timeText, Theme.TEXT);
-
-        drawStepsIcon(dc, 72, 171);
+        drawStepsIcon(dc, 43, 185);
         var stepsText = Formatters.count(data.steps);
         var goalText = " / " + Formatters.count(data.stepGoal);
         var stepsFont = labelFont;
-        if (dc.getTextWidthInPixels(stepsText + goalText, stepsFont) > 116) {
+        if (dc.getTextWidthInPixels(stepsText + goalText, stepsFont) > 150) {
             stepsFont = smallFont;
         }
+        // Center the whole counter on the bar (x=60, width=156).
+        var stepsX = 60 + ((156 - dc.getTextWidthInPixels(stepsText + goalText, stepsFont)) / 2).toNumber();
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawText(90, 173, stepsFont, stepsText, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(stepsX, 174, stepsFont, stepsText, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(90 + dc.getTextWidthInPixels(stepsText, stepsFont), 173, stepsFont, goalText,
+        dc.drawText(stepsX + dc.getTextWidthInPixels(stepsText, stepsFont), 174, stepsFont, goalText,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
-        dc.fillRoundedRectangle(58, 186, 144, 5, 5);
+        dc.fillRoundedRectangle(60, 184, 156, 7, 7);
         dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
-        var progress = Formatters.progress(data.steps, data.stepGoal, 144);
-        if (progress >= 5) {
-            dc.fillRoundedRectangle(58, 186, progress, 5, 5);
+        var progress = Formatters.progress(data.steps, data.stepGoal, 156);
+        if (progress >= 7) {
+            dc.fillRoundedRectangle(60, 184, progress, 7, 7);
         } else if (progress > 0) {
-            dc.fillRectangle(58, 186, progress, 5);
+            dc.fillRectangle(60, 184, progress, 7);
         }
 
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
@@ -100,10 +111,13 @@ class MountainWatchView extends WatchUi.WatchFace {
 
     function drawStepsIcon(dc, x, y) {
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.fillEllipse(x - 4, y - 3, 5, 9);
-        dc.fillEllipse(x + 4, y - 7, 5, 9);
-        dc.fillEllipse(x - 4, y + 7, 4, 4);
-        dc.fillEllipse(x + 3, y + 3, 4, 4);
+        // Separate soles and heels, aligned to whole pixels for the MIP display.
+        dc.fillPolygon([[x - 7, y - 3], [x - 6, y - 6], [x - 3, y - 6],
+            [x - 2, y - 3], [x - 3, y + 2], [x - 6, y + 2]]);
+        dc.fillRoundedRectangle(x - 6, y + 4, 4, 4, 2);
+        dc.fillPolygon([[x + 1, y - 7], [x + 2, y - 10], [x + 5, y - 10],
+            [x + 6, y - 7], [x + 5, y - 2], [x + 2, y - 2]]);
+        dc.fillRoundedRectangle(x + 2, y, 4, 4, 2);
     }
 
     function drawHeart(dc, x, y) {

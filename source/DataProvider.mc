@@ -14,6 +14,9 @@ class DataProvider {
     var weatherDay = null;
     const WEATHER_MAX_AGE = 7200;
     var lastMinute = null;
+    var solarRises = [];
+    var solarSets = [];
+    var cityKey = null;
 
     function initialize() {
         data = new WatchData();
@@ -56,15 +59,22 @@ class DataProvider {
         }
         refreshHistory(now.value());
         refreshWeather(now, info);
+        if (cityKey != null) {
+            var resolvedCity = CityLookup.cachedName(cityKey);
+            if (resolvedCity != null) { data.city = resolvedCity; }
+        }
+        data.solarInterval = SolarBar.selectInterval(solarRises, solarSets, now.value());
         return data;
     }
 
     function clearWeather() {
         data.city = null;
+        cityKey = null;
         data.temperature = null;
         data.weatherWhen = null;
-        data.sunrise = null;
-        data.sunset = null;
+        data.solarInterval = null;
+        solarRises = [];
+        solarSets = [];
     }
 
     function refreshWeather(now, info) {
@@ -82,17 +92,21 @@ class DataProvider {
                     if (age >= 0 && age <= WEATHER_MAX_AGE) {
                         data.weatherWhen = weather.observationTime.value();
                         data.temperature = weather.temperature;
-                        data.city = weather.observationLocationName;
+                        // This field is deprecated and may be absent after System 11.
+                        if (weather has :observationLocationName) {
+                            data.city = weather.observationLocationName;
+                        }
                         // Use the weather station location without acquiring GPS.
                         if (weather.observationLocationPosition != null) {
+                            cityKey = CityLookup.locationKey(weather.observationLocationPosition);
                             refreshSolar(weather.observationLocationPosition, now);
                         }
                     }
                 }
             } catch (e) {
                 // Weather and solar availability are independent of other readings.
-                data.sunrise = null;
-                data.sunset = null;
+                solarRises = [];
+                solarSets = [];
             }
         }
         if (data.weatherWhen != null && (seconds < data.weatherWhen || seconds - data.weatherWhen > WEATHER_MAX_AGE)) {
@@ -112,11 +126,8 @@ class DataProvider {
             if (rise != null) { rises.add(rise.value()); }
             if (setting != null) { sets.add(setting.value()); }
         }
-        var interval = SolarBar.selectInterval(rises, sets, now.value());
-        if (interval != null) {
-            data.sunrise = new Time.Moment(interval[0]);
-            data.sunset = new Time.Moment(interval[1]);
-        }
+        solarRises = rises;
+        solarSets = sets;
     }
 
     function refreshHistory(now) {
