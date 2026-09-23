@@ -7,7 +7,7 @@ using Toybox.Weather;
 
 (:background)
 class CityService extends System.ServiceDelegate {
-    var requestKey;
+    var requestKey as Toybox.Lang.Array<Toybox.Lang.String> or Null = null;
 
     function initialize() {
         ServiceDelegate.initialize();
@@ -55,7 +55,7 @@ class CityService extends System.ServiceDelegate {
 
     function onResponse(code as Toybox.Lang.Number, body as Null or Toybox.Lang.Dictionary or Toybox.Lang.String or Toybox.PersistedContent.Iterator) as Void {
         var name = code == 200 ? CityLookup.responseName(body) : null;
-        if (name != null) {
+        if (name != null && requestKey != null) {
             Storage.setValue("cityCache", [requestKey[0], requestKey[1], name]);
         }
         Background.exit(name);

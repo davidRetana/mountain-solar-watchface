@@ -1,9 +1,10 @@
 using Toybox.Graphics;
+using Toybox.Lang;
 
 class SolarBar {
     // Pair real adjacent events. The end is exclusive so sunset switches to
     // the moon immediately and sunrise switches back to the sun.
-    static function selectInterval(rises, sets, now) {
+    static function selectInterval(rises as Lang.Array<Lang.Number>, sets as Lang.Array<Lang.Number>, now as Lang.Number) as Lang.Array or Null {
         var day = containingInterval(rises, sets, now);
         if (day != null) { return [day[0], day[1], true]; }
         var night = containingInterval(sets, rises, now);
@@ -11,7 +12,7 @@ class SolarBar {
         return null;
     }
 
-    static function containingInterval(starts, ends, now) {
+    static function containingInterval(starts as Lang.Array<Lang.Number>, ends as Lang.Array<Lang.Number>, now as Lang.Number) as Lang.Array<Lang.Number> or Null {
         for (var i = 0; i < starts.size(); i += 1) {
             var start = starts[i];
             var end = null;
@@ -23,7 +24,7 @@ class SolarBar {
         return null;
     }
 
-    static function draw(dc, font, data, now) {
+    static function draw(dc, font, data as WatchData, now) {
         var interval = data.solarInterval;
         var start = null;
         var end = null;

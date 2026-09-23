@@ -4,16 +4,19 @@ using Toybox.Lang;
 // Shared by the foreground and the small background service.
 (:background)
 module CityLookup {
-    function locationKey(location) {
+    function locationKey(location as Toybox.Position.Location) as Lang.Array<Lang.String> {
         var degrees = location.toDegrees();
         // Approx. 1 km precision is sufficient for a city, and avoids sending
         // unnecessarily precise coordinates or requesting every small movement.
         return [degrees[0].format("%.2f"), degrees[1].format("%.2f")];
     }
 
-    function cachedName(key) {
+    function cachedName(key as Lang.Array<Lang.String>) as Lang.String or Null {
         var cached = Storage.getValue("cityCache");
-        if (cached != null && cached[0].equals(key[0]) && cached[1].equals(key[1])) {
+        if (cached instanceof Lang.Array && cached.size() == 3 &&
+            cached[0] instanceof Lang.String && cached[1] instanceof Lang.String &&
+            cached[2] instanceof Lang.String &&
+            cached[0].equals(key[0]) && cached[1].equals(key[1])) {
             return cached[2];
         }
         return null;

@@ -9,7 +9,7 @@ class WatchData {
     var city = null;
     var temperature = null;
     var weatherWhen = null;
-    var solarInterval = null;
+    var solarInterval as Toybox.Lang.Array or Null = null;
     var steps = null;
     var stepGoal = null;
     var battery = null;

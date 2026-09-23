@@ -27,3 +27,20 @@ function cityCacheFollowsLocation(logger) {
     Test.assert(moved == null);
     return true;
 }
+
+(:test)
+function cityCacheRejectsMalformedValues(logger) {
+    var previous = Storage.getValue("cityCache");
+    var key = ["40.42", "-3.70"];
+    var invalidValues = ["Madrid", [], ["40.42"], ["40.42", "-3.70", 1],
+        [null, "-3.70", "Madrid"], ["40.42", null, "Madrid"]];
+    var rejected = true;
+    for (var i = 0; i < invalidValues.size(); i += 1) {
+        Storage.setValue("cityCache", invalidValues[i]);
+        if (CityLookup.cachedName(key) != null) { rejected = false; }
+    }
+    if (previous == null) { Storage.deleteValue("cityCache"); }
+    else { Storage.setValue("cityCache", previous); }
+    Test.assert(rejected);
+    return true;
+}
