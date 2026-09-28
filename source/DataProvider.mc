@@ -32,7 +32,9 @@ class DataProvider {
         lastMinute = minute;
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
         data.timeText = info.hour.format("%02d") + ":" + info.min.format("%02d");
-        data.dateText = Formatters.date(info);
+        data.dayText = info.day.toString();
+        data.weekdayText = Formatters.DAYS[info.day_of_week - 1];
+        data.monthText = Formatters.MONTHS[info.month - 1];
         // Clear previous readings so failures cannot leave stale values on screen.
         data.steps = null;
         data.stepGoal = null;

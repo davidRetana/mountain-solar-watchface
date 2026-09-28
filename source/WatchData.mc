@@ -1,7 +1,9 @@
 // Snapshot used by the view. Missing readings remain null.
 class WatchData {
     var timeText = "--:--";
-    var dateText = "--";
+    var dayText = "--";
+    var weekdayText = "--";
+    var monthText = "--";
     var heartRate = null;
     var heartRateWhen = null;
     var elevation = null;

@@ -6,10 +6,6 @@ module Formatters {
     const DAYS = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
     const MONTHS = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-    function date(info) {
-        return DAYS[info.day_of_week - 1] + " " + info.day.toString() + " " + MONTHS[info.month - 1];
-    }
-
     function count(value) {
         if (value == null) { return "--"; }
         var digits = value.toNumber().toString();

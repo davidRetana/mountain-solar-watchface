@@ -5,6 +5,7 @@ using Toybox.Time;
 class MountainWatchView extends WatchUi.WatchFace {
     var provider;
     var dateFont;
+    var dayFont;
     var timeFont;
     var labelFont;
     var valueFont;
@@ -15,6 +16,7 @@ class MountainWatchView extends WatchUi.WatchFace {
         provider = new DataProvider();
         // Cache fonts once; data queries are cached separately by the provider.
         dateFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>18});
+        dayFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>30});
         timeFont = null;
         labelFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>15});
         valueFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>21});
@@ -37,9 +39,13 @@ class MountainWatchView extends WatchUi.WatchFace {
         drawCentered(dc, 130, 124, timeFont, data.timeText, Theme.TEXT);
 
         // Layout coordinates target the fenix7's 260 x 260 display.
+        drawCentered(dc, 130, 25, dayFont, data.dayText, Theme.TEXT);
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawRadialText(130, 130, dateFont, data.dateText,
-            Graphics.TEXT_JUSTIFY_CENTER, 90, 109,
+        dc.drawRadialText(130, 130, dateFont, data.weekdayText,
+            Graphics.TEXT_JUSTIFY_CENTER, 112, 109,
+            Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
+        dc.drawRadialText(130, 130, dateFont, data.monthText,
+            Graphics.TEXT_JUSTIFY_CENTER, 68, 109,
             Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
 
         SolarBar.draw(dc, labelFont, data, Time.now().value());
