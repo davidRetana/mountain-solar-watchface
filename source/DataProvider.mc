@@ -10,16 +10,19 @@ class DataProvider {
     var lastHistoryUpdate = null;
     const HEART_MAX_AGE = 900;
     const ELEVATION_MAX_AGE = 1800;
-    var lastWeatherUpdate = null;
-    var weatherDay = null;
+    var solarDay = null;
+    var solarKey = null;
+    var lastSolarUpdate = null;
     const WEATHER_MAX_AGE = 7200;
     var lastMinute = null;
     var solarRises = [];
     var solarSets = [];
     var cityKey = null;
+    var cityScheduler;
 
     function initialize() {
         data = new WatchData();
+        cityScheduler = new CityScheduler();
     }
 
     function refresh() {
@@ -59,9 +62,11 @@ class DataProvider {
         }
         refreshHistory(now.value());
         refreshWeather(now, info);
-        if (cityKey != null) {
-            var resolvedCity = CityLookup.cachedName(cityKey);
-            if (resolvedCity != null) { data.city = resolvedCity; }
+        try {
+            cityScheduler.update(cityKey != null && data.city == null, now.value());
+        } catch (e) {
+            // Retry scheduling on the next normal minute update.
+            System.println("CityScheduler: " + e.toString());
         }
         data.solarInterval = SolarBar.selectInterval(solarRises, solarSets, now.value());
         return data;
@@ -75,42 +80,60 @@ class DataProvider {
         data.solarInterval = null;
         solarRises = [];
         solarSets = [];
+        solarKey = null;
+        solarDay = null;
+        lastSolarUpdate = null;
     }
 
     function refreshWeather(now, info) {
-        var seconds = now.value();
-        var day = info.year * 10000 + info.month * 100 + info.day;
-        if (lastWeatherUpdate == null || seconds < lastWeatherUpdate ||
-            seconds - lastWeatherUpdate >= 900 || day != weatherDay) {
-            lastWeatherUpdate = seconds;
-            weatherDay = day;
+        // Read Garmin's local data on the normal minute tick; no GPS/network.
+        try {
+            applyWeather(Weather.getCurrentConditions(), now, info);
+        } catch (e) {
             clearWeather();
+        }
+    }
+
+    function applyWeather(weather, now, info) {
+        var seconds = now.value();
+        if (weather == null || weather.observationTime == null ||
+            seconds < weather.observationTime.value() ||
+            seconds - weather.observationTime.value() > WEATHER_MAX_AGE) {
+            clearWeather();
+            return;
+        }
+        var previousKey = cityKey;
+        data.city = null;
+        cityKey = null;
+        data.temperature = weather.temperature;
+        data.weatherWhen = weather.observationTime.value();
+        if (weather.observationLocationPosition == null) {
+            solarRises = [];
+            solarSets = [];
+            solarKey = null;
+            data.solarInterval = null;
+            return;
+        }
+        cityKey = CityLookup.locationKey(weather.observationLocationPosition);
+        data.city = CityLookup.cachedName(cityKey);
+        if (data.city != null && !CityLookup.sameKey(previousKey, cityKey)) {
+            CityLookup.remember(cityKey, data.city);
+        }
+        var day = info.year * 10000 + info.month * 100 + info.day;
+        // Solar calculations are separate from the cheap weather read. Keep
+        // successful results until date/location changes; retry failures at 15m.
+        var changed = !CityLookup.sameKey(solarKey, cityKey) || solarDay != day;
+        if (changed || lastSolarUpdate == null || seconds < lastSolarUpdate ||
+            ((solarRises.size() == 0 || solarSets.size() == 0) && seconds - lastSolarUpdate >= 900)) {
+            solarKey = cityKey;
+            solarDay = day;
+            lastSolarUpdate = seconds;
             try {
-                var weather = Weather.getCurrentConditions();
-                if (weather != null && weather.observationTime != null) {
-                    var age = seconds - weather.observationTime.value();
-                    if (age >= 0 && age <= WEATHER_MAX_AGE) {
-                        data.weatherWhen = weather.observationTime.value();
-                        data.temperature = weather.temperature;
-                        // This field is deprecated and may be absent after System 11.
-                        if (weather has :observationLocationName) {
-                            data.city = weather.observationLocationName;
-                        }
-                        // Use the weather station location without acquiring GPS.
-                        if (weather.observationLocationPosition != null) {
-                            cityKey = CityLookup.locationKey(weather.observationLocationPosition);
-                            refreshSolar(weather.observationLocationPosition, now);
-                        }
-                    }
-                }
+                refreshSolar(weather.observationLocationPosition, now);
             } catch (e) {
-                // Weather and solar availability are independent of other readings.
                 solarRises = [];
                 solarSets = [];
             }
-        }
-        if (data.weatherWhen != null && (seconds < data.weatherWhen || seconds - data.weatherWhen > WEATHER_MAX_AGE)) {
-            clearWeather();
         }
     }
 

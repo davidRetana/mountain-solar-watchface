@@ -1,6 +1,5 @@
 using Toybox.Application;
 using Toybox.Background;
-using Toybox.Time;
 using Toybox.WatchUi;
 
 (:background)
@@ -12,7 +11,8 @@ class MountainWatchApp extends Application.AppBase {
     }
 
     function getInitialView() {
-        Background.registerForTemporalEvent(new Time.Duration(900));
+        // Remove the legacy periodic event and re-evaluate current Weather.
+        Background.deleteTemporalEvent();
         view = new MountainWatchView();
         return [view];
     }
@@ -24,6 +24,8 @@ class MountainWatchApp extends Application.AppBase {
     function onBackgroundData(result) {
         if (view != null && result != null) {
             view.provider.lastMinute = null;
+            // The service may have resolved a newer weather location.
+            // Reload its coordinates before matching the city cache.
             WatchUi.requestUpdate();
         }
     }

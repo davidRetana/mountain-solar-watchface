@@ -1,4 +1,3 @@
-using Toybox.Application.Storage;
 using Toybox.Background;
 using Toybox.Communications;
 using Toybox.System;
@@ -15,30 +14,38 @@ class CityService extends System.ServiceDelegate {
 
     function onTemporalEvent() {
         try {
+            // Consume the one-shot event, including any registration left by
+            // an older build. The foreground schedules only pending work.
+            Background.deleteTemporalEvent();
             var weather = Weather.getCurrentConditions();
             var now = Time.now().value();
             if (weather == null || weather.observationTime == null ||
                 weather.observationLocationPosition == null) {
-                Background.exit(null);
+                System.println("CityService: weather observation or coordinates unavailable");
+                Background.exit(true);
                 return;
             }
             var age = now - weather.observationTime.value();
             if (age < 0 || age > 7200) {
-                Background.exit(null);
+                System.println("CityService: weather observation expired or in the future");
+                Background.exit(true);
                 return;
             }
             requestKey = CityLookup.locationKey(weather.observationLocationPosition);
-            if (CityLookup.cachedName(requestKey) != null) {
-                Background.exit(null);
+            var cached = CityLookup.cachedName(requestKey);
+            if (cached != null) {
+                System.println("CityService: using cached city");
+                Background.exit(true);
                 return;
             }
-            // Global backoff also covers failures, restarts and a moving user.
-            var attempt = Storage.getValue("cityAttempt");
-            if (attempt != null && now >= attempt && now - attempt < 3600) {
-                Background.exit(null);
+            var due = CityRetry.nextAttempt(now);
+            if (due > now) {
+                System.println("CityService: retry in " + (due - now).toString() + " seconds");
+                Background.exit(true);
                 return;
             }
-            Storage.setValue("cityAttempt", now);
+            CityRetry.beginAttempt(now);
+            System.println("CityService: requesting city from Nominatim");
             Communications.makeWebRequest("https://nominatim.openstreetmap.org/reverse", {
                 "lat" => requestKey[0], "lon" => requestKey[1],
                 "format" => "jsonv2", "zoom" => "10", "addressdetails" => "1",
@@ -49,15 +56,22 @@ class CityService extends System.ServiceDelegate {
                 :headers => {"User-Agent" => "MountainSolarWatchface/1.0 (https://github.com/davidRetana/mountain-solar-watchface)"}
             }, method(:onResponse));
         } catch (e) {
-            Background.exit(null);
+            System.println("CityService: failed: " + e.toString());
+            CityRetry.failed(Time.now().value());
+            Background.exit(true);
         }
     }
 
     function onResponse(code as Toybox.Lang.Number, body as Null or Toybox.Lang.Dictionary or Toybox.Lang.String or Toybox.PersistedContent.Iterator) as Void {
         var name = code == 200 ? CityLookup.responseName(body) : null;
         if (name != null && requestKey != null) {
-            Storage.setValue("cityCache", [requestKey[0], requestKey[1], name]);
+            CityLookup.remember(requestKey, name);
+            CityRetry.succeeded();
+            System.println("CityService: city cached successfully");
+        } else {
+            CityRetry.failed(Time.now().value());
+            System.println("CityService: no city returned, response code " + code.toString());
         }
-        Background.exit(name);
+        Background.exit(true);
     }
 }
