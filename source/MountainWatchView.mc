@@ -45,7 +45,10 @@ class MountainWatchView extends WatchUi.WatchFace {
         SolarBar.draw(dc, labelFont, data, Time.now().value());
 
         drawPin(dc, 54, 74);
-        drawCentered(dc, 89, 74, labelFont, Formatters.city(data.city, dc, labelFont, 66), Theme.MUTED);
+        // The pin ends at x=58; keep a 6px gap and room before the thermometer.
+        dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
+        dc.drawText(64, 74, labelFont, Formatters.city(data.city, dc, labelFont, 88),
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         drawThermometer(dc, 169, 74);
         drawCentered(dc, 202, 74, labelFont, Formatters.temperature(data.temperature), Theme.TEXT);
 
