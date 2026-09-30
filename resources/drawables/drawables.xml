@@ -1,3 +1,5 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png"/>
+    <bitmap id="LocationIcon" filename="location_icon.png" dithering="none"/>
+    <bitmap id="ThermometerIcon" filename="thermometer_icon.png" dithering="none"/>
 </drawables>

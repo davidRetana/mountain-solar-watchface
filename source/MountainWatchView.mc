@@ -10,8 +10,9 @@ class MountainWatchView extends WatchUi.WatchFace {
     var valueFont;
     var smallFont;
     var presentation;
+    var locationIcon;
+    var thermometerIcon;
     // Fixed fenix7 geometry: reuse these arrays on every full redraw.
-    const PIN = [[50, 74], [58, 74], [54, 81]];
     const LEFT_SOLE = [[36, 182], [37, 179], [40, 179], [41, 182], [40, 187], [37, 187]];
     const RIGHT_SOLE = [[44, 178], [45, 175], [48, 175], [49, 178], [48, 183], [45, 183]];
     const HEART = [[68, 204], [80, 204], [74, 212]];
@@ -20,6 +21,9 @@ class MountainWatchView extends WatchUi.WatchFace {
     function initialize() {
         WatchFace.initialize();
         provider = new DataProvider();
+        // Native-size glyphs: load once and copy their exact pixels on redraw.
+        locationIcon = WatchUi.loadResource(Rez.Drawables.LocationIcon);
+        thermometerIcon = WatchUi.loadResource(Rez.Drawables.ThermometerIcon);
         // Cache fonts once; data queries are cached separately by the provider.
         dateFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>18});
         dayFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>30});
@@ -108,20 +112,11 @@ class MountainWatchView extends WatchUi.WatchFace {
     }
 
     function drawThermometer(dc, x, y) {
-        dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawRoundedRectangle(x - 2, y - 7, 5, 12, 3);
-        dc.fillCircle(x, y + 5, 3);
-        dc.drawLine(x, y - 3, x, y + 5);
+        dc.drawBitmap(x - 6, y - 8, thermometerIcon);
     }
 
     function drawPin(dc) {
-        var x = 54;
-        var y = 74;
-        dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.fillCircle(x, y - 2, 4);
-        dc.fillPolygon(PIN);
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-        dc.fillCircle(x, y - 2, 1);
+        dc.drawBitmap(50, 68, locationIcon);
     }
 
     function drawStepsIcon(dc) {
