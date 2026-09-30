@@ -1,5 +1,7 @@
 // Snapshot used by the view. Missing readings remain null.
 class WatchData {
+    var updatedAt = 0;
+    var utcOffset = 0;
     var timeText = "--:--";
     var dayText = "--";
     var weekdayText = "--";

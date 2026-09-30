@@ -6,7 +6,7 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 class DataProvider {
-    var data;
+    var data as WatchData;
     var lastHistoryUpdate = null;
     const HEART_MAX_AGE = 900;
     const ELEVATION_MAX_AGE = 1800;
@@ -19,6 +19,14 @@ class DataProvider {
     var solarSets = [];
     var cityKey = null;
     var cityScheduler;
+    const SLOW_REFRESH_INTERVAL = 300;
+    var lastBatteryUpdate = null;
+    var lastWeatherUpdate = null;
+    var weatherLocation = null;
+    var cityCacheDirty = true;
+    var schedulerDirty = true;
+    var calendarDay = null;
+    var revision = 0;
 
     function initialize() {
         data = new WatchData();
@@ -26,22 +34,82 @@ class DataProvider {
     }
 
     function refresh() {
-        var now = Time.now();
-        var minute = (now.value() / 60).toNumber();
-        if (minute == lastMinute) { return data; }
-        lastMinute = minute;
+        return refreshAt(Time.now());
+    }
+
+    // Also used by deterministic tests; all deadlines use the same instant.
+    function refreshAt(now) {
+        var seconds = now.value();
+        var minute = (seconds / 60).toNumber();
+        var minuteChanged = minute != lastMinute;
+        if (!minuteChanged && !cityCacheDirty) { return data; }
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
-        data.timeText = info.hour.format("%02d") + ":" + info.min.format("%02d");
-        data.dayText = info.day.toString();
-        data.weekdayText = Formatters.DAYS[info.day_of_week - 1];
-        data.monthText = Formatters.MONTHS[info.month - 1];
+        // Local offset modulo one day also detects DST/time-zone changes.
+        data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
+        data.updatedAt = seconds;
+        if (minuteChanged) {
+            lastMinute = minute;
+            data.timeText = info.hour.format("%02d") + ":" + info.min.format("%02d");
+            var day = info.year * 10000 + info.month * 100 + info.day;
+            if (day != calendarDay) {
+                calendarDay = day;
+                data.dayText = info.day.toString();
+                data.weekdayText = Formatters.DAYS[info.day_of_week - 1];
+                data.monthText = Formatters.MONTHS[info.month - 1];
+            }
+            refreshActivity();
+            if (isDue(lastBatteryUpdate, seconds, SLOW_REFRESH_INTERVAL)) {
+                lastBatteryUpdate = seconds;
+                refreshBattery();
+            }
+            refreshHistory(seconds);
+        }
+        if (cityCacheDirty || isDue(lastWeatherUpdate, seconds, SLOW_REFRESH_INTERVAL)) {
+            lastWeatherUpdate = seconds;
+            refreshWeather(now, info);
+            cityCacheDirty = false;
+            schedulerDirty = true;
+        }
+        // A cache must not extend a reading's validity beyond its age limit.
+        if (data.weatherWhen != null &&
+            (seconds < data.weatherWhen || seconds - data.weatherWhen > WEATHER_MAX_AGE)) {
+            clearWeather();
+            schedulerDirty = true;
+        }
+        if (weatherLocation != null) { updateSolar(weatherLocation, now, info); }
+        if (schedulerDirty) {
+            try {
+                cityScheduler.update(cityKey != null && data.city == null, seconds);
+                schedulerDirty = false;
+            } catch (e) {
+                // Retry scheduling on the next normal minute update.
+                System.println("CityScheduler: " + e.toString());
+            }
+        }
+        var interval = data.solarInterval;
+        if (interval == null || seconds < interval[0] || seconds >= interval[1]) {
+            data.solarInterval = SolarBar.selectInterval(solarRises, solarSets, seconds);
+        }
+        revision += 1;
+        return data;
+    }
+
+    function isDue(last, now, interval) {
+        return last == null || now < last || now - last >= interval;
+    }
+
+    function invalidateWeather() {
+        // Background data can arrive within the current minute. Refresh only
+        // Weather/city, without repeating activity, battery or history reads.
+        cityCacheDirty = true;
+    }
+
+    function refreshActivity() {
         // Clear previous readings so failures cannot leave stale values on screen.
         data.steps = null;
         data.stepGoal = null;
-        data.battery = null;
-        data.batteryDays = null;
         try {
-            var activity = ActivityMonitor.getInfo();
+            var activity = readActivity();
             if (activity != null) {
                 if (activity.steps != null && activity.steps >= 0) { data.steps = activity.steps; }
                 if (activity.stepGoal != null && activity.stepGoal > 0) { data.stepGoal = activity.stepGoal; }
@@ -49,8 +117,14 @@ class DataProvider {
         } catch (e) {
             // Activity tracking may be unavailable.
         }
+    }
+
+    function refreshBattery() {
+        data.battery = null;
+        data.batteryDays = null;
         try {
-            var stats = System.getSystemStats();
+            var stats = readBattery();
+            if (stats == null) { return; }
             if (stats.battery != null && stats.battery >= 0 && stats.battery <= 100) {
                 data.battery = stats.battery;
             }
@@ -62,35 +136,31 @@ class DataProvider {
         } catch (e) {
             // Keep the missing-data presentation if system stats are unavailable.
         }
-        refreshHistory(now.value());
-        refreshWeather(now, info);
-        try {
-            cityScheduler.update(cityKey != null && data.city == null, now.value());
-        } catch (e) {
-            // Retry scheduling on the next normal minute update.
-            System.println("CityScheduler: " + e.toString());
-        }
-        data.solarInterval = SolarBar.selectInterval(solarRises, solarSets, now.value());
-        return data;
     }
+
+    function readActivity() { return ActivityMonitor.getInfo(); }
+    function readBattery() { return System.getSystemStats(); }
+    function readWeather() { return Weather.getCurrentConditions(); }
+    function readCity(key) { return CityLookup.cachedName(key); }
 
     function clearWeather() {
         data.city = null;
         cityKey = null;
         data.temperature = null;
         data.weatherWhen = null;
+        weatherLocation = null;
         data.solarInterval = null;
-        solarRises = [];
-        solarSets = [];
+        if (solarRises.size() > 0) { solarRises = []; }
+        if (solarSets.size() > 0) { solarSets = []; }
         solarKey = null;
         solarDay = null;
         lastSolarUpdate = null;
     }
 
     function refreshWeather(now, info) {
-        // Read Garmin's local data on the normal minute tick; no GPS/network.
+        // Five-minute local reads, plus background invalidation; no GPS/network.
         try {
-            applyWeather(Weather.getCurrentConditions(), now, info);
+            applyWeather(readWeather(), now, info);
         } catch (e) {
             clearWeather();
         }
@@ -104,23 +174,30 @@ class DataProvider {
             clearWeather();
             return;
         }
-        var previousKey = cityKey;
-        data.city = null;
-        cityKey = null;
         data.temperature = weather.temperature;
         data.weatherWhen = weather.observationTime.value();
+        weatherLocation = weather.observationLocationPosition;
         if (weather.observationLocationPosition == null) {
-            solarRises = [];
-            solarSets = [];
+            data.city = null;
+            cityKey = null;
+            if (solarRises.size() > 0) { solarRises = []; }
+            if (solarSets.size() > 0) { solarSets = []; }
             solarKey = null;
             data.solarInterval = null;
             return;
         }
-        cityKey = CityLookup.locationKey(weather.observationLocationPosition);
-        data.city = CityLookup.cachedName(cityKey);
-        if (data.city != null && !CityLookup.sameKey(previousKey, cityKey)) {
-            CityLookup.remember(cityKey, data.city);
+        var key = CityLookup.locationKey(weather.observationLocationPosition);
+        var changed = !CityLookup.sameKey(cityKey, key);
+        if (changed || cityCacheDirty) {
+            cityKey = key;
+            data.city = readCity(cityKey);
+            if (data.city != null && changed) { CityLookup.remember(cityKey, data.city); }
         }
+        updateSolar(weather.observationLocationPosition, now, info);
+    }
+
+    function updateSolar(location, now, info) {
+        var seconds = now.value();
         var day = info.year * 10000 + info.month * 100 + info.day;
         // Solar calculations are separate from the cheap weather read. Keep
         // successful results until date/location changes; retry failures at 15m.
@@ -130,11 +207,12 @@ class DataProvider {
             solarKey = cityKey;
             solarDay = day;
             lastSolarUpdate = seconds;
+            data.solarInterval = null;
             try {
-                refreshSolar(weather.observationLocationPosition, now);
+                refreshSolar(location, now);
             } catch (e) {
-                solarRises = [];
-                solarSets = [];
+                if (solarRises.size() > 0) { solarRises = []; }
+                if (solarSets.size() > 0) { solarSets = []; }
             }
         }
     }

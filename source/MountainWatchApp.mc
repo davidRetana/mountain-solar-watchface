@@ -23,7 +23,7 @@ class MountainWatchApp extends Application.AppBase {
 
     function onBackgroundData(result) {
         if (view != null && result != null) {
-            view.provider.lastMinute = null;
+            view.provider.invalidateWeather();
             // The service may have resolved a newer weather location.
             // Reload its coordinates before matching the city cache.
             WatchUi.requestUpdate();

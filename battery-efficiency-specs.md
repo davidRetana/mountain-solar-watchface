@@ -14,3 +14,30 @@ The watch face shall minimize CPU usage, screen updates, memory allocations, and
 - **Optimization priority:** Prioritize reducing wakeups, sensor/network operations, and rendering work over micro-optimizing simple arithmetic.
 
 **Design principle:** *Calculate once, cache whenever possible, update only when necessary, and keep each screen refresh as lightweight as possible.*
+
+### Review and implementation for `alpha-release-0-0-4`
+
+These requirements make sense for the fēnix 7 MIP display, with two qualifications:
+
+- Garmin controls watch-face callbacks: low-power `onUpdate()` runs once per minute, but high-power mode and transitions can request additional full redraws. Cache the work behind those redraws; do not assume the previous framebuffer is intact. No timers, animations, or `onPartialUpdate()` are added.
+- Caching trades some retained memory for fewer allocations and less CPU work. Keep caches bounded and small; a second full-screen bitmap is not justified for this simple layout without profiling. Fewer API calls alone do not establish a battery-life percentage.
+
+| Work | Implemented policy |
+| --- | --- |
+| Clock, steps and reading expiry | Once per minute; date text changes only with the local date |
+| Battery and local Weather | At startup, then every five minutes; refresh after a backwards clock correction |
+| Background city result | Invalidate Weather/city immediately; do not repeat same-minute activity, battery or history queries |
+| Heart rate and elevation history | Keep the existing five-minute reads and per-minute age validation; no sensor activation |
+| City storage | Read on location change or background invalidation; retain the existing bounded persistent cache and network backoff |
+| Background scheduling | Reconcile after Weather refresh, expiry or background completion; retry scheduling errors on the next minute |
+| Solar events | Cache by local date and rounded location; retain the 15-minute retry for missing events |
+| Solar interval and labels | Reuse the interval until its boundary; invalidate on new events; reformat labels on interval or time-zone/DST changes |
+| Layout and resources | Select the time font in `onLayout()`; reuse fonts and fixed icon polygons |
+| Display text | Prepare once per snapshot; measure city, steps and elevation only when their inputs or layout change |
+| Low power | Preserve the readable MIP layout with the system's minute cadence and no extra wakeups |
+
+Weather and battery changes can take up to approximately five minutes to appear. An expired Weather observation is still hidden on the next minute tick, even between reads. Successful background city completion bypasses the Weather interval. Returning after a long absence refreshes any overdue data.
+
+Validation must cover repeated high-power callbacks, minute/five-minute boundaries, backwards clock changes, returning after an absence, background completion within the same minute, missing data, expiry, midnight, sunrise/sunset and presentation cache invalidation. Real battery consumption and peak memory still require measurement on the watch; do not infer them from reduced call counts.
+
+References: [Garmin WatchFace lifecycle](https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/WatchFace.html), [View.onUpdate and transitions](https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/View.html#onUpdate-instance_method).

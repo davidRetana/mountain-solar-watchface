@@ -24,17 +24,11 @@ class SolarBar {
         return null;
     }
 
-    static function draw(dc, font, data as WatchData, now) {
+    static function draw(dc, font, data as WatchData, now, startText, endText) {
         var interval = data.solarInterval;
-        var start = null;
-        var end = null;
-        if (interval != null) {
-            start = new Toybox.Time.Moment(interval[0]);
-            end = new Toybox.Time.Moment(interval[1]);
-        }
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(38, 54, font, Formatters.solarTime(start), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(222, 54, font, Formatters.solarTime(end), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(38, 54, font, startText, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(222, 54, font, endText, Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.fillRectangle(80, 53, 100, 2);
         if (interval == null || now < interval[0] || now >= interval[1]) { return; }
         var color = interval[2] ? Theme.AMBER : Theme.TEXT;
