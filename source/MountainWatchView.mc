@@ -15,6 +15,7 @@ class MountainWatchView extends WatchUi.WatchFace {
     var thermometerIcon;
     var layout as WatchLayout or Null;
     var fonts;
+    var fontLanguage = null;
 
     function initialize() {
         WatchFace.initialize();
@@ -30,24 +31,35 @@ class MountainWatchView extends WatchUi.WatchFace {
     }
 
     function onLayout(dc) {
+        provider.invalidateLocale();
+        provider.refresh();
         if (layout == null || layout.width != dc.getWidth() || layout.height != dc.getHeight()) {
             layout = new WatchLayout(dc.getWidth(), dc.getHeight());
-            dateFont = fonts.radial(layout.size(18));
-            dayFont = fonts.text(layout.size(30), Graphics.FONT_MEDIUM);
-            labelFont = fonts.text(layout.size(15), Graphics.FONT_XTINY);
-            valueFont = fonts.text(layout.size(21), Graphics.FONT_SMALL);
-            smallFont = fonts.text(layout.size(11), Graphics.FONT_XTINY);
             timeFont = fonts.time(dc, layout);
-            if (presentation == null) {
-                presentation = new WatchPresentation(labelFont, smallFont, valueFont);
-            }
-            presentation.configure(layout, labelFont, smallFont, valueFont);
+            configureTextFonts();
+        } else if (fontLanguage != provider.data.locale.language) {
+            configureTextFonts();
         }
         presentation.revision = -1;
     }
 
+    function configureTextFonts() {
+        fontLanguage = provider.data.locale.language;
+        fonts.systemText = provider.data.locale.needsSystemFont();
+        dateFont = fonts.radial(layout.size(18));
+        dayFont = fonts.text(layout.size(30), Graphics.FONT_MEDIUM);
+        labelFont = fonts.text(layout.size(15), Graphics.FONT_XTINY);
+        valueFont = fonts.text(layout.size(21), Graphics.FONT_SMALL);
+        smallFont = fonts.text(layout.size(11), Graphics.FONT_XTINY);
+        if (presentation == null) {
+            presentation = new WatchPresentation(labelFont, smallFont, valueFont);
+        }
+        presentation.configure(layout, labelFont, smallFont, valueFont);
+    }
+
     function onUpdate(dc) {
         var data = provider.refresh();
+        if (fontLanguage != data.locale.language) { configureTextFonts(); }
         presentation.prepare(dc, data, provider.revision);
         // Garmin may need to restore the whole screen after an overlay or
         // transition. Repaint it, but reuse the prepared minute snapshot.

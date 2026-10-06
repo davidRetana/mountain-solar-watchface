@@ -44,4 +44,15 @@ References: [Garmin WatchFace lifecycle](https://developer.garmin.com/connect-iq
 
 ### Compatibility phase 1
 
-`WatchLayout` precomputes scaled integer geometry and icon polygons in `onLayout()`. Fonts and geometry are rebuilt only if the drawing surface dimensions change; returning from an overlay invalidates presentation measurements without recreating the layout or fonts. Solar marker positions and battery/step fills remain data-dependent. Small bitmap glyphs use cached destination rectangles; there is no full-screen production buffer. Data refresh intervals and background scheduling are unchanged. The additional retained geometry requires memory measurement per device; these changes do not establish a battery-life improvement. AMOLED always-on rendering remains a separate pending phase.
+`WatchLayout` precomputes scaled integer geometry and icon polygons in `onLayout()`. Geometry is rebuilt only if the drawing surface dimensions change; text fonts also rebuild when the watch language changes; returning from an overlay invalidates presentation measurements without recreating the layout or fonts. Solar marker positions and battery/step fills remain data-dependent. Small bitmap glyphs use cached destination rectangles; there is no full-screen production buffer. Data refresh intervals and background scheduling are unchanged. The additional retained geometry requires memory measurement per device; these changes do not establish a battery-life improvement. AMOLED always-on rendering remains a separate pending phase.
+
+### Watch language
+
+The watch language is checked once per minute and when restoring the layout.
+Garmin's localized calendar abbreviations are read only on a date or language
+change. Minute/day labels and digit-group separators are loaded from localized
+resources only on a language change. The presentation invalidates its measured
+text when the locale revision changes; text fonts are rebuilt on a language
+change without recreating geometry or the time font. This does not change
+activity, battery, sensor-history or weather refresh intervals, nor the city
+lookup service or its Spanish request language.

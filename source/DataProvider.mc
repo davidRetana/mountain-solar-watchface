@@ -26,6 +26,7 @@ class DataProvider {
     var cityCacheDirty = true;
     var schedulerDirty = true;
     var calendarDay = null;
+    var localeDirty = true;
     var revision = 0;
 
     function initialize() {
@@ -42,7 +43,13 @@ class DataProvider {
         var seconds = now.value();
         var minute = (seconds / 60).toNumber();
         var minuteChanged = minute != lastMinute;
-        if (!minuteChanged && !cityCacheDirty) { return data; }
+        if (!minuteChanged && !cityCacheDirty && !localeDirty) { return data; }
+        var languageChanged = false;
+        if (minuteChanged || localeDirty) {
+            languageChanged = data.locale.refresh(readLanguage());
+            localeDirty = false;
+        }
+        if (!minuteChanged && !cityCacheDirty && !languageChanged) { return data; }
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
         // Local offset modulo one day also detects DST/time-zone changes.
         data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
@@ -50,19 +57,20 @@ class DataProvider {
         if (minuteChanged) {
             lastMinute = minute;
             data.timeText = info.hour.format("%02d") + ":" + info.min.format("%02d");
-            var day = info.year * 10000 + info.month * 100 + info.day;
-            if (day != calendarDay) {
-                calendarDay = day;
-                data.dayText = info.day.toString();
-                data.weekdayText = Formatters.DAYS[info.day_of_week - 1];
-                data.monthText = Formatters.MONTHS[info.month - 1];
-            }
             refreshActivity();
             if (isDue(lastBatteryUpdate, seconds, SLOW_REFRESH_INTERVAL)) {
                 lastBatteryUpdate = seconds;
                 refreshBattery();
             }
             refreshHistory(seconds);
+        }
+        var day = info.year * 10000 + info.month * 100 + info.day;
+        if (day != calendarDay || languageChanged) {
+            calendarDay = day;
+            var calendar = readCalendar(now);
+            data.dayText = info.day.toString();
+            data.weekdayText = calendar.day_of_week.toUpper();
+            data.monthText = calendar.month.toUpper();
         }
         if (cityCacheDirty || isDue(lastWeatherUpdate, seconds, SLOW_REFRESH_INTERVAL)) {
             lastWeatherUpdate = seconds;
@@ -103,6 +111,10 @@ class DataProvider {
         // Weather/city, without repeating activity, battery or history reads.
         cityCacheDirty = true;
     }
+
+    function invalidateLocale() { localeDirty = true; }
+    function readLanguage() { return System.getDeviceSettings().systemLanguage; }
+    function readCalendar(now) { return Gregorian.info(now, Time.FORMAT_MEDIUM); }
 
     function refreshActivity() {
         // Clear previous readings so failures cannot leave stale values on screen.

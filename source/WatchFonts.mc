@@ -4,6 +4,7 @@ using Toybox.Graphics;
 class WatchFonts {
     const TEXT_FACES = ["RobotoCondensedBold", "RobotoCondensedRegular"];
     const TIME_FACES = ["BionicBold", "BionicSemiBold", "RobotoCondensedBold"];
+    var systemText = false;
 
     function initialize() {}
 
@@ -11,11 +12,22 @@ class WatchFonts {
         return Graphics.getVectorFont({:face => faces, :size => size});
     }
 
-    function radial(size) { return readVector(TEXT_FACES, size); }
+    function readSystem(size) {
+        var base = Graphics.FONT_SYSTEM_XTINY;
+        return Graphics.getVectorFont({:font => base,
+            :scale => size.toFloat() / Graphics.getFontHeight(base)});
+    }
+
+    function readText(size) {
+        return systemText ? readSystem(size) : readVector(TEXT_FACES, size);
+    }
+
+    function radial(size) { return readText(size); }
 
     function text(size, fallback) {
-        var font = readVector(TEXT_FACES, size);
-        return font == null ? fallback : font;
+        var font = readText(size);
+        if (font != null) { return font; }
+        return systemText ? Graphics.FONT_SYSTEM_XTINY : fallback;
     }
 
     function time(dc, layout as WatchLayout) {

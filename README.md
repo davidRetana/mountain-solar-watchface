@@ -1,36 +1,36 @@
 # Mountain Solar Watchface
 
-Esfera dinámica para Garmin fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260). Diseño basado en [watchface3.jpg](watchface3.jpg).
+Esfera dinámica para Garmin, inicialmente diseñada para fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260) y adaptada a los nueve perfiles del manifest. Capturas: [1](screenshots/screenshot1.jpeg) · [2](screenshots/screenshot2.jpeg).
 
 ## Ampliación de compatibilidad para la versión 1.0
 
-El trabajo se divide en fases. Los perfiles adicionales no hacen falta para desarrollar la base común; sí para compilar y validar cada dispositivo. El manifest incluye `fenix7`, `fenix7s`, `fenix7x` y `fenix8solar47mm` para las pruebas locales de la fase MIP. El usuario ha confirmado que la esfera funciona y que todos los elementos se ven correctamente colocados en estos cuatro perfiles. También están declarados `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm`, con compilación y 20 pruebas aprobadas por perfil, pendientes de revisión visual. La medición de memoria y la validación física de autonomía siguen pendientes.
+El manifest conserva los nueve perfiles elegidos para la versión 1.0: `fenix7`, `fenix7s`, `fenix7x`, `fenix7pro`, `fenix7spro`, `fenix7xpro`, `fenix8solar47mm`, `fenix8solar51mm` y `fenix947mm`. El usuario ha confirmado la revisión visual de todos ellos. Tras añadir la localización, los nueve compilan y superan las 25 pruebas por perfil (225 aprobadas en total). Esta revisión visual no sustituye las mediciones de memoria y autonomía ni la validación de AOD en AMOLED, que siguen pendientes.
 
 1. **Base gráfica adaptable:** `WatchLayout` calcula posiciones, tamaños y polígonos al preparar la pantalla, con el diseño de 260 × 260 como referencia. `WatchFonts` escala las fuentes y admite `BionicBold`, `BionicSemiBold` y una alternativa Roboto para la hora; las fuentes ausentes tienen una presentación alternativa. `WatchPresentation` invalida medidas al cambiar la geometría. Los iconos de ubicación y temperatura conservan sus píxeles originales en 260 × 260 y se dibujan con tamaño proporcional en otras resoluciones. Las cachés de datos y frecuencias de consulta se mantienen.
-2. **Validación MIP por dispositivo:** compilación, pruebas automatizadas y revisión visual confirmadas para `fenix7`, `fenix7s`, `fenix7x` y `fenix8solar47mm`. `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` también compilan y superan las 20 pruebas por perfil; queda su revisión visual. Quedan la medición de memoria y las pruebas físicas de autonomía. Las variantes `fenix7pronowifi` y `fenix7xpronowifi` siguen pendientes de añadir al manifest y validar. Enduro 2 comparte `fenix7x`; Enduro 3 usa `enduro3`.
-3. **AMOLED y AOD:** diseñar y probar la presentación de bajo consumo, las transiciones y la luminancia en `fenix843mm`, `fenix847mm` (47 y 51 mm), `fenix8pro47mm` y `fenix947mm` (47 y 51 mm). Este último ya está declarado, compila y supera las 20 pruebas; la revisión visual y AOD siguen pendientes. La base proporcional por sí sola no certifica compatibilidad con AMOLED o MicroLED.
-4. **Preparación pública:** idioma/unidades/formato horario, servicio de ciudad apropiado para varios usuarios, recursos de lanzamiento, pruebas físicas de memoria y autonomía, y paquete de publicación.
+2. **Validación MIP por dispositivo:** compilación, pruebas automatizadas y revisión visual confirmadas para `fenix7`, `fenix7s`, `fenix7x` y `fenix8solar47mm`. `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` también tienen revisión visual confirmada y superan las 25 pruebas por perfil tras añadir la localización. Quedan la medición de memoria y las pruebas físicas de autonomía. Las variantes `fenix7pronowifi` y `fenix7xpronowifi` siguen pendientes de añadir al manifest y validar. Enduro 2 comparte `fenix7x`; Enduro 3 usa `enduro3`.
+3. **AMOLED y AOD:** diseñar y probar la presentación de bajo consumo, las transiciones y la luminancia en `fenix843mm`, `fenix847mm` (47 y 51 mm), `fenix8pro47mm` y `fenix947mm` (47 y 51 mm). Este último ya está declarado y su revisión visual está confirmada; AOD sigue pendiente. Supera las 25 pruebas tras añadir la localización. La base proporcional por sí sola no certifica compatibilidad con AMOLED o MicroLED.
+4. **Preparación pública:** idioma del reloj implementado, política de privacidad documentada y servicio de ciudad actual conservado por decisión del usuario. Quedan unidades/formato horario configurables, revisión del uso de Nominatim para distribución pública, recursos de lanzamiento, pruebas físicas de memoria y autonomía, y paquete de publicación.
 
 Las pruebas de la primera fase dibujan sobre superficies de 240, 260, 280, 416 y 454 píxeles **dentro del perfil `fenix7`**. Comprueban fuentes ausentes, reutilización de geometría/fuentes, sol/luna y cambio de tamaño con la misma revisión de datos. No sustituyen la compilación, revisión visual y medición de memoria de cada perfil real. El modo AOD todavía está pendiente.
 
 Para instalar los perfiles: abrir **Connect IQ SDK Manager → Devices** y descargar los identificadores anteriores. El SDK local 9.2.0 contiene la documentación de estos modelos, pero cada paquete de dispositivo se descarga por separado.
 
-Validación de la fase 1: 20 pruebas aprobadas en el simulador `fenix7` con SDK 9.2.0 (`passed=20, failed=0, errors=0`). El lanzador `monkeydo` devuelve código 1 pese al resultado aprobado, como en la validación anterior. Se conserva el aviso del icono de lanzamiento de 48 × 48 escalado a 40 × 40. La revisión visual de los cuatro perfiles MIP se ha confirmado posteriormente; la medición de memoria y autonomía sigue pendiente.
+Validación de la fase 1: 20 pruebas aprobadas en el simulador `fenix7` con SDK 9.2.0 (`passed=20, failed=0, errors=0`). El lanzador `monkeydo` devuelve código 1 pese al resultado aprobado, como en la validación anterior. Se conserva el aviso del icono de lanzamiento de 48 × 48 escalado a 40 × 40. La revisión visual de todos los perfiles del manifest se ha confirmado posteriormente; la medición de memoria y autonomía sigue pendiente.
 
 ### Pruebas locales de la fase MIP
 
-Con SDK 9.2.0, la compilación de producción y las 20 pruebas automatizadas se han completado correctamente en cada uno de estos perfiles:
+Con SDK 9.2.0, tras añadir la localización, la compilación de producción y las 25 pruebas automatizadas se han completado correctamente en cada uno de estos perfiles:
 
 | Perfil | Resolución MIP | Compilación | Pruebas | Revisión visual del usuario |
 | --- | --- | --- | --- | --- |
-| `fenix7` | 260 × 260 | Correcta | 20 aprobadas | Confirmada |
-| `fenix7s` | 240 × 240 | Correcta | 20 aprobadas | Confirmada |
-| `fenix7x` | 280 × 280 | Correcta | 20 aprobadas | Confirmada |
-| `fenix8solar47mm` | 260 × 260 | Correcta | 20 aprobadas | Confirmada |
-| `fenix7pro` | 260 × 260 | Correcta | 20 aprobadas | Pendiente |
-| `fenix7spro` | 240 × 240 | Correcta | 20 aprobadas | Pendiente |
-| `fenix7xpro` | 280 × 280 | Correcta | 20 aprobadas | Pendiente |
-| `fenix8solar51mm` | 280 × 280 | Correcta | 20 aprobadas | Pendiente |
+| `fenix7` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
+| `fenix7s` | 240 × 240 | Correcta | 25 aprobadas | Confirmada |
+| `fenix7x` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
+| `fenix8solar47mm` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
+| `fenix7pro` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
+| `fenix7spro` | 240 × 240 | Correcta | 25 aprobadas | Confirmada |
+| `fenix7xpro` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
+| `fenix8solar51mm` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
 
 Permanece el aviso del icono de lanzamiento escalado de 48 × 48 a 40 × 40. Esta matriz todavía no incluye medición de memoria de producción ni autonomía física.
 
@@ -60,14 +60,14 @@ python3 tools/ciq.py test fenix7 fenix7s fenix7x fenix8solar47mm
 
 El comando compila y ejecuta las pruebas en cada perfil, en secuencia. Solo acepta el código 1 peculiar de `monkeydo` si la última línea de resultados declara explícitamente pruebas aprobadas, sin fallos ni errores. Una compilación fallida, un simulador inaccesible o un resultado de pruebas fallido detienen el proceso.
 
-La ampliación con `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` ya está compilada y ha superado las 20 pruebas por perfil con SDK 9.2.0, sin cambios adicionales en el código de la esfera. La primera ejecución de `fenix8solar51mm` se quedó esperando al simulador; después de reiniciarlo, la ejecución aislada terminó con `passed=20, failed=0, errors=0`. Para repetir la validación, instalar los perfiles desde **SDK Manager → Devices** y ejecutar con el simulador abierto:
+La ampliación con `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` está compilada y supera las 25 pruebas por perfil con SDK 9.2.0, incluida la localización. La primera ejecución de `fenix8solar51mm` se quedó esperando al simulador; después de reiniciarlo, la ejecución aislada terminó con `passed=20, failed=0, errors=0`. Para repetir la validación, instalar los perfiles desde **SDK Manager → Devices** y ejecutar con el simulador abierto:
 
 ```sh
 python3 tools/ciq.py build fenix7pro fenix7spro fenix7xpro fenix8solar51mm
 python3 tools/ciq.py test fenix7pro fenix7spro fenix7xpro fenix8solar51mm
 ```
 
-Para revisar visualmente, usar **Run Without Debugging → Elegir reloj** en VS Code o `python3 tools/ciq.py run fenix7pro`, cambiando el perfil en cada ejecución.
+Para repetir la revisión visual confirmada, usar **Run Without Debugging → Elegir reloj** en VS Code o `python3 tools/ciq.py run fenix7pro`, cambiando el perfil en cada ejecución.
 
 Para cada modelo, revisar:
 
@@ -77,13 +77,13 @@ Para cada modelo, revisar:
 - En **Settings → Set Weather**, introducir una observación reciente con coordenadas. Weather se consulta cada cinco minutos; detener y volver a ejecutar la esfera permite comprobar la nueva observación inmediatamente. Una ubicación sin ciudad guardada requiere además el evento de fondo y conexión.
 - Reposo y vuelta al modo activo: la pantalla MIP debe mantener el diseño y actualizar la hora por minuto. Revisar la memoria del programa de producción en el simulador; los búferes de las pruebas no representan su consumo de memoria.
 
-Con la revisión visual de los cuatro perfiles iniciales confirmada, el siguiente paso es revisar visualmente los cuatro perfiles adicionales Pro y Solar 51 mm y medir memoria en los ocho perfiles. Después se abordará AMOLED/AOD. La autonomía se medirá en reloj físico.
+La revisión visual de los ocho perfiles MIP está confirmada. Queda medir memoria en los nueve perfiles del manifest, validar AMOLED/AOD y medir autonomía en reloj físico. Los nuevos idiomas requieren comprobar legibilidad por idioma, además de la revisión visual del diseño ya realizada.
 
 ### Pruebas iniciales de AMOLED: fēnix 9
 
-El perfil instalado `fenix947mm` cubre fēnix 9 de 47 y 51 mm según `compiler.json` del paquete de dispositivo. Tiene pantalla AMOLED de 454 × 454 y un límite de memoria de 128 KiB para esferas. Se ha añadido al manifest para pruebas locales: la compilación de producción y las 20 pruebas automatizadas han terminado correctamente con SDK 9.2.0 (`passed=20, failed=0, errors=0`), sin cambios adicionales en el código de la esfera.
+El perfil instalado `fenix947mm` cubre fēnix 9 de 47 y 51 mm según `compiler.json` del paquete de dispositivo. Tiene pantalla AMOLED de 454 × 454 y un límite de memoria de 128 KiB para esferas. Se ha añadido al manifest para pruebas locales: la compilación de producción y las 25 pruebas automatizadas han terminado correctamente con SDK 9.2.0 (`passed=25, failed=0, errors=0`), incluida la localización.
 
-La revisión visual y la medición de memoria siguen pendientes. Estas pruebas no validan AOD: falta implementar y comprobar la presentación de bajo consumo, sus transiciones y los límites de luminancia. El compilador avisa de que el icono de lanzamiento actual de 48 × 48 se escala a 65 × 65 en este perfil.
+La revisión visual está confirmada; la medición de memoria sigue pendiente. Estas pruebas no validan AOD: falta implementar y comprobar la presentación de bajo consumo, sus transiciones y los límites de luminancia. El compilador avisa de que el icono de lanzamiento actual de 48 × 48 se escala a 65 × 65 en este perfil.
 
 Para revisar la esfera, elegir `fenix947mm` en **Run Without Debugging → Elegir reloj**, o ejecutar con el simulador abierto:
 
@@ -102,11 +102,33 @@ Si el perfil instalado no aparece en el selector de VS Code, ejecutar **Develope
 
 ## Datos conectados
 
-Hora local en formato de 24 horas y fecha en español, pasos y objetivo de ActivityMonitor, y batería de System.getSystemStats(). Se muestran días completos de batería cuando están disponibles (`<1 d` para menos de un día), con porcentaje como alternativa. Color verde desde el 30 %, ámbar desde el 10 % y rojo por debajo. El relleno del icono refleja el porcentaje.
+Hora local en formato de 24 horas y fecha en el idioma configurado en el reloj, pasos y objetivo de ActivityMonitor, y batería de System.getSystemStats(). Se muestran días completos de batería cuando están disponibles (`<1 d` para menos de un día), con porcentaje como alternativa. Color verde desde el 30 %, ámbar desde el 10 % y rojo por debajo. El relleno del icono refleja el porcentaje.
 
 La hora se amplía proporcionalmente hasta un ancho máximo de 232 píxeles, sin estirar los números. Las huellas se dibujan sobre píxeles enteros a la izquierda de una barra de pasos de 156 × 7 píxeles. La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra vacía. El texto utiliza separadores de miles y reduce su tamaño si la fila resulta demasiado larga.
 
 `DataProvider` actualiza la hora, los pasos y la caducidad de lecturas una vez por minuto. Batería y Weather se consultan al iniciar y después cada cinco minutos. Al recibir el resultado del servicio de ciudad, solo se invalidan Weather y la caché de ciudad. `WatchData` conserva la instantánea y `WatchPresentation` reutiliza los textos y las medidas entre redibujados. No hay actualizaciones parciales de segundos. El servicio de fondo solo se programa cuando falta el nombre de la ubicación actual; no hay un evento periódico de ciudad. Se declaran `SensorHistory`, `Positioning`, `Communications` y `Background`. `Positioning` permite leer las coordenadas de la estación meteorológica; no se solicita ninguna adquisición GPS. Las lecturas ausentes se muestran con `--`.
+
+## Idioma del reloj
+
+Los nombres abreviados de día y mes proceden de `Time.Gregorian.info(..., Time.FORMAT_MEDIUM)`, que Garmin localiza según el idioma del dispositivo. No se mantienen listas de fechas en español. `WatchLocale` carga las abreviaturas de minutos, días de batería y separadores de miles de recursos para los 36 idiomas declarados. El nombre **Mountain Solar** es el mismo en todos los idiomas; el recurso base de textos breves está en inglés.
+
+Todos los recursos están agrupados bajo `resources`: los textos base están en `resources/strings/strings.xml` y las traducciones en `resources/strings/locales/<idioma>.xml`. `monkey.jungle` y `tests/solar.jungle` asignan cada traducción con `base.lang.<idioma>` para que Garmin la seleccione según el reloj. La lista de recursos compartidos incluye solo los textos base y las carpetas de imágenes, fuentes y ajustes; las traducciones se compilan como recursos de su idioma.
+
+El idioma se comprueba una vez por minuto y al preparar o restaurar la pantalla. Un cambio de idioma actualiza fecha, textos y medidas sin repetir las consultas de datos ni recrear la geometría o la fuente de la hora. Los alfabetos árabe, hebreo, griego, cirílico y asiáticos usan fuentes del sistema; si el dispositivo no proporciona una fuente vectorial adecuada, la fecha se dibuja recta con una fuente del sistema. Las traducciones se incluyen por idioma sin cargar todas en memoria.
+
+Esta fase conserva el formato de 24 horas, °C y metros. También conserva la preferencia `es` de la consulta de ciudad, como ha solicitado el usuario; los nombres de localidades no se traducen al cambiar el idioma de la interfaz.
+
+Validación local: compilación de producción y 25 pruebas aprobadas en cada uno de los nueve perfiles del manifest (225 aprobadas, sin fallos ni errores). La ejecución por lotes se quedó esperando al cambiar a `fenix7x`; tras reiniciar el simulador, ese perfil pasó de forma aislada. Los seis perfiles restantes se validaron con una instancia limpia por perfil. Se conserva el aviso de escalado del icono de lanzamiento. Las pruebas cubren cambios de idioma simulados y comparación con los textos nativos del idioma activo; no certifican la legibilidad visual de los 36 idiomas.
+
+Para comprobar los idiomas en el simulador, cambiar **Settings → Language** (o la opción equivalente de la versión del simulador), detener y volver a ejecutar la esfera. Revisar especialmente textos con tildes, cirílico, escrituras asiáticas y escritura de derecha a izquierda. Las pruebas automatizadas también cubren invalidación de cachés al cambiar de idioma y reutilización de recursos.
+
+## Privacidad
+
+Política de privacidad: [español](PRIVACY.es.md) · [English](PRIVACY.md).
+
+La consulta de ciudades se conserva tal como estaba: para una ubicación meteorológica desconocida, la esfera envía automáticamente coordenadas redondeadas a Nominatim a través de Garmin Connect. Redondearlas no las anonimiza. La caché local conserva hasta ocho ubicaciones y sus ciudades; los datos de pulsaciones, altitud, pasos y batería no se envían a ese servicio. Esta versión no añade un consentimiento ni un interruptor específico para la consulta de ciudad.
+
+La política describe los datos utilizados, su envío a terceros, la conservación local y la eliminación al desinstalar. Antes de distribuir públicamente, publicar una URL accesible de esta política y revisar los requisitos de consentimiento de Garmin y las condiciones de Nominatim. Conservar la configuración actual no resuelve por sí solo el límite global de tráfico de Nominatim ni su requisito de poder cambiar de proveedor sin actualizar la aplicación.
 
 ## Meteorología y barra solar
 
@@ -155,7 +177,7 @@ La iteración anterior compiló para `fenix7` con Connect IQ SDK 9.2.0 y superó
 
 Antes de conectar la siguiente etapa, comprobar:
 
-- Cambio de minuto, medianoche, mes y fecha en español.
+- Cambio de minuto, medianoche, mes y fecha en el idioma configurado en el reloj.
 - Pasos a cero, objetivo alcanzado o superado, y cifras de seis dígitos.
 - Batería al 9, 10, 29 y 30 %, y alternativa a porcentaje sin estimación de días.
 - Legibilidad de la hora y batería, actualización en bajo consumo y memoria.

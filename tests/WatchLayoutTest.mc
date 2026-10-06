@@ -9,12 +9,37 @@ class CountingWatchFonts extends WatchFonts {
         calls += 1;
         return WatchFonts.readVector(faces, size);
     }
+    function readSystem(size) {
+        calls += 1;
+        return WatchFonts.readSystem(size);
+    }
 }
 
 (:test)
 class MissingWatchFonts extends WatchFonts {
     function initialize() { WatchFonts.initialize(); }
     function readVector(faces, size) { return null; }
+    function readSystem(size) { return null; }
+}
+
+(:test)
+function systemTextFontsRenderWithoutReplacingTimeFont(logger) {
+    var view = new MountainWatchView();
+    var provider = new LocaleEfficiencyProvider();
+    provider.language = Toybox.System.LANGUAGE_JPN;
+    view.provider = provider;
+    var bitmap = Graphics.createBufferedBitmap({:width => 260, :height => 260});
+    var dc = bitmap.get().getDc();
+    view.onLayout(dc);
+    var geometry = view.layout;
+    var timeFont = view.timeFont;
+    Test.assert(view.fonts.systemText && view.labelFont != null && view.smallFont != null);
+    view.onUpdate(dc);
+    provider.language = Toybox.System.LANGUAGE_ENG;
+    view.onLayout(dc);
+    view.onUpdate(dc);
+    Test.assert(!view.fonts.systemText && view.timeFont == timeFont && view.layout == geometry);
+    return true;
 }
 
 (:test)

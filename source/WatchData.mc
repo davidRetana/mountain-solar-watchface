@@ -1,5 +1,6 @@
 // Snapshot used by the view. Missing readings remain null.
 class WatchData {
+    var locale;
     var updatedAt = 0;
     var utcOffset = 0;
     var timeText = "--:--";
@@ -18,4 +19,8 @@ class WatchData {
     var stepGoal = null;
     var battery = null;
     var batteryDays = null;
+
+    function initialize() {
+        locale = new WatchLocale();
+    }
 }

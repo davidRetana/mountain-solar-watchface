@@ -3,16 +3,13 @@ using Toybox.Time.Gregorian;
 using Toybox.Math;
 
 module Formatters {
-    const DAYS = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
-    const MONTHS = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
-
-    function count(value) {
+    function count(value, locale as WatchLocale) {
         if (value == null) { return "--"; }
         var digits = value.toNumber().toString();
         var result = "";
         while (digits.length() > 3) {
             var split = digits.length() - 3;
-            result = "." + digits.substring(split, digits.length()) + result;
+            result = locale.groupSeparator + digits.substring(split, digits.length()) + result;
             digits = digits.substring(0, split);
         }
         return digits + result;
@@ -45,11 +42,11 @@ module Formatters {
         return label + "...";
     }
 
-    function heartAge(when, now) {
+    function heartAge(when, now, locale as WatchLocale) {
         if (when == null || now < when) { return "--"; }
         var minutes = ((now - when) / 60).toNumber();
-        if (minutes == 0) { return "<1 MIN"; }
-        return minutes.toString() + " MIN";
+        if (minutes == 0) { return "<1 " + locale.minuteUnit; }
+        return minutes.toString() + " " + locale.minuteUnit;
     }
 
     function elevation(value) {
@@ -59,8 +56,8 @@ module Formatters {
 
     function batteryText(data) {
         if (data.batteryDays != null) {
-            if (data.batteryDays < 1) { return "<1 d"; }
-            return data.batteryDays.toNumber().toString() + " d";
+            if (data.batteryDays < 1) { return "<1 " + data.locale.dayUnit; }
+            return data.batteryDays.toNumber().toString() + " " + data.locale.dayUnit;
         }
         if (data.battery != null) { return data.battery.toNumber().toString() + "%"; }
         return "--";

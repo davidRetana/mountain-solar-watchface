@@ -5,6 +5,7 @@ using Toybox.Time;
 // of WatchData or a full-screen bitmap.
 class WatchPresentation {
     var revision = -1;
+    var localeRevision = -1;
     var labelFont;
     var smallFont;
     var valueFont;
@@ -46,8 +47,8 @@ class WatchPresentation {
     }
 
     function prepare(dc, data as WatchData, nextRevision) {
-        if (revision == nextRevision) { return; }
-        var first = revision == -1;
+        if (revision == nextRevision && localeRevision == data.locale.revision) { return; }
+        var first = revision == -1 || localeRevision != data.locale.revision;
         if (first || !sameText(citySource, data.city)) {
             citySource = data.city;
             cityText = Formatters.city(data.city, dc, labelFont, layout.cityWidth);
@@ -55,8 +56,8 @@ class WatchPresentation {
         if (first || stepsSource != data.steps || goalSource != data.stepGoal) {
             stepsSource = data.steps;
             goalSource = data.stepGoal;
-            stepsText = Formatters.count(data.steps);
-            goalText = " / " + Formatters.count(data.stepGoal);
+            stepsText = Formatters.count(data.steps, data.locale);
+            goalText = " / " + Formatters.count(data.stepGoal, data.locale);
             var counter = stepsText + goalText;
             stepsFont = labelFont;
             var width = dc.getTextWidthInPixels(counter, stepsFont);
@@ -85,10 +86,11 @@ class WatchPresentation {
             solarEndText = end == null ? "--:--" : Formatters.solarTime(new Time.Moment(end));
         }
         temperatureText = Formatters.temperature(data.temperature);
-        heartText = Formatters.count(data.heartRate);
-        heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt);
+        heartText = Formatters.count(data.heartRate, data.locale);
+        heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt, data.locale);
         batteryText = Formatters.batteryText(data);
         revision = nextRevision;
+        localeRevision = data.locale.revision;
     }
 
     function sameText(a, b) {
