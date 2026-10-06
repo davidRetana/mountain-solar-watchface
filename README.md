@@ -1,216 +1,196 @@
 # Mountain Solar Watchface
 
-Esfera dinámica para Garmin, inicialmente diseñada para fēnix 7 Solar de 47 mm (`fenix7`, MIP 260 × 260) y adaptada a los nueve perfiles del manifest. Capturas: [1](screenshots/screenshot1.jpeg) · [2](screenshots/screenshot2.jpeg).
+Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combines a large digital clock with weather, daylight progress, steps, heart rate, elevation, and battery information. The design started on the 47 mm fēnix 7 Solar and now scales across nine device profiles.
 
-## Ampliación de compatibilidad para la versión 1.0
+<img src="screenshots/screenshot1.jpeg" alt="Mountain Solar watch face preview" width="320">
 
-El manifest conserva los nueve perfiles elegidos para la versión 1.0: `fenix7`, `fenix7s`, `fenix7x`, `fenix7pro`, `fenix7spro`, `fenix7xpro`, `fenix8solar47mm`, `fenix8solar51mm` y `fenix947mm`. El usuario ha confirmado la revisión visual de todos ellos. Tras añadir la localización, los nueve compilan y superan las 25 pruebas por perfil (225 aprobadas en total). Esta revisión visual no sustituye las mediciones de memoria y autonomía ni la validación de AOD en AMOLED, que siguen pendientes.
+[More screenshots](screenshots/screenshot2.jpeg) · [Quick start](#quick-start) · [Device profiles](#device-profiles) · [Privacy](#privacy-and-connectivity)
 
-1. **Base gráfica adaptable:** `WatchLayout` calcula posiciones, tamaños y polígonos al preparar la pantalla, con el diseño de 260 × 260 como referencia. `WatchFonts` escala las fuentes y admite `BionicBold`, `BionicSemiBold` y una alternativa Roboto para la hora; las fuentes ausentes tienen una presentación alternativa. `WatchPresentation` invalida medidas al cambiar la geometría. Los iconos de ubicación y temperatura conservan sus píxeles originales en 260 × 260 y se dibujan con tamaño proporcional en otras resoluciones. Las cachés de datos y frecuencias de consulta se mantienen.
-2. **Validación MIP por dispositivo:** compilación, pruebas automatizadas y revisión visual confirmadas para `fenix7`, `fenix7s`, `fenix7x` y `fenix8solar47mm`. `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` también tienen revisión visual confirmada y superan las 25 pruebas por perfil tras añadir la localización. Quedan la medición de memoria y las pruebas físicas de autonomía. Las variantes `fenix7pronowifi` y `fenix7xpronowifi` siguen pendientes de añadir al manifest y validar. Enduro 2 comparte `fenix7x`; Enduro 3 usa `enduro3`.
-3. **AMOLED y AOD:** diseñar y probar la presentación de bajo consumo, las transiciones y la luminancia en `fenix843mm`, `fenix847mm` (47 y 51 mm), `fenix8pro47mm` y `fenix947mm` (47 y 51 mm). Este último ya está declarado y su revisión visual está confirmada; AOD sigue pendiente. Supera las 25 pruebas tras añadir la localización. La base proporcional por sí sola no certifica compatibilidad con AMOLED o MicroLED.
-4. **Preparación pública:** idioma del reloj implementado, política de privacidad documentada y servicio de ciudad actual conservado por decisión del usuario. Quedan unidades/formato horario configurables, revisión del uso de Nominatim para distribución pública, recursos de lanzamiento, pruebas físicas de memoria y autonomía, y paquete de publicación.
+## Features and Current Status
 
-Las pruebas de la primera fase dibujan sobre superficies de 240, 260, 280, 416 y 454 píxeles **dentro del perfil `fenix7`**. Comprueban fuentes ausentes, reutilización de geometría/fuentes, sol/luna y cambio de tamaño con la misma revisión de datos. No sustituyen la compilación, revisión visual y medición de memoria de cada perfil real. El modo AOD todavía está pendiente.
+- Large 24-hour clock and a date in the watch's language.
+- Temperature in °C and a cached city name for the weather observation's location.
+- Sunrise/sunset bar with a sun during the day and a moon at night.
+- Steps, daily goal, and an amber progress bar.
+- Recent heart rate with sample age, elevation in meters, and estimated battery days with a percentage fallback.
+- Resources for 36 watch languages, font fallbacks, and `--` for missing or expired data.
 
-Para instalar los perfiles: abrir **Connect IQ SDK Manager → Devices** y descargar los identificadores anteriores. El SDK local 9.2.0 contiene la documentación de estos modelos, pero cada paquete de dispositivo se descarga por separado.
+The latest recorded simulator validation passed 25 tests on each of the nine profiles (225 total), and the maintainer has confirmed their visual review. A signed release `.iq` package was also built successfully with SDK 9.2.0 on 6 October 2026, covering 15 device variants across those profiles.
 
-Validación de la fase 1: 20 pruebas aprobadas en el simulador `fenix7` con SDK 9.2.0 (`passed=20, failed=0, errors=0`). El lanzador `monkeydo` devuelve código 1 pese al resultado aprobado, como en la validación anterior. Se conserva el aviso del icono de lanzamiento de 48 × 48 escalado a 40 × 40. La revisión visual de todos los perfiles del manifest se ha confirmado posteriormente; la medición de memoria y autonomía sigue pendiente.
+Memory and battery-life measurements on physical watches remain pending. The AMOLED profile is experimental: a dedicated always-on display (AOD) presentation is still pending. Time format and units are currently fixed, with no user-configurable settings.
 
-### Pruebas locales de la fase MIP
+## Quick Start
 
-Con SDK 9.2.0, tras añadir la localización, la compilación de producción y las 25 pruebas automatizadas se han completado correctamente en cada uno de estos perfiles:
+The documented development setup is **macOS with Connect IQ SDK 9.2.0**. The application's minimum Connect IQ API version is **5.2.0**.
 
-| Perfil | Resolución MIP | Compilación | Pruebas | Revisión visual del usuario |
-| --- | --- | --- | --- | --- |
-| `fenix7` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
-| `fenix7s` | 240 × 240 | Correcta | 25 aprobadas | Confirmada |
-| `fenix7x` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
-| `fenix8solar47mm` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
-| `fenix7pro` | 260 × 260 | Correcta | 25 aprobadas | Confirmada |
-| `fenix7spro` | 240 × 240 | Correcta | 25 aprobadas | Confirmada |
-| `fenix7xpro` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
-| `fenix8solar51mm` | 280 × 280 | Correcta | 25 aprobadas | Confirmada |
+### Prerequisites
 
-Permanece el aviso del icono de lanzamiento escalado de 48 × 48 a 40 × 40. Esta matriz todavía no incluye medición de memoria de producción ni autonomía física.
+1. Install Java for the SDK and make `java` available in your shell. The bundled SDK documentation requires Java 11 or later.
+2. Install [Garmin's Connect IQ SDK Manager](https://developer.garmin.com/connect-iq/sdk/) and SDK 9.2.0. In **Devices**, download `fenix7` to follow this example, or another profile listed below.
+3. Install Python 3 to use [tools/ciq.py](tools/ciq.py). It uses only the Python standard library.
+4. Provide a local signing key. With Garmin's Monkey C extension for VS Code, use **Monkey C: Generate a Developer Key** if you do not already have one. Save it as `developer_key` in the project root, or pass its path with `--key`.
 
-Desde la raíz del proyecto, `tools/ciq.py` utiliza el SDK activo del SDK Manager en macOS y la clave local `developer_key`. También admite `--sdk /ruta/al/sdk` y `--key /ruta/a/clave-local`. Cada perfil genera un PRG separado, evitando instalar en un reloj un binario compilado para otro modelo.
+Keep the key private and backed up. `developer_key` is ignored by Git and is not included in a fresh checkout. Updates to an existing store application must use its original signing key.
 
-Compilar los perfiles instalados:
+Run the following commands from the project root.
+
+### Build
 
 ```sh
-python3 tools/ciq.py build fenix7 fenix7s fenix7x fenix8solar47mm
+python3 tools/ciq.py build fenix7
 ```
 
-Abrir el simulador y ejecutar un modelo:
+This creates `bin/mountain-fenix7.prg`. Build several profiles by listing them after `build`:
 
 ```sh
-CIQ_SDK="$(cat "$HOME/Library/Application Support/Garmin/ConnectIQ/current-sdk.cfg")"
+python3 tools/ciq.py build fenix7 fenix7s fenix7x
+```
+
+The helper discovers the active SDK through SDK Manager's macOS configuration. You can select the SDK and key explicitly:
+
+```sh
+python3 tools/ciq.py build fenix7 --sdk /path/to/sdk --key /path/to/local-key
+```
+
+It also accepts the `CIQ_SDK` environment variable. The helper is designed for the macOS setup; on other platforms, adapt the SDK tool invocation to your environment.
+
+### Run in the Simulator
+
+Open the simulator using the active SDK on macOS:
+
+```sh
+export CIQ_SDK="$(cat "$HOME/Library/Application Support/Garmin/ConnectIQ/current-sdk.cfg")"
 "$CIQ_SDK/bin/connectiq"
-python3 tools/ciq.py run fenix7s
 ```
 
-Detener la ejecución antes de cambiar de modelo. Repetir `run` con `fenix7x` y `fenix8solar47mm`. El comando recompila y ejecuta `bin/mountain-<perfil>.prg`. Para el reloj físico, copiar solamente el PRG correspondiente a su perfil.
-
-Con el simulador abierto, ejecutar las pruebas automatizadas:
+Then, in another terminal at the project root:
 
 ```sh
-python3 tools/ciq.py test fenix7 fenix7s fenix7x fenix8solar47mm
+python3 tools/ciq.py run fenix7
 ```
 
-El comando compila y ejecuta las pruebas en cada perfil, en secuencia. Solo acepta el código 1 peculiar de `monkeydo` si la última línea de resultados declara explícitamente pruebas aprobadas, sin fallos ni errores. Una compilación fallida, un simulador inaccesible o un resultado de pruebas fallido detienen el proceso.
+`run` rebuilds the selected profile before launching it. Stop the current app before switching profiles. VS Code's Monkey C extension is an alternative; its local launch configuration is not tracked in this repository.
 
-La ampliación con `fenix7pro`, `fenix7spro`, `fenix7xpro` y `fenix8solar51mm` está compilada y supera las 25 pruebas por perfil con SDK 9.2.0, incluida la localización. La primera ejecución de `fenix8solar51mm` se quedó esperando al simulador; después de reiniciarlo, la ejecución aislada terminó con `passed=20, failed=0, errors=0`. Para repetir la validación, instalar los perfiles desde **SDK Manager → Devices** y ejecutar con el simulador abierto:
+### Install on a Physical Watch
+
+Build for the watch's exact profile, connect it by USB, and copy the corresponding `bin/mountain-<profile>.prg` into `GARMIN/APPS`. Use an MTP client if your system requires one. Disconnect safely and select Mountain Solar on the watch.
+
+A `.prg` is for a specific profile and local installation. A `.iq` packages the manifest's profiles for upload to Connect IQ.
+
+## Device Profiles
+
+These are the profiles currently declared in [manifest.xml](manifest.xml). Display information comes from the installed SDK device definitions.
+
+| Profile | Display | Resolution |
+| --- | --- | --- |
+| `fenix7` | MIP | 260 × 260 |
+| `fenix7s` | MIP | 240 × 240 |
+| `fenix7x` | MIP | 280 × 280 |
+| `fenix7pro` | MIP | 260 × 260 |
+| `fenix7spro` | MIP | 240 × 240 |
+| `fenix7xpro` | MIP | 280 × 280 |
+| `fenix8solar47mm` | MIP | 260 × 260 |
+| `fenix8solar51mm` | MIP | 280 × 280 |
+| `fenix947mm` | AMOLED, experimental | 454 × 454 |
+
+The installed `fenix947mm` definition covers the 47 and 51 mm fēnix 9. Passing builds and simulator tests do not certify physical-device performance or AOD support. Profiles absent from the manifest have not been included in the release package.
+
+## Data Behavior
+
+The watch face reads data already available through Garmin APIs. It does not start GPS or optical heart-rate sensing.
+
+| Information | Source | Refresh policy |
+| --- | --- | --- |
+| Time, steps, and step goal | System time and ActivityMonitor | Once per minute |
+| Date and localized labels | Gregorian calendar and language resources | On date or language changes; language checked each minute and when restoring the layout |
+| Battery and estimated days | System stats | At startup, then every five minutes |
+| Temperature and observation coordinates | Garmin Weather | At startup, then every five minutes; refreshed after a background city result |
+| Heart rate and elevation | SensorHistory | At startup, then every five minutes |
+| Sunrise and sunset | Garmin Weather solar calculations | Cached by date and rounded location; missing events retried every 15 minutes |
+| City name | Local cache, then Nominatim for unknown locations | Background lookup only when needed |
+
+Reading expiry is checked every minute. Weather observations older than two hours, heart-rate samples older than 15 minutes, and elevation samples older than 30 minutes are hidden. Missing permissions or data produce `--`; missing solar events produce `--:--`.
+
+Weather coordinates may refer to a nearby station. The sun/moon position represents elapsed time within the daylight/nighttime interval; the moon does not indicate lunar phase. Solar labels use the watch's local time zone.
+
+The watch language controls date abbreviations, short labels, and digit-group separators. City requests retain a Spanish language preference (`es`). Layout, fonts, and display text are cached between redraws; Garmin controls redraw cadence. See the [battery-efficiency specification](specs/battery-efficiency.md) for the detailed policy.
+
+## Tests and Manual Checks
+
+With the simulator open:
 
 ```sh
-python3 tools/ciq.py build fenix7pro fenix7spro fenix7xpro fenix8solar51mm
-python3 tools/ciq.py test fenix7pro fenix7spro fenix7xpro fenix8solar51mm
+python3 tools/ciq.py test fenix7
 ```
 
-Para repetir la revisión visual confirmada, usar **Run Without Debugging → Elegir reloj** en VS Code o `python3 tools/ciq.py run fenix7pro`, cambiando el perfil en cada ejecución.
+This creates `bin/tests-fenix7.prg` and runs the test suite. The current suite contains 25 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, and locale changes. List several profiles after `test` to run them sequentially.
 
-Para cada modelo, revisar:
+The helper accepts `monkeydo` exit code 1 only when the final summary explicitly reports passing tests with no failures or errors. If a batch stalls while changing profiles, restart the simulator and test each profile separately.
 
-- Fecha curva completa; hora sin recortes ni solapamiento con ciudad, temperatura o pasos. El fēnix 7S es la comprobación prioritaria de legibilidad por su pantalla de 240 × 240.
-- Barra solar y barra de pasos, huellas y separación de las tres columnas inferiores. Comprobar objetivo alcanzado y cifras largas; los valores ausentes se muestran como `--`.
-- En `fenix8solar47mm`, revisar especialmente el tamaño y la posición de la hora con la fuente `BionicSemiBold`.
-- En **Settings → Set Weather**, introducir una observación reciente con coordenadas. Weather se consulta cada cinco minutos; detener y volver a ejecutar la esfera permite comprobar la nueva observación inmediatamente. Una ubicación sin ciudad guardada requiere además el evento de fondo y conexión.
-- Reposo y vuelta al modo activo: la pantalla MIP debe mantener el diseño y actualizar la hora por minuto. Revisar la memoria del programa de producción en el simulador; los búferes de las pruebas no representan su consumo de memoria.
+For manual validation, check:
 
-La revisión visual de los ocho perfiles MIP está confirmada. Queda medir memoria en los nueve perfiles del manifest, validar AMOLED/AOD y medir autonomía en reloj físico. Los nuevos idiomas requieren comprobar legibilidad por idioma, además de la revisión visual del diseño ya realizada.
+- Clipping, long city names and numbers, reached step goals, and spacing, especially on the 240 × 240 profiles.
+- Language changes and readability, including accented, Cyrillic, Asian, and right-to-left text. Automated tests do not certify all 36 languages visually.
+- Missing and expired readings, midnight, sunrise/sunset transitions, and return from low-power mode.
+- Production memory usage and battery life on physical devices. Test drawing buffers do not represent production memory use.
 
-### Pruebas iniciales de AMOLED: fēnix 9
+In **Settings → Set Weather**, supply a recent observation with coordinates. Stop and rerun the watch face to read it immediately, or wait for its five-minute refresh. A new city also needs background execution and Internet connectivity; **Simulation → Background Events → Temporal Event** can trigger a pending lookup, subject to retry delays. Sensor-history fields require historical samples, which may not be created by changing an instantaneous sensor value.
 
-El perfil instalado `fenix947mm` cubre fēnix 9 de 47 y 51 mm según `compiler.json` del paquete de dispositivo. Tiene pantalla AMOLED de 454 × 454 y un límite de memoria de 128 KiB para esferas. Se ha añadido al manifest para pruebas locales: la compilación de producción y las 25 pruebas automatizadas han terminado correctamente con SDK 9.2.0 (`passed=25, failed=0, errors=0`), incluida la localización.
+The compiler currently warns about scaling the 48 × 48 launcher icon to 40 × 40 on MIP profiles and 65 × 65 on the AMOLED profile. These warnings do not prevent compilation.
 
-La revisión visual está confirmada; la medición de memoria sigue pendiente. Estas pruebas no validan AOD: falta implementar y comprobar la presentación de bajo consumo, sus transiciones y los límites de luminancia. El compilador avisa de que el icono de lanzamiento actual de 48 × 48 se escala a 65 × 65 en este perfil.
+## Export for Connect IQ
 
-Para revisar la esfera, elegir `fenix947mm` en **Run Without Debugging → Elegir reloj**, o ejecutar con el simulador abierto:
+Install all manifest device profiles, make Java available, and set `CIQ_SDK` to the SDK directory as shown in the simulator setup. Then create a signed release package:
 
 ```sh
-python3 tools/ciq.py run fenix947mm
+mkdir -p bin
+"$CIQ_SDK/bin/monkeyc" -f monkey.jungle -e -r -w -l 1 \
+  -o bin/mountainsolarwatchface.iq -y developer_key
 ```
 
-Si el perfil instalado no aparece en el selector de VS Code, ejecutar **Developer: Reload Window** desde la paleta de comandos para recargar la extensión y sus datos. La configuración local `.vscode/launch.json` también incluye **fēnix 9 (47 / 51 mm)** con `device: "fenix947mm"`: seleccionar esa configuración en el panel **Run and Debug** y usar **Run Without Debugging** para lanzarlo directamente. `.vscode/` está ignorado por Git; esta opción es local al workspace.
+Use your actual key path after `-y` if it is stored elsewhere. `-e` packages all declared profiles and `-r` enables release mode. The output is `bin/mountainsolarwatchface.iq`. Build artifacts under `bin/` are ignored by Git and must be generated locally.
 
-## Ramas
-
-- `main`: commit inicial vacío.
-- `feature/static-version`: diseño estático aprobado, guardado en `c7980f8`.
-- `feature/dynamic-data`: integración progresiva de datos reales.
-- `alpha-release-0-0-4`: revisión de eficiencia desde el estado de `alpha-release-0-0-3`.
-
-## Datos conectados
-
-Hora local en formato de 24 horas y fecha en el idioma configurado en el reloj, pasos y objetivo de ActivityMonitor, y batería de System.getSystemStats(). Se muestran días completos de batería cuando están disponibles (`<1 d` para menos de un día), con porcentaje como alternativa. Color verde desde el 30 %, ámbar desde el 10 % y rojo por debajo. El relleno del icono refleja el porcentaje.
-
-La hora se amplía proporcionalmente hasta un ancho máximo de 232 píxeles, sin estirar los números. Las huellas se dibujan sobre píxeles enteros a la izquierda de una barra de pasos de 156 × 7 píxeles. La barra de pasos se limita al 100 %. Un objetivo ausente o cero deja la barra vacía. El texto utiliza separadores de miles y reduce su tamaño si la fila resulta demasiado larga.
-
-`DataProvider` actualiza la hora, los pasos y la caducidad de lecturas una vez por minuto. Batería y Weather se consultan al iniciar y después cada cinco minutos. Al recibir el resultado del servicio de ciudad, solo se invalidan Weather y la caché de ciudad. `WatchData` conserva la instantánea y `WatchPresentation` reutiliza los textos y las medidas entre redibujados. No hay actualizaciones parciales de segundos. El servicio de fondo solo se programa cuando falta el nombre de la ubicación actual; no hay un evento periódico de ciudad. Se declaran `SensorHistory`, `Positioning`, `Communications` y `Background`. `Positioning` permite leer las coordenadas de la estación meteorológica; no se solicita ninguna adquisición GPS. Las lecturas ausentes se muestran con `--`.
-
-## Idioma del reloj
-
-Los nombres abreviados de día y mes proceden de `Time.Gregorian.info(..., Time.FORMAT_MEDIUM)`, que Garmin localiza según el idioma del dispositivo. No se mantienen listas de fechas en español. `WatchLocale` carga las abreviaturas de minutos, días de batería y separadores de miles de recursos para los 36 idiomas declarados. El nombre **Mountain Solar** es el mismo en todos los idiomas; el recurso base de textos breves está en inglés.
-
-Todos los recursos están agrupados bajo `resources`: los textos base están en `resources/strings/strings.xml` y las traducciones en `resources/strings/locales/<idioma>.xml`. `monkey.jungle` y `tests/solar.jungle` asignan cada traducción con `base.lang.<idioma>` para que Garmin la seleccione según el reloj. La lista de recursos compartidos incluye solo los textos base y las carpetas de imágenes, fuentes y ajustes; las traducciones se compilan como recursos de su idioma.
-
-El idioma se comprueba una vez por minuto y al preparar o restaurar la pantalla. Un cambio de idioma actualiza fecha, textos y medidas sin repetir las consultas de datos ni recrear la geometría o la fuente de la hora. Los alfabetos árabe, hebreo, griego, cirílico y asiáticos usan fuentes del sistema; si el dispositivo no proporciona una fuente vectorial adecuada, la fecha se dibuja recta con una fuente del sistema. Las traducciones se incluyen por idioma sin cargar todas en memoria.
-
-Esta fase conserva el formato de 24 horas, °C y metros. También conserva la preferencia `es` de la consulta de ciudad, como ha solicitado el usuario; los nombres de localidades no se traducen al cambiar el idioma de la interfaz.
-
-Validación local: compilación de producción y 25 pruebas aprobadas en cada uno de los nueve perfiles del manifest (225 aprobadas, sin fallos ni errores). La ejecución por lotes se quedó esperando al cambiar a `fenix7x`; tras reiniciar el simulador, ese perfil pasó de forma aislada. Los seis perfiles restantes se validaron con una instancia limpia por perfil. Se conserva el aviso de escalado del icono de lanzamiento. Las pruebas cubren cambios de idioma simulados y comparación con los textos nativos del idioma activo; no certifican la legibilidad visual de los 36 idiomas.
-
-Para comprobar los idiomas en el simulador, cambiar **Settings → Language** (o la opción equivalente de la versión del simulador), detener y volver a ejecutar la esfera. Revisar especialmente textos con tildes, cirílico, escrituras asiáticas y escritura de derecha a izquierda. Las pruebas automatizadas también cubren invalidación de cachés al cambiar de idioma y reutilización de recursos.
-
-## Privacidad
-
-Política de privacidad: [español](PRIVACY.es.md) · [English](PRIVACY.md).
-
-La consulta de ciudades se conserva tal como estaba: para una ubicación meteorológica desconocida, la esfera envía automáticamente coordenadas redondeadas a Nominatim a través de Garmin Connect. Redondearlas no las anonimiza. La caché local conserva hasta ocho ubicaciones y sus ciudades; los datos de pulsaciones, altitud, pasos y batería no se envían a ese servicio. Esta versión no añade un consentimiento ni un interruptor específico para la consulta de ciudad.
-
-La política describe los datos utilizados, su envío a terceros, la conservación local y la eliminación al desinstalar. Antes de distribuir públicamente, publicar una URL accesible de esta política y revisar los requisitos de consentimiento de Garmin y las condiciones de Nominatim. Conservar la configuración actual no resuelve por sí solo el límite global de tráfico de Nominatim ni su requisito de poder cambiar de proveedor sin actualizar la aplicación.
-
-## Meteorología y barra solar
-
-Garmin Weather proporciona temperatura en °C y coordenadas de la observación, que pueden diferir de la ubicación exacta del usuario. Se leen sus datos locales cada cinco minutos, sin forzar una descarga; su caducidad se comprueba cada minuto. Observaciones sin fecha, futuras o de más de dos horas se presentan como datos ausentes. Garmin exige el permiso `Positioning` para proporcionar `observationLocationPosition`, aunque se lea desde Weather. Ya no se utiliza el campo obsoleto `observationLocationName`.
-
-Si falta el nombre de una ubicación, se obtiene mediante geocodificación inversa de Nominatim/OpenStreetMap a través de Garmin Connect. Las coordenadas enviadas se redondean a dos decimales; no se activa GPS. Se guardan hasta ocho ubicaciones, conservando las visitadas más recientemente. Volver a una ubicación guardada muestra su nombre sin Internet y cancela cualquier consulta pendiente. Mientras no haya un nombre para las coordenadas actuales, se muestra `--`; nunca se reutiliza el nombre de otra ubicación. El formato anterior de una sola ciudad sigue siendo legible.
-
-`CityScheduler` programa un único evento para una ciudad pendiente, tan pronto como permita Garmin: al menos cinco minutos después del último evento temporal. Si no hay coordenadas válidas o la ciudad ya está guardada, elimina el evento. `CityService` vuelve a comprobar Weather y la caché antes de enviar una petición, por si la ubicación cambió mientras esperaba. Los fallos aplican esperas de 5, 15, 30 y 60 minutos, manteniendo después los 60 minutos. Estas esperas se conservan al reiniciar y son globales para no multiplicar los intentos al moverse sin conexión. Una respuesta válida elimina la espera por fallos; el antiguo bloqueo fijo de una hora deja de utilizarse. Una petición interrumpida también conserva una espera de reintento. Al terminar el servicio, la esfera vuelve a leer Weather y comprueba si queda trabajo pendiente. Si la esfera no está activa, lo comprueba al volver a mostrarse.
-
-Amanecer y puesta se calculan con Garmin Weather para la ubicación de la observación, sin activar GPS. Se consultan el día actual y los adyacentes para emparejar cada amanecer con la siguiente puesta real. Los resultados se conservan hasta que cambie la fecha o la ubicación redondeada; si faltan resultados, se reintenta el cálculo cada 15 minutos. Actualizar la temperatura no repite estos cálculos; el cambio de fecha se comprueba cada minuto aunque no toque leer Weather. Se muestra el intervalo que contiene el instante actual: amanecer → puesta de día, puesta → siguiente amanecer de noche. Esto admite intervalos diurnos que cruzan medianoche en la zona horaria del reloj. Las horas se muestran en la zona horaria local del reloj. Durante el día, el sol avanza linealmente entre ambos extremos: es una aproximación temporal, no una trayectoria astronómica. De noche, una luna blanca recorre la barra proporcionalmente al tiempo transcurrido desde la puesta. El intervalo se reutiliza mientras siga vigente; en el primer refresco de minuto que alcance su límite se selecciona el siguiente para cambiar entre sol y luna. La luna es un marcador nocturno, no una representación de la fase lunar. Si faltan eventos que delimiten el intervalo (incluidas situaciones polares), se muestra `--:--` y no se dibuja una posición ficticia.
-
-La temperatura se redondea al entero más cercano. Su icono es un termómetro para no sugerir cielo despejado independientemente del tiempo. Los nombres largos se recortan con puntos suspensivos dentro del espacio disponible.
-
-## Pulsaciones y altitud
-
-Se consulta SensorHistory al iniciar y después cada cinco minutos. Se busca la muestra válida más reciente dentro de un historial acotado, omitiendo muestras nulas y pulsaciones no positivas. La altitud admite cero y valores negativos, en metros. No se inicia GPS ni lectura óptica.
-
-El texto bajo el corazón muestra la antigüedad real de la muestra (`<1 MIN`, `2 MIN`, etc.), no el intervalo de consulta. Se descartan pulsaciones de más de 15 minutos y altitudes de más de 30 minutos. Estos umbrales son decisiones de presentación de esta versión. La caducidad se comprueba cada minuto, incluso entre consultas. Historial vacío o permisos denegados producen `--` de manera independiente para cada sensor.
-
-## Compilación
-
-Setup comprobado: Connect IQ SDK 9.2.0, perfil `fenix7`, API mínima 5.2.0. El perfil admite las fuentes escalables y el texto radial utilizados; el límite de memoria para watchfaces es de 128 KB.
-
-Con los ejecutables del SDK en `PATH`, desde la raíz del proyecto:
+If the macOS export aborts while initializing Java's AWT application, the release export has also been verified with headless Java:
 
 ```sh
-monkeyc -f monkey.jungle -d fenix7 -o bin/mountainsolarwatchface.prg -y /ruta/a/clave-local
+JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:+$JAVA_TOOL_OPTIONS }-Djava.awt.headless=true" \
+  "$CIQ_SDK/bin/monkeyc" -f monkey.jungle -e -r -w -l 1 \
+  -o bin/mountainsolarwatchface.iq -y developer_key
 ```
 
-La clave de desarrollador debe permanecer privada y fuera del repositorio. No es necesario regenerarla para cada compilación.
+Before public distribution, complete the outstanding device checks and the provider/privacy review described below. Generating a package does not publish the app.
 
-## Simulación e instalación USB
+## Privacy and Connectivity
 
-```sh
-connectiq
-monkeydo bin/mountainsolarwatchface.prg fenix7
-```
+An unknown weather location triggers an automatic background request to Nominatim/OpenStreetMap through Garmin Connect. It sends weather coordinates rounded to two decimal places, a Spanish language preference, and the application identifier. Rounding reduces precision but does not anonymize the location. Heart rate, elevation, steps, and battery are not sent to this service.
 
-En el simulador, comprobar que la fecha curva, la hora, los textos solares y las tres columnas no se recortan ni se solapan. Revisar también memoria y comportamiento en modo de bajo consumo antes de dar por terminada la validación en dispositivo.
+Up to eight recent locations and city names are stored on the watch, along with retry state. Saved cities work offline. Failed requests back off for 5, 15, 30, then 60 minutes. This version has no separate city-lookup switch or consent prompt.
 
-Para instalar, conectar el reloj por USB, acceder a su almacenamiento (mediante un cliente MTP si el sistema lo necesita), copiar `bin/mountainsolarwatchface.prg` a `GARMIN/APPS`, desconectar de forma segura y seleccionar la esfera en el reloj. Esta versión conecta todos los campos previstos; las lecturas no disponibles se muestran con `--`.
+Declared permissions are `SensorHistory`, `Positioning`, `Communications`, and `Background`. `Positioning` provides access to weather coordinates; the watch face does not request GPS acquisition.
 
-## Validación
+Read the privacy policy in [English](PRIVACY.md) or [Spanish](PRIVACY.es.md). Before public distribution, publish an accessible policy URL and review consent and provider requirements. Public Nominatim usage and the ability to change providers remain items for release review.
 
-La iteración anterior compiló para `fenix7` con Connect IQ SDK 9.2.0 y superó diez pruebas en el simulador. Las pruebas cubren sol/luna, interpretación de ciudades, migración y límite de ocho ubicaciones, reintentos y recuperación, programación sin duplicados y actualización de Weather sin repetir los cálculos solares. El PRG se genera en `bin/mountainsolarwatchface.prg`. Hora, fecha, pasos, batería, pulsaciones y altitud han sido validados por el usuario en el simulador. Las lecturas reales por Garmin Connect, la memoria y el consumo en reloj físico siguen pendientes de comprobación.
+City data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), under the ODbL license, through [Nominatim](https://nominatim.org/). Its [usage policy](https://operations.osmfoundation.org/policies/nominatim/) applies.
 
-Antes de conectar la siguiente etapa, comprobar:
+## Project Structure
 
-- Cambio de minuto, medianoche, mes y fecha en el idioma configurado en el reloj.
-- Pasos a cero, objetivo alcanzado o superado, y cifras de seis dígitos.
-- Batería al 9, 10, 29 y 30 %, y alternativa a porcentaje sin estimación de días.
-- Legibilidad de la hora y batería, actualización en bajo consumo y memoria.
+| Path | Purpose |
+| --- | --- |
+| [manifest.xml](manifest.xml), [monkey.jungle](monkey.jungle) | Device profiles, permissions, source paths, and localized resource mappings |
+| [source/](source/) | Application and view, data provider, solar bar, city service, layout, fonts, and presentation caches |
+| [resources/](resources/) | Icons and localized strings; font/settings directories are placeholders |
+| [tests/](tests/) | Simulator unit tests and their Jungle configuration |
+| [tools/](tools/) | Build/run/test helper and status-icon generation utility |
+| [specs/](specs/) | Original design brief and battery-efficiency requirements |
+| [screenshots/](screenshots/) | Visual references |
+| `bin/` | Generated PRGs, test binaries, compiler intermediates, and release packages |
 
-Para validar SensorHistory en el simulador, proporcionar un historial de pulsaciones y altitud (modificar solo un valor instantáneo puede no crear muestras históricas). Comprobar la primera lectura, el refresco tras cinco minutos, historial vacío, caducidad, altitud negativa y cifras largas. Confirmar las lecturas también en el reloj físico.
+The [original watchface specification](specs/watchface-specification.md) records the initial single-device MVP brief. Some requirements have since changed, including device coverage and external city lookup; use this README and the implementation for current behavior. The [battery-efficiency specification](specs/battery-efficiency.md) documents refresh and caching decisions.
 
-## Validación pendiente de Weather
+## Remaining Work
 
-En el simulador, proporcionar condiciones meteorológicas con fecha de observación y coordenadas mediante Settings → Set Weather. El nombre de estación de ese diálogo ya no se utiliza. Tras cambios en los permisos, recompilar y detener y volver a ejecutar la esfera. La temperatura puede estar disponible aunque falte la ubicación; en ese caso, las horas solares permanecen ausentes. Comprobar temperatura negativa, ciudad larga, datos ausentes o caducados, amanecer, mediodía, puesta, noche y cambio de fecha. Temperatura y coordenadas se leen en la siguiente consulta de Weather, en un plazo de aproximadamente cinco minutos. Una ciudad guardada aparece entonces; una nueva necesita además la ejecución de fondo y la respuesta de Internet.
-
-Para comprobar la ciudad, usar Simulation → Background Events → Temporal Event cuando haya una consulta pendiente y revisar la consola de ejecución. Los mensajes `CityService:` indican si faltan datos meteorológicos, si la observación ha caducado, si se reutiliza la caché, cuántos segundos quedan hasta poder reintentar, o el código de respuesta cuando falla la consulta. El evento manual también respeta las esperas por fallos. Comprobar A → B → A, permanencia sin nuevas peticiones y pérdida/recuperación de conexión.
-
-Finalmente, validar todos los datos en reloj físico con Garmin Connect conectado y desconectado, y revisar memoria y comportamiento en bajo consumo antes de considerar cerrado el MVP.
-
-## Geocodificación y atribución
-
-Ciudad: datos © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), licencia ODbL, mediante [Nominatim](https://nominatim.org/). La consulta HTTPS envía únicamente coordenadas meteorológicas redondeadas y preferencia de idioma. El servicio identifica esta aplicación con su User-Agent y reutiliza hasta ocho ubicaciones guardadas. Solo solicita ubicaciones desconocidas, respetando el mínimo de cinco minutos entre eventos de Garmin y las esperas crecientes tras fallos. Su disponibilidad depende de Internet en el móvil y del servicio público. Condiciones: [política de uso](https://operations.osmfoundation.org/policies/nominatim/).
-
-Pruebas de regresión (intervalos diurnos/nocturnos, límites, medianoche, respuestas de ciudad y caché por ubicación):
-
-```sh
-monkeyc -f tests/solar.jungle -d fenix7 -o bin/solar-tests.prg -y /ruta/a/clave-local -t
-monkeydo bin/solar-tests.prg fenix7 -t
-```
-
-## Eficiencia de batería: alpha-release-0-0-4
-
-La revisión de [battery-efficiency-specs.md](battery-efficiency-specs.md) concreta las frecuencias y los límites de la caché. Batería y Weather pasan de 60 a 12 consultas normales por hora. El historial mantiene su periodo de cinco minutos y los datos caducados desaparecen en el siguiente minuto. Las consultas de ciudad a almacenamiento persistente se evitan mientras no cambie la ubicación ni llegue una respuesta de fondo.
-
-El tamaño de la fuente horaria se calcula en `onLayout()`, y los polígonos de los iconos se crean una sola vez. `WatchPresentation` conserva los textos preparados y recalcula las medidas de ciudad, pasos y altitud al cambiar sus valores. Las horas solares se conservan hasta cambiar el intervalo o el desfase horario local. Los redibujados adicionales reutilizan esta presentación y una única referencia temporal de la instantánea.
-
-Garmin controla la cadencia: solicita un redibujado por minuto en reposo y puede pedirlo cada segundo en modo activo o varias veces durante una transición. Se mantiene el redibujado completo para restaurar correctamente la pantalla, con la misma información visible en reposo y sin temporizadores ni actualizaciones parciales. No se añade un búfer de pantalla; las pequeñas cachés aumentan la memoria retenida a cambio de reducir objetos temporales y trabajo repetido. [Ciclo de vida de WatchFace](https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/WatchFace.html).
-
-Las pruebas adicionales de `BatteryEfficiencyTest.mc` cubren la frecuencia de lectura, los saltos del reloj, el retorno tras una ausencia, los resultados de fondo dentro del mismo minuto, la caducidad entre consultas, medianoche, el cambio de intervalo solar y la reutilización de medidas de texto. La reducción de llamadas no implica un porcentaje equivalente de ahorro de batería. La comparación de autonomía y memoria máxima en el reloj físico sigue pendiente.
-
-Validación de esta rama: compilación de producción y pruebas correcta para `fenix7` con SDK 9.2.0; 17 pruebas aprobadas en el simulador (`passed=17, failed=0, errors=0`), incluida una prueba de redibujado con la API gráfica real. El lanzador `monkeydo` terminó con código 1 pese a informar todas las pruebas como aprobadas. La compilación solo avisa del tamaño del icono de lanzamiento existente (48 × 48, escalado a 40 × 40). PRG actualizado: `bin/mountainsolarwatchface.prg`.
+- Measure production memory and battery life on physical watches.
+- Implement and validate AMOLED AOD, transitions, and luminance behavior.
+- Review visual readability across all declared languages.
+- Add configurable time format and units.
+- Review public city-service usage, privacy requirements, and release assets before publication.
