@@ -1,0 +1,9 @@
+.DS_Store
+.vscode/
+bin/
+build/
+*.prg
+*.iq
+*.der
+*.pem
+developer_key

@@ -1,0 +1,6 @@
+<strings>
+    <string id="AppName" translatable="false">Mountain Solar</string>
+    <string id="MinuteUnit">MIN</string>
+    <string id="DayUnit">d</string>
+    <string id="GroupSeparator">,</string>
+</strings>

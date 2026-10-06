@@ -1,0 +1,5 @@
+<strings>
+    <string id="MinuteUnit">MIN</string>
+    <string id="DayUnit">h</string>
+    <string id="GroupSeparator">,</string>
+</strings>

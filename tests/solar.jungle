@@ -1,0 +1,41 @@
+project.manifest = ../manifest.xml
+base.sourcePath = ../source;.
+# Keep translations out of the shared resource scan.
+base.resourcePath = ../resources/drawables;../resources/fonts;../resources/settings;../resources/strings/strings.xml
+
+# Language-specific strings override the English base resources.
+base.lang.ara = ../resources/strings/locales/ara.xml
+base.lang.bul = ../resources/strings/locales/bul.xml
+base.lang.ces = ../resources/strings/locales/ces.xml
+base.lang.dan = ../resources/strings/locales/dan.xml
+base.lang.deu = ../resources/strings/locales/deu.xml
+base.lang.dut = ../resources/strings/locales/dut.xml
+base.lang.est = ../resources/strings/locales/est.xml
+base.lang.fin = ../resources/strings/locales/fin.xml
+base.lang.fre = ../resources/strings/locales/fre.xml
+base.lang.gre = ../resources/strings/locales/gre.xml
+base.lang.heb = ../resources/strings/locales/heb.xml
+base.lang.hrv = ../resources/strings/locales/hrv.xml
+base.lang.hun = ../resources/strings/locales/hun.xml
+base.lang.ind = ../resources/strings/locales/ind.xml
+base.lang.ita = ../resources/strings/locales/ita.xml
+base.lang.jpn = ../resources/strings/locales/jpn.xml
+base.lang.kor = ../resources/strings/locales/kor.xml
+base.lang.lav = ../resources/strings/locales/lav.xml
+base.lang.lit = ../resources/strings/locales/lit.xml
+base.lang.nob = ../resources/strings/locales/nob.xml
+base.lang.pol = ../resources/strings/locales/pol.xml
+base.lang.por = ../resources/strings/locales/por.xml
+base.lang.ron = ../resources/strings/locales/ron.xml
+base.lang.rus = ../resources/strings/locales/rus.xml
+base.lang.slo = ../resources/strings/locales/slo.xml
+base.lang.slv = ../resources/strings/locales/slv.xml
+base.lang.spa = ../resources/strings/locales/spa.xml
+base.lang.swe = ../resources/strings/locales/swe.xml
+base.lang.tha = ../resources/strings/locales/tha.xml
+base.lang.tur = ../resources/strings/locales/tur.xml
+base.lang.ukr = ../resources/strings/locales/ukr.xml
+base.lang.vie = ../resources/strings/locales/vie.xml
+base.lang.zhs = ../resources/strings/locales/zhs.xml
+base.lang.zht = ../resources/strings/locales/zht.xml
+base.lang.zsm = ../resources/strings/locales/zsm.xml

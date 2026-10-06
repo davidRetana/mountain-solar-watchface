@@ -1,0 +1,5 @@
+<strings>
+    <string id="MinuteUnit">分钟</string>
+    <string id="DayUnit">天</string>
+    <string id="GroupSeparator">,</string>
+</strings>
