@@ -8,6 +8,7 @@ class WatchPresentation {
     var labelFont;
     var smallFont;
     var valueFont;
+    var layout as WatchLayout;
     var citySource = null;
     var stepsSource = null;
     var goalSource = null;
@@ -32,9 +33,16 @@ class WatchPresentation {
     var solarEndText = "--:--";
 
     function initialize(label, small, value) {
+        layout = new WatchLayout(260, 260);
+        configure(layout, label, small, value);
+    }
+
+    function configure(geometry as WatchLayout, label, small, value) {
+        layout = geometry;
         labelFont = label;
         smallFont = small;
         valueFont = value;
+        revision = -1;
     }
 
     function prepare(dc, data as WatchData, nextRevision) {
@@ -42,7 +50,7 @@ class WatchPresentation {
         var first = revision == -1;
         if (first || !sameText(citySource, data.city)) {
             citySource = data.city;
-            cityText = Formatters.city(data.city, dc, labelFont, 88);
+            cityText = Formatters.city(data.city, dc, labelFont, layout.cityWidth);
         }
         if (first || stepsSource != data.steps || goalSource != data.stepGoal) {
             stepsSource = data.steps;
@@ -52,19 +60,19 @@ class WatchPresentation {
             var counter = stepsText + goalText;
             stepsFont = labelFont;
             var width = dc.getTextWidthInPixels(counter, stepsFont);
-            if (width > 150) {
+            if (width > layout.stepsTextWidth) {
                 stepsFont = smallFont;
                 width = dc.getTextWidthInPixels(counter, stepsFont);
             }
-            stepsX = 60 + ((156 - width) / 2).toNumber();
+            stepsX = layout.stepsX + ((layout.stepsBar[2] - width) / 2).toNumber();
             goalX = stepsX + dc.getTextWidthInPixels(stepsText, stepsFont);
-            stepsProgress = Formatters.progress(data.steps, data.stepGoal, 156);
+            stepsProgress = Formatters.progress(data.steps, data.stepGoal, layout.stepsBar[2]);
         }
         if (first || elevationSource != data.elevation) {
             elevationSource = data.elevation;
             elevationText = Formatters.elevation(data.elevation);
             elevationFont = valueFont;
-            if (dc.getTextWidthInPixels(elevationText, elevationFont) > 56) { elevationFont = labelFont; }
+            if (dc.getTextWidthInPixels(elevationText, elevationFont) > layout.elevationWidth) { elevationFont = labelFont; }
         }
         var interval = data.solarInterval;
         var start = interval == null ? null : interval[0];

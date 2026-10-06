@@ -3,6 +3,14 @@
     <iq:application id="b43f638859a94d1fa284624319725c88" type="watchface" name="@Strings.AppName" entry="MountainWatchApp" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="5.2.0">
         <iq:products>
             <iq:product id="fenix7"/>
+            <iq:product id="fenix7s"/>
+            <iq:product id="fenix7x"/>
+            <iq:product id="fenix7pro"/>
+            <iq:product id="fenix7spro"/>
+            <iq:product id="fenix7xpro"/>
+            <iq:product id="fenix8solar47mm"/>
+            <iq:product id="fenix8solar51mm"/>
+            <iq:product id="fenix947mm"/>
         </iq:products>
         <iq:languages>
             <iq:language>spa</iq:language>

@@ -1,4 +1,5 @@
 using Toybox.Graphics;
+using Toybox.Lang;
 using Toybox.WatchUi;
 
 class MountainWatchView extends WatchUi.WatchFace {
@@ -12,35 +13,35 @@ class MountainWatchView extends WatchUi.WatchFace {
     var presentation;
     var locationIcon;
     var thermometerIcon;
-    // Fixed fenix7 geometry: reuse these arrays on every full redraw.
-    const LEFT_SOLE = [[36, 182], [37, 179], [40, 179], [41, 182], [40, 187], [37, 187]];
-    const RIGHT_SOLE = [[44, 178], [45, 175], [48, 175], [49, 178], [48, 183], [45, 183]];
-    const HEART = [[68, 204], [80, 204], [74, 212]];
-    const MOUNTAIN = [[120, 213], [124, 207], [126, 209], [130, 201], [134, 208], [136, 206], [140, 213]];
+    var layout as WatchLayout or Null;
+    var fonts;
 
     function initialize() {
         WatchFace.initialize();
         provider = new DataProvider();
-        // Native-size glyphs: load once and copy their exact pixels on redraw.
+        // Load once; preserve native pixels at 260px and scale only these glyphs
+        // on other sizes, using destination rectangles cached in the layout.
         locationIcon = WatchUi.loadResource(Rez.Drawables.LocationIcon);
         thermometerIcon = WatchUi.loadResource(Rez.Drawables.ThermometerIcon);
-        // Cache fonts once; data queries are cached separately by the provider.
-        dateFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>18});
-        dayFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>30});
+        fonts = new WatchFonts();
         timeFont = null;
-        labelFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>15});
-        valueFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>21});
-        smallFont = Graphics.getVectorFont({:face=>"RobotoCondensedBold", :size=>11});
-        presentation = new WatchPresentation(labelFont, smallFont, valueFont);
+        layout = null;
+        presentation = null;
     }
 
     function onLayout(dc) {
-        if (timeFont == null) {
-            // Scale both axes equally and size against the widest time once.
-            for (var size = 138; size >= 86; size -= 2) {
-                timeFont = Graphics.getVectorFont({:face=>"BionicBold", :size=>size});
-                if (dc.getTextWidthInPixels("00:00", timeFont) <= 232) { break; }
+        if (layout == null || layout.width != dc.getWidth() || layout.height != dc.getHeight()) {
+            layout = new WatchLayout(dc.getWidth(), dc.getHeight());
+            dateFont = fonts.radial(layout.size(18));
+            dayFont = fonts.text(layout.size(30), Graphics.FONT_MEDIUM);
+            labelFont = fonts.text(layout.size(15), Graphics.FONT_XTINY);
+            valueFont = fonts.text(layout.size(21), Graphics.FONT_SMALL);
+            smallFont = fonts.text(layout.size(11), Graphics.FONT_XTINY);
+            timeFont = fonts.time(dc, layout);
+            if (presentation == null) {
+                presentation = new WatchPresentation(labelFont, smallFont, valueFont);
             }
+            presentation.configure(layout, labelFont, smallFont, valueFont);
         }
         presentation.revision = -1;
     }
@@ -53,56 +54,63 @@ class MountainWatchView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
         // Paint the padded time font first to preserve the adjacent rows.
-        drawCentered(dc, 130, 124, timeFont, data.timeText, Theme.TEXT);
+        drawCentered(dc, layout.centerX, layout.timeY, timeFont, data.timeText, Theme.TEXT);
 
-        // Layout coordinates target the fenix7's 260 x 260 display.
-        drawCentered(dc, 130, 25, dayFont, data.dayText, Theme.TEXT);
+        drawCentered(dc, layout.centerX, layout.dayY, dayFont, data.dayText, Theme.TEXT);
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawRadialText(130, 130, dateFont, data.weekdayText,
-            Graphics.TEXT_JUSTIFY_CENTER, 112, 109,
-            Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
-        dc.drawRadialText(130, 130, dateFont, data.monthText,
-            Graphics.TEXT_JUSTIFY_CENTER, 68, 109,
-            Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
+        if (dateFont != null) {
+            dc.drawRadialText(layout.centerX, layout.centerY, dateFont, data.weekdayText,
+                Graphics.TEXT_JUSTIFY_CENTER, 112, layout.dateRadius,
+                Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
+            dc.drawRadialText(layout.centerX, layout.centerY, dateFont, data.monthText,
+                Graphics.TEXT_JUSTIFY_CENTER, 68, layout.dateRadius,
+                Graphics.RADIAL_TEXT_DIRECTION_CLOCKWISE);
+        } else {
+            // Radial text requires a vector font. Use straight text if absent.
+            drawCentered(dc, layout.dateLeftX, layout.dateY, labelFont, data.weekdayText, Theme.TEXT);
+            drawCentered(dc, layout.dateRightX, layout.dateY, labelFont, data.monthText, Theme.TEXT);
+        }
 
         SolarBar.draw(dc, labelFont, data, data.updatedAt,
-            presentation.solarStartText, presentation.solarEndText);
+            presentation.solarStartText, presentation.solarEndText, layout);
 
         drawPin(dc);
-        // The pin ends at x=58; keep a 6px gap and room before the thermometer.
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(64, 74, labelFont, presentation.cityText,
+        dc.drawText(layout.cityX, layout.cityY, labelFont, presentation.cityText,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-        drawThermometer(dc, 169, 74);
-        drawCentered(dc, 202, 74, labelFont, presentation.temperatureText, Theme.TEXT);
+        drawIcon(dc, layout.thermometer, thermometerIcon);
+        drawCentered(dc, layout.temperatureX, layout.cityY, labelFont, presentation.temperatureText, Theme.TEXT);
 
         drawStepsIcon(dc);
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
-        dc.drawText(presentation.stepsX, 174, presentation.stepsFont, presentation.stepsText,
+        dc.drawText(presentation.stepsX, layout.stepsY, presentation.stepsFont, presentation.stepsText,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        dc.drawText(presentation.goalX, 174, presentation.stepsFont, presentation.goalText,
+        dc.drawText(presentation.goalX, layout.stepsY, presentation.stepsFont, presentation.goalText,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
-        dc.fillRoundedRectangle(60, 184, 156, 7, 7);
+        var bar = layout.stepsBar;
+        dc.fillRoundedRectangle(bar[0], bar[1], bar[2], bar[3], bar[3]);
         dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
         var progress = presentation.stepsProgress;
-        if (progress >= 7) {
-            dc.fillRoundedRectangle(60, 184, progress, 7, 7);
+        if (progress >= bar[3]) {
+            dc.fillRoundedRectangle(bar[0], bar[1], progress, bar[3], bar[3]);
         } else if (progress > 0) {
-            dc.fillRectangle(60, 184, progress, 7);
+            dc.fillRectangle(bar[0], bar[1], progress, bar[3]);
         }
 
         dc.setColor(Theme.DIVIDER, Graphics.COLOR_BLACK);
-        dc.drawLine(100, 201, 100, 233);
-        dc.drawLine(160, 201, 160, 233);
+        for (var i = 0; i < layout.dividers.size(); i += 1) {
+            var line = layout.dividers[i];
+            dc.drawLine(line[0], line[1], line[2], line[3]);
+        }
         drawHeart(dc);
-        drawCentered(dc, 74, 221, valueFont, presentation.heartText, Theme.RED);
-        drawCentered(dc, 74, 236, smallFont, presentation.heartAgeText, Theme.MUTED);
+        drawCentered(dc, layout.heartX, layout.heartY, valueFont, presentation.heartText, Theme.RED);
+        drawCentered(dc, layout.heartX, layout.heartAgeY, smallFont, presentation.heartAgeText, Theme.MUTED);
         drawMountain(dc);
-        drawCentered(dc, 130, 224, presentation.elevationFont, presentation.elevationText, Theme.TEXT);
-        drawBattery(dc, 179, 202, data.battery);
-        drawCentered(dc, 186, 224, valueFont, presentation.batteryText, Formatters.batteryColor(data.battery));
+        drawCentered(dc, layout.centerX, layout.valueY, presentation.elevationFont, presentation.elevationText, Theme.TEXT);
+        drawBattery(dc, data.battery);
+        drawCentered(dc, layout.batteryX, layout.valueY, valueFont, presentation.batteryText, Formatters.batteryColor(data.battery));
     }
 
     function drawCentered(dc, x, y, font, label, color) {
@@ -111,44 +119,50 @@ class MountainWatchView extends WatchUi.WatchFace {
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    function drawThermometer(dc, x, y) {
-        dc.drawBitmap(x - 6, y - 8, thermometerIcon);
+    function drawIcon(dc, rectangle as Lang.Array<Lang.Number>, bitmap) {
+        if (rectangle[2] == bitmap.getWidth() && rectangle[3] == bitmap.getHeight()) {
+            dc.drawBitmap(rectangle[0], rectangle[1], bitmap);
+        } else {
+            dc.drawScaledBitmap(rectangle[0], rectangle[1], rectangle[2], rectangle[3], bitmap);
+        }
     }
 
     function drawPin(dc) {
-        dc.drawBitmap(50, 68, locationIcon);
+        drawIcon(dc, layout.pin, locationIcon);
     }
 
     function drawStepsIcon(dc) {
-        var x = 43;
-        var y = 185;
         dc.setColor(Theme.MUTED, Graphics.COLOR_BLACK);
-        // Separate soles and heels, aligned to whole pixels for the MIP display.
-        dc.fillPolygon(LEFT_SOLE);
-        dc.fillRoundedRectangle(x - 6, y + 4, 4, 4, 2);
-        dc.fillPolygon(RIGHT_SOLE);
-        dc.fillRoundedRectangle(x + 2, y, 4, 4, 2);
+        dc.fillPolygon(layout.leftSole);
+        var heel = layout.leftHeel;
+        dc.fillRoundedRectangle(heel[0], heel[1], heel[2], heel[3], layout.marker2);
+        dc.fillPolygon(layout.rightSole);
+        heel = layout.rightHeel;
+        dc.fillRoundedRectangle(heel[0], heel[1], heel[2], heel[3], layout.marker2);
     }
 
     function drawHeart(dc) {
-        var x = 74;
-        var y = 204;
         dc.setColor(Theme.RED, Graphics.COLOR_BLACK);
-        dc.fillCircle(x - 3, y, 3);
-        dc.fillCircle(x + 3, y, 3);
-        dc.fillPolygon(HEART);
+        var circle = layout.heartLeft;
+        dc.fillCircle(circle[0], circle[1], circle[2]);
+        circle = layout.heartRight;
+        dc.fillCircle(circle[0], circle[1], circle[2]);
+        dc.fillPolygon(layout.heart);
     }
 
     function drawMountain(dc) {
         dc.setColor(Theme.BROWN, Graphics.COLOR_BLACK);
-        dc.fillPolygon(MOUNTAIN);
+        dc.fillPolygon(layout.mountain);
     }
 
-    function drawBattery(dc, x, y, percent) {
+    function drawBattery(dc, percent) {
         dc.setColor(Formatters.batteryColor(percent), Graphics.COLOR_BLACK);
-        dc.drawRectangle(x, y, 16, 10);
-        dc.fillRectangle(x + 16, y + 3, 2, 4);
-        var fill = Formatters.progress(percent, 100, 12);
-        if (fill > 0) { dc.fillRectangle(x + 2, y + 2, fill, 6); }
+        var rect = layout.battery;
+        dc.drawRectangle(rect[0], rect[1], rect[2], rect[3]);
+        rect = layout.batteryCap;
+        dc.fillRectangle(rect[0], rect[1], rect[2], rect[3]);
+        rect = layout.batteryFill;
+        var fill = Formatters.progress(percent, 100, rect[2]);
+        if (fill > 0) { dc.fillRectangle(rect[0], rect[1], fill, rect[3]); }
     }
 }

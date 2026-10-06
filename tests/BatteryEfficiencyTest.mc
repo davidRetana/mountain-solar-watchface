@@ -200,11 +200,10 @@ function repeatedViewUpdatesUsePreparedSnapshot(logger) {
     var view = new MountainWatchView();
     var provider = new EfficiencyProvider();
     view.provider = provider;
-    // Exercise the actual Garmin drawing API. This bitmap exists only in tests.
+    // Use the device's default pixel format: a restricted palette cannot draw
+    // all native fonts/resource palettes. This bitmap exists only in tests.
     var bitmap = Toybox.Graphics.createBufferedBitmap({
-        :width => 260, :height => 260,
-        :palette => [Toybox.Graphics.COLOR_BLACK, Theme.TEXT, Theme.MUTED,
-            Theme.DIVIDER, Theme.AMBER, Theme.RED, Theme.GREEN, Theme.BROWN]
+        :width => 260, :height => 260
     });
     var dc = bitmap.get().getDc();
     view.onLayout(dc);

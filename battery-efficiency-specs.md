@@ -41,3 +41,7 @@ Weather and battery changes can take up to approximately five minutes to appear.
 Validation must cover repeated high-power callbacks, minute/five-minute boundaries, backwards clock changes, returning after an absence, background completion within the same minute, missing data, expiry, midnight, sunrise/sunset and presentation cache invalidation. Real battery consumption and peak memory still require measurement on the watch; do not infer them from reduced call counts.
 
 References: [Garmin WatchFace lifecycle](https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/WatchFace.html), [View.onUpdate and transitions](https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/View.html#onUpdate-instance_method).
+
+### Compatibility phase 1
+
+`WatchLayout` precomputes scaled integer geometry and icon polygons in `onLayout()`. Fonts and geometry are rebuilt only if the drawing surface dimensions change; returning from an overlay invalidates presentation measurements without recreating the layout or fonts. Solar marker positions and battery/step fills remain data-dependent. Small bitmap glyphs use cached destination rectangles; there is no full-screen production buffer. Data refresh intervals and background scheduling are unchanged. The additional retained geometry requires memory measurement per device; these changes do not establish a battery-life improvement. AMOLED always-on rendering remains a separate pending phase.
