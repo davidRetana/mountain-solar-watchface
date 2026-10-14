@@ -140,6 +140,8 @@ The compiler currently warns about scaling the 48 × 48 launcher icon to 40 × 4
 
 ## Export for Connect IQ
 
+The manifest uses the public application's ID, `01f96394ed0545efbbff7daeb273c099`. The previously uploaded beta uses `b43f638859a94d1fa284624319725c88`. Connect IQ requires separate IDs for beta and public listings: upload the public package as a new app with **Beta App** unchecked. Keep the public ID for subsequent public updates. To update the beta, restore its ID for that export and then return the manifest to the public ID. Use the existing signing key for both.
+
 Install all manifest device profiles, make Java available, and set `CIQ_SDK` to the SDK directory as shown in the simulator setup. Then create a signed release package:
 
 ```sh

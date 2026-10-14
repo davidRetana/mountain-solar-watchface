@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <iq:manifest version="3" xmlns:iq="http://www.garmin.com/xml/connectiq">
-    <iq:application id="b43f638859a94d1fa284624319725c88" type="watchface" name="@Strings.AppName" entry="MountainWatchApp" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="5.2.0">
+    <iq:application id="01f96394ed0545efbbff7daeb273c099" type="watchface" name="@Strings.AppName" entry="MountainWatchApp" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="5.2.0">
         <iq:products>
             <iq:product id="fenix7"/>
             <iq:product id="fenix7s"/>
