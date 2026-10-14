@@ -1,6 +1,7 @@
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Math;
+using Toybox.System;
 
 module Formatters {
     function count(value, locale as WatchLocale) {
@@ -27,9 +28,11 @@ module Formatters {
         return info.hour.format("%02d") + ":" + info.min.format("%02d");
     }
 
-    function temperature(value) {
-        if (value == null) { return "--°C"; }
-        return Math.round(value).toNumber().toString() + "°C";
+    function temperature(value, unit) {
+        var suffix = unit == System.UNIT_STATUTE ? "°F" : "°C";
+        if (value == null) { return "--" + suffix; }
+        if (unit == System.UNIT_STATUTE) { value = value * 9.0 / 5.0 + 32; }
+        return Math.round(value).toNumber().toString() + suffix;
     }
 
     function city(value, dc, font, width) {
@@ -49,9 +52,11 @@ module Formatters {
         return minutes.toString() + " " + locale.minuteUnit;
     }
 
-    function elevation(value) {
-        if (value == null) { return "-- m"; }
-        return value.toNumber().toString() + " m";
+    function elevation(value, unit) {
+        var suffix = unit == System.UNIT_STATUTE ? " ft" : " m";
+        if (value == null) { return "--" + suffix; }
+        if (unit == System.UNIT_STATUTE) { value = value / 0.3048; }
+        return Math.round(value).toNumber().toString() + suffix;
     }
 
     function batteryText(data) {

@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MNT</string>
     <string id="DayUnit">h</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Satuan ketinggian</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Satuan suhu</string>
+    <string id="UseWatchUnits" scope="settings">Gunakan pengaturan jam tangan</string>
+    <string id="Meters" scope="settings">Meter (m)</string>
+    <string id="Feet" scope="settings">Kaki (ft)</string>
+    <string id="Celsius" scope="settings">Celsius (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

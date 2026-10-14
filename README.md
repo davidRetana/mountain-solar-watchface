@@ -9,15 +9,16 @@ Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combine
 ## Features and Current Status
 
 - Large 24-hour clock and a date in the watch's language.
-- Temperature in °C and a cached city name for the weather observation's location.
+- Temperature in °C or °F and a cached city name for the weather observation's location.
 - Sunrise/sunset bar with a sun during the day and a moon at night.
 - Steps, daily goal, and an amber progress bar.
-- Recent heart rate with sample age, elevation in meters, and estimated battery days with a percentage fallback.
+- Recent heart rate with sample age, elevation in meters or feet, and estimated battery days with a percentage fallback.
+- Altitude and temperature follow the watch's unit settings by default, with independent overrides in Connect IQ settings.
 - Resources for 36 watch languages, font fallbacks, and `--` for missing or expired data.
 
-The latest recorded simulator validation passed 25 tests on each of the nine profiles (225 total), and the maintainer has confirmed their visual review. A signed release `.iq` package was also built successfully with SDK 9.2.0 on 6 October 2026, covering 15 device variants across those profiles.
+Simulator validation for unit settings passed 31 tests on each of the nine profiles (279 total), including text-width checks with vector and native fallback fonts. Production `.prg` builds also passed for all nine profiles. The maintainer's visual review and the signed release `.iq` package built on 6 October 2026 cover the earlier version; the package used SDK 9.2.0 and included 15 device variants across those profiles.
 
-Memory and battery-life measurements on physical watches remain pending. The AMOLED profile is experimental: a dedicated always-on display (AOD) presentation is still pending. Time format and units are currently fixed, with no user-configurable settings.
+Memory and battery-life measurements on physical watches remain pending. The AMOLED profile is experimental: a dedicated always-on display (AOD) presentation is still pending. Time format is currently fixed at 24 hours.
 
 ## Quick Start
 
@@ -97,12 +98,28 @@ The installed `fenix947mm` definition covers the 47 and 51 mm fēnix 9. Passing 
 
 ## Data Behavior
 
+### Unit Settings
+
+In the Connect IQ mobile app, open Mountain Solar's settings to choose units independently:
+
+| Setting | Choices | Default |
+| --- | --- | --- |
+| Altitude units | Use watch setting / Meters (m) / Feet (ft) | Use watch setting |
+| Temperature units | Use watch setting / Celsius (°C) / Fahrenheit (°F) | Use watch setting |
+
+Automatic mode reads the watch's altitude and temperature preferences separately, so mixed units are supported. Changes to watch units appear on the next minute update or layout restoration; changes to the app's settings request an immediate update. Settings labels are translated for all 36 declared watch languages. Unit symbols (`m`, `ft`, `°C`, and `°F`) are preserved in every language, and settings-only strings are excluded from the watch face's runtime resources.
+
+Garmin supplies elevation in meters and weather temperature in Celsius. Those source values stay unchanged in the data snapshot; conversion and integer rounding happen only when formatting display text. For example, `1371 m` becomes `4498 ft` and `15°C` becomes `59°F`. Missing readings retain the selected unit (`-- m`, `-- ft`, `--°C`, or `--°F`). Longer values use a smaller font when needed; if native fallback fonts cannot fit altitude and unit together, the unit appears below the number.
+
+### Sources and Refresh
+
 The watch face reads data already available through Garmin APIs. It does not start GPS or optical heart-rate sensing.
 
 | Information | Source | Refresh policy |
 | --- | --- | --- |
 | Time, steps, and step goal | System time and ActivityMonitor | Once per minute |
 | Date and localized labels | Gregorian calendar and language resources | On date or language changes; language checked each minute and when restoring the layout |
+| Display units | System device settings and application properties | Watch preferences checked with the language; application properties cached until a settings change |
 | Battery and estimated days | System stats | At startup, then every five minutes |
 | Temperature and observation coordinates | Garmin Weather | At startup, then every five minutes; refreshed after a background city result |
 | Heart rate and elevation | SensorHistory | At startup, then every five minutes |
@@ -123,7 +140,7 @@ With the simulator open:
 python3 tools/ciq.py test fenix7
 ```
 
-This creates `bin/tests-fenix7.prg` and runs the test suite. The current suite contains 25 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, and locale changes. List several profiles after `test` to run them sequentially.
+This creates `bin/tests-fenix7.prg` and runs the test suite. The current suite contains 31 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, and changes to units with cached readings. List several profiles after `test` to run them sequentially.
 
 The helper accepts `monkeydo` exit code 1 only when the final summary explicitly reports passing tests with no failures or errors. If a batch stalls while changing profiles, restart the simulator and test each profile separately.
 
@@ -131,6 +148,7 @@ For manual validation, check:
 
 - Clipping, long city names and numbers, reached step goals, and spacing, especially on the 240 × 240 profiles.
 - Language changes and readability, including accented, Cyrillic, Asian, and right-to-left text. Automated tests do not certify all 36 languages visually.
+- Automatic and manual units, mixed units, negative temperatures/altitudes, and five-digit altitudes in feet. In the simulator, change device units or use the app settings editor to exercise overrides.
 - Missing and expired readings, midnight, sunrise/sunset transitions, and return from low-power mode.
 - Production memory usage and battery life on physical devices. Test drawing buffers do not represent production memory use.
 
@@ -180,7 +198,7 @@ City data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyrigh
 | --- | --- |
 | [manifest.xml](manifest.xml), [monkey.jungle](monkey.jungle) | Device profiles, permissions, source paths, and localized resource mappings |
 | [source/](source/) | Application and view, data provider, solar bar, city service, layout, fonts, and presentation caches |
-| [resources/](resources/) | Icons and localized strings; font/settings directories are placeholders |
+| [resources/](resources/) | Icons, localized strings, and unit settings; the font directory is a placeholder |
 | [tests/](tests/) | Simulator unit tests and their Jungle configuration |
 | [tools/](tools/) | Build/run/test helper and status-icon generation utility |
 | [specs/](specs/) | Original design brief and battery-efficiency requirements |
@@ -194,5 +212,5 @@ The [original watchface specification](specs/watchface-specification.md) records
 - Measure production memory and battery life on physical watches.
 - Implement and validate AMOLED AOD, transitions, and luminance behavior.
 - Review visual readability across all declared languages.
-- Add configurable time format and units.
+- Add configurable time format.
 - Review public city-service usage, privacy requirements, and release assets before publication.

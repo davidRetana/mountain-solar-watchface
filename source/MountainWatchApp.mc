@@ -21,6 +21,13 @@ class MountainWatchApp extends Application.AppBase {
         return [new CityService()];
     }
 
+    function onSettingsChanged() {
+        if (view != null) {
+            view.provider.invalidateUnits();
+            WatchUi.requestUpdate();
+        }
+    }
+
     function onBackgroundData(result) {
         if (view != null && result != null) {
             view.provider.invalidateWeather();

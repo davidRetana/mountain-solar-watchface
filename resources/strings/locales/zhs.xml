@@ -2,4 +2,11 @@
     <string id="MinuteUnit">分钟</string>
     <string id="DayUnit">天</string>
     <string id="GroupSeparator">,</string>
+    <string id="ElevationUnitsTitle" scope="settings">高度单位</string>
+    <string id="TemperatureUnitsTitle" scope="settings">温度单位</string>
+    <string id="UseWatchUnits" scope="settings">使用手表设置</string>
+    <string id="Meters" scope="settings">米 (m)</string>
+    <string id="Feet" scope="settings">英尺 (ft)</string>
+    <string id="Celsius" scope="settings">摄氏度 (°C)</string>
+    <string id="Fahrenheit" scope="settings">华氏度 (°F)</string>
 </strings>

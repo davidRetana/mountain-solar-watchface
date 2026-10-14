@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Jedinice nadmorske visine</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Jedinice temperature</string>
+    <string id="UseWatchUnits" scope="settings">Koristi postavku sata</string>
+    <string id="Meters" scope="settings">Metri (m)</string>
+    <string id="Feet" scope="settings">Stope (ft)</string>
+    <string id="Celsius" scope="settings">Celzij (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

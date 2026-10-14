@@ -2,4 +2,11 @@
     <string id="MinuteUnit">分</string>
     <string id="DayUnit">日</string>
     <string id="GroupSeparator">,</string>
+    <string id="ElevationUnitsTitle" scope="settings">高度の単位</string>
+    <string id="TemperatureUnitsTitle" scope="settings">温度の単位</string>
+    <string id="UseWatchUnits" scope="settings">時計の設定を使用</string>
+    <string id="Meters" scope="settings">メートル (m)</string>
+    <string id="Feet" scope="settings">フィート (ft)</string>
+    <string id="Celsius" scope="settings">摂氏 (°C)</string>
+    <string id="Fahrenheit" scope="settings">華氏 (°F)</string>
 </strings>

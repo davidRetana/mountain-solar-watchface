@@ -2,4 +2,11 @@
     <string id="MinuteUnit">د</string>
     <string id="DayUnit">ي</string>
     <string id="GroupSeparator">٬</string>
+    <string id="ElevationUnitsTitle" scope="settings">وحدات الارتفاع</string>
+    <string id="TemperatureUnitsTitle" scope="settings">وحدات درجة الحرارة</string>
+    <string id="UseWatchUnits" scope="settings">استخدام إعداد الساعة</string>
+    <string id="Meters" scope="settings">أمتار (m)</string>
+    <string id="Feet" scope="settings">أقدام (ft)</string>
+    <string id="Celsius" scope="settings">درجة مئوية (°C)</string>
+    <string id="Fahrenheit" scope="settings">فهرنهايت (°F)</string>
 </strings>

@@ -1,4 +1,5 @@
 using Toybox.Time;
+using Toybox.System;
 
 // Small text/measurement cache, shared by all redraws of a minute snapshot.
 // Keep source values only for expensive text measurements, not a second copy
@@ -6,6 +7,7 @@ using Toybox.Time;
 class WatchPresentation {
     var revision = -1;
     var localeRevision = -1;
+    var unitsRevision = -1;
     var labelFont;
     var smallFont;
     var valueFont;
@@ -14,11 +16,15 @@ class WatchPresentation {
     var stepsSource = null;
     var goalSource = null;
     var elevationSource = null;
+    var elevationUnitSource = null;
+    var temperatureSource = null;
+    var temperatureUnitSource = null;
     var solarStart = null;
     var solarEnd = null;
     var utcOffset = null;
     var cityText = "--";
     var temperatureText = "--°C";
+    var temperatureFont;
     var stepsText = "--";
     var goalText = " / --";
     var stepsFont;
@@ -26,6 +32,7 @@ class WatchPresentation {
     var goalX = 60;
     var stepsProgress = 0;
     var elevationText = "-- m";
+    var elevationUnitText = null;
     var elevationFont;
     var heartText = "--";
     var heartAgeText = "--";
@@ -47,7 +54,8 @@ class WatchPresentation {
     }
 
     function prepare(dc, data as WatchData, nextRevision) {
-        if (revision == nextRevision && localeRevision == data.locale.revision) { return; }
+        if (revision == nextRevision && localeRevision == data.locale.revision &&
+            unitsRevision == data.units.revision) { return; }
         var first = revision == -1 || localeRevision != data.locale.revision;
         if (first || !sameText(citySource, data.city)) {
             citySource = data.city;
@@ -69,11 +77,26 @@ class WatchPresentation {
             goalX = stepsX + dc.getTextWidthInPixels(stepsText, stepsFont);
             stepsProgress = Formatters.progress(data.steps, data.stepGoal, layout.stepsBar[2]);
         }
-        if (first || elevationSource != data.elevation) {
+        if (first || elevationSource != data.elevation || elevationUnitSource != data.units.elevation) {
             elevationSource = data.elevation;
-            elevationText = Formatters.elevation(data.elevation);
+            elevationUnitSource = data.units.elevation;
+            elevationText = Formatters.elevation(data.elevation, data.units.elevation);
+            elevationUnitText = null;
             elevationFont = valueFont;
             if (dc.getTextWidthInPixels(elevationText, elevationFont) > layout.elevationWidth) { elevationFont = labelFont; }
+            if (dc.getTextWidthInPixels(elevationText, elevationFont) > layout.elevationWidth) { elevationFont = smallFont; }
+            if (dc.getTextWidthInPixels(elevationText, elevationFont) > layout.elevationWidth) {
+                // Some native fallback fonts cannot fit five digits plus ft.
+                elevationUnitText = data.units.elevation == System.UNIT_STATUTE ? "ft" : "m";
+                elevationText = elevationText.substring(0, elevationText.length() - elevationUnitText.length() - 1);
+            }
+        }
+        if (first || temperatureSource != data.temperature || temperatureUnitSource != data.units.temperature) {
+            temperatureSource = data.temperature;
+            temperatureUnitSource = data.units.temperature;
+            temperatureText = Formatters.temperature(data.temperature, data.units.temperature);
+            temperatureFont = labelFont;
+            if (dc.getTextWidthInPixels(temperatureText, temperatureFont) > layout.temperatureWidth) { temperatureFont = smallFont; }
         }
         var interval = data.solarInterval;
         var start = interval == null ? null : interval[0];
@@ -85,12 +108,12 @@ class WatchPresentation {
             solarStartText = start == null ? "--:--" : Formatters.solarTime(new Time.Moment(start));
             solarEndText = end == null ? "--:--" : Formatters.solarTime(new Time.Moment(end));
         }
-        temperatureText = Formatters.temperature(data.temperature);
         heartText = Formatters.count(data.heartRate, data.locale);
         heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt, data.locale);
         batteryText = Formatters.batteryText(data);
         revision = nextRevision;
         localeRevision = data.locale.revision;
+        unitsRevision = data.units.revision;
     }
 
     function sameText(a, b) {

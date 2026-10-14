@@ -2,4 +2,11 @@
     <string id="MinuteUnit">ΛΕΠ</string>
     <string id="DayUnit">ημ</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Μονάδες υψομέτρου</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Μονάδες θερμοκρασίας</string>
+    <string id="UseWatchUnits" scope="settings">Χρήση ρύθμισης ρολογιού</string>
+    <string id="Meters" scope="settings">Μέτρα (m)</string>
+    <string id="Feet" scope="settings">Πόδια (ft)</string>
+    <string id="Celsius" scope="settings">Κελσίου (°C)</string>
+    <string id="Fahrenheit" scope="settings">Φαρενάιτ (°F)</string>
 </strings>

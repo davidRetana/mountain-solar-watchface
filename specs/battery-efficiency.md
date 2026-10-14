@@ -56,3 +56,14 @@ text when the locale revision changes; text fonts are rebuilt on a language
 change without recreating geometry or the time font. This does not change
 activity, battery, sensor-history or weather refresh intervals, nor the city
 lookup service or its Spanish request language.
+
+### Display units
+
+Altitude and temperature preferences share the language's once-per-minute device
+settings read and layout restoration check. Application properties are read at
+startup and after `onSettingsChanged()`, then cached. A settings change within
+the same minute invalidates units and requests a redraw without forcing activity,
+battery, weather or sensor-history reads. Metric source values remain cached;
+conversion and rounding take place only in the formatters. Presentation text and
+font measurements are invalidated when the corresponding effective unit changes,
+including when the reading itself has not changed. Repeated redraws reuse them.

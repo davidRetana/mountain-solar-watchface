@@ -91,7 +91,7 @@ class MountainWatchView extends WatchUi.WatchFace {
         dc.drawText(layout.cityX, layout.cityY, labelFont, presentation.cityText,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         drawIcon(dc, layout.thermometer, thermometerIcon);
-        drawCentered(dc, layout.temperatureX, layout.cityY, labelFont, presentation.temperatureText, Theme.TEXT);
+        drawCentered(dc, layout.temperatureX, layout.cityY, presentation.temperatureFont, presentation.temperatureText, Theme.TEXT);
 
         drawStepsIcon(dc);
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
@@ -121,6 +121,9 @@ class MountainWatchView extends WatchUi.WatchFace {
         drawCentered(dc, layout.heartX, layout.heartAgeY, smallFont, presentation.heartAgeText, Theme.MUTED);
         drawMountain(dc);
         drawCentered(dc, layout.centerX, layout.valueY, presentation.elevationFont, presentation.elevationText, Theme.TEXT);
+        if (presentation.elevationUnitText != null) {
+            drawCentered(dc, layout.centerX, layout.heartAgeY, smallFont, presentation.elevationUnitText, Theme.MUTED);
+        }
         drawBattery(dc, data.battery);
         drawCentered(dc, layout.batteryX, layout.valueY, valueFont, presentation.batteryText, Formatters.batteryColor(data.battery));
     }

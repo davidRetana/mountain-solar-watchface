@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator"> </string>
+    <string id="ElevationUnitsTitle" scope="settings">Jednotky nadmorskej výšky</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Jednotky teploty</string>
+    <string id="UseWatchUnits" scope="settings">Použiť nastavenie hodiniek</string>
+    <string id="Meters" scope="settings">Metre (m)</string>
+    <string id="Feet" scope="settings">Stopy (ft)</string>
+    <string id="Celsius" scope="settings">Celzius (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

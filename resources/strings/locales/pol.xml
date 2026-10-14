@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator"> </string>
+    <string id="ElevationUnitsTitle" scope="settings">Jednostki wysokości</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Jednostki temperatury</string>
+    <string id="UseWatchUnits" scope="settings">Użyj ustawienia zegarka</string>
+    <string id="Meters" scope="settings">Metry (m)</string>
+    <string id="Feet" scope="settings">Stopy (ft)</string>
+    <string id="Celsius" scope="settings">Celsjusz (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

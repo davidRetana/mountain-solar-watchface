@@ -2,4 +2,11 @@
     <string id="MinuteUnit">분</string>
     <string id="DayUnit">일</string>
     <string id="GroupSeparator">,</string>
+    <string id="ElevationUnitsTitle" scope="settings">고도 단위</string>
+    <string id="TemperatureUnitsTitle" scope="settings">온도 단위</string>
+    <string id="UseWatchUnits" scope="settings">시계 설정 사용</string>
+    <string id="Meters" scope="settings">미터 (m)</string>
+    <string id="Feet" scope="settings">피트 (ft)</string>
+    <string id="Celsius" scope="settings">섭씨 (°C)</string>
+    <string id="Fahrenheit" scope="settings">화씨 (°F)</string>
 </strings>

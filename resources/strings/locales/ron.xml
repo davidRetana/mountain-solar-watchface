@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">z</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Unități de altitudine</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Unități de temperatură</string>
+    <string id="UseWatchUnits" scope="settings">Folosește setarea ceasului</string>
+    <string id="Meters" scope="settings">Metri (m)</string>
+    <string id="Feet" scope="settings">Picioare (ft)</string>
+    <string id="Celsius" scope="settings">Celsius (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

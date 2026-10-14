@@ -21,6 +21,7 @@ class WatchLayout {
     var cityY;
     var cityWidth;
     var temperatureX;
+    var temperatureWidth;
     var pin as Lang.Array<Lang.Number>;
     var thermometer as Lang.Array<Lang.Number>;
     var leftSole as Lang.Array<Lang.Array<Lang.Number>>;
@@ -78,6 +79,7 @@ class WatchLayout {
         cityY = y(74);
         cityWidth = size(88);
         temperatureX = x(202);
+        temperatureWidth = size(52);
         pin = rectangle(50, 68, 9, 14);
         thermometer = rectangle(163, 66, 13, 17);
         leftSole = points([[36, 182], [37, 179], [40, 179], [41, 182], [40, 187], [37, 187]]);
@@ -97,7 +99,8 @@ class WatchLayout {
         heartAgeY = y(236);
         mountain = points([[120, 213], [124, 207], [126, 209], [130, 201], [134, 208], [136, 206], [140, 213]]);
         valueY = y(224);
-        elevationWidth = size(56);
+        // Keep a one-pixel margin inside the 60px altitude column at 260px.
+        elevationWidth = size(58);
         battery = rectangle(179, 202, 16, 10);
         batteryCap = rectangle(195, 205, 2, 4);
         batteryFill = rectangle(181, 204, 12, 6);

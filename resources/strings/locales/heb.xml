@@ -2,4 +2,11 @@
     <string id="MinuteUnit">דק׳</string>
     <string id="DayUnit">י</string>
     <string id="GroupSeparator">,</string>
+    <string id="ElevationUnitsTitle" scope="settings">יחידות גובה</string>
+    <string id="TemperatureUnitsTitle" scope="settings">יחידות טמפרטורה</string>
+    <string id="UseWatchUnits" scope="settings">שימוש בהגדרת השעון</string>
+    <string id="Meters" scope="settings">מטרים (m)</string>
+    <string id="Feet" scope="settings">רגל (ft)</string>
+    <string id="Celsius" scope="settings">צלזיוס (°C)</string>
+    <string id="Fahrenheit" scope="settings">פרנהייט (°F)</string>
 </strings>

@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Enote nadmorske višine</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Enote temperature</string>
+    <string id="UseWatchUnits" scope="settings">Uporabi nastavitev ure</string>
+    <string id="Meters" scope="settings">Metri (m)</string>
+    <string id="Feet" scope="settings">Čevlji (ft)</string>
+    <string id="Celsius" scope="settings">Celzij (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>
