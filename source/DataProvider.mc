@@ -45,11 +45,14 @@ class DataProvider {
         var minuteChanged = minute != lastMinute;
         if (!minuteChanged && !cityCacheDirty && !localeDirty) { return data; }
         var languageChanged = false;
+        var unitsChanged = false;
         if (minuteChanged || localeDirty) {
-            languageChanged = data.locale.refresh(readLanguage());
+            var settings = readDeviceSettings();
+            languageChanged = data.locale.refresh(readLanguage(settings));
+            unitsChanged = data.units.refresh(settings);
             localeDirty = false;
         }
-        if (!minuteChanged && !cityCacheDirty && !languageChanged) { return data; }
+        if (!minuteChanged && !cityCacheDirty && !languageChanged && !unitsChanged) { return data; }
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
         // Local offset modulo one day also detects DST/time-zone changes.
         data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
@@ -113,7 +116,12 @@ class DataProvider {
     }
 
     function invalidateLocale() { localeDirty = true; }
-    function readLanguage() { return System.getDeviceSettings().systemLanguage; }
+    function invalidateUnits() {
+        data.units.invalidateSettings();
+        localeDirty = true;
+    }
+    function readDeviceSettings() { return System.getDeviceSettings(); }
+    function readLanguage(settings) { return settings.systemLanguage; }
     function readCalendar(now) { return Gregorian.info(now, Time.FORMAT_MEDIUM); }
 
     function refreshActivity() {

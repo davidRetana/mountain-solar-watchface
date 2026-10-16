@@ -2,4 +2,11 @@
     <string id="MinuteUnit">ХВ</string>
     <string id="DayUnit">д</string>
     <string id="GroupSeparator"> </string>
+    <string id="ElevationUnitsTitle" scope="settings">Одиниці висоти</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Одиниці температури</string>
+    <string id="UseWatchUnits" scope="settings">Використовувати налаштування годинника</string>
+    <string id="Meters" scope="settings">Метри (m)</string>
+    <string id="Feet" scope="settings">Фути (ft)</string>
+    <string id="Celsius" scope="settings">Цельсій (°C)</string>
+    <string id="Fahrenheit" scope="settings">Фаренгейт (°F)</string>
 </strings>

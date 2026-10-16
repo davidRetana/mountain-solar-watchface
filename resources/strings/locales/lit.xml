@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator"> </string>
+    <string id="ElevationUnitsTitle" scope="settings">Aukščio vienetai</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Temperatūros vienetai</string>
+    <string id="UseWatchUnits" scope="settings">Naudoti laikrodžio nustatymą</string>
+    <string id="Meters" scope="settings">Metrai (m)</string>
+    <string id="Feet" scope="settings">Pėdos (ft)</string>
+    <string id="Celsius" scope="settings">Celsijus (°C)</string>
+    <string id="Fahrenheit" scope="settings">Farenheitas (°F)</string>
 </strings>

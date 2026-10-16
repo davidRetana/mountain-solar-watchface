@@ -25,11 +25,16 @@ class EfficiencyProvider extends DataProvider {
     var weather = null;
     var battery = null;
     var clock = 1750000020;
+    var settingsReads = 0;
+    var deviceSettings;
     function initialize() {
         DataProvider.initialize();
         cityScheduler = new EfficiencyScheduler();
         battery = new EfficiencyBattery();
+        deviceSettings = new TestUnitDeviceSettings();
+        data.units = new TestWatchUnits();
     }
+    function readDeviceSettings() { settingsReads += 1; return deviceSettings; }
     function readActivity() { activityReads += 1; return null; }
     function refresh() { return refreshAt(new Time.Moment(clock)); }
     function readBattery() { batteryReads += 1; return battery; }

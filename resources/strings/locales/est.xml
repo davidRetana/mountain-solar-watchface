@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">p</string>
     <string id="GroupSeparator"> </string>
+    <string id="ElevationUnitsTitle" scope="settings">Kõrguseühikud</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Temperatuuriühikud</string>
+    <string id="UseWatchUnits" scope="settings">Kasuta kella seadistust</string>
+    <string id="Meters" scope="settings">Meetrid (m)</string>
+    <string id="Feet" scope="settings">Jalad (ft)</string>
+    <string id="Celsius" scope="settings">Celsius (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>

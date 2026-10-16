@@ -78,7 +78,7 @@ class LocaleEfficiencyProvider extends EfficiencyProvider {
         EfficiencyProvider.initialize();
         data.locale = new TestWatchLocale();
     }
-    function readLanguage() { return language; }
+    function readLanguage(settings) { return language; }
     function readCalendar(now) {
         calendarReads += 1;
         // Use a real Gregorian.Info with controllable strings for this test.

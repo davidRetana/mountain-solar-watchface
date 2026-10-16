@@ -2,4 +2,11 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">T</string>
     <string id="GroupSeparator">.</string>
+    <string id="ElevationUnitsTitle" scope="settings">Höheneinheit</string>
+    <string id="TemperatureUnitsTitle" scope="settings">Temperatureinheit</string>
+    <string id="UseWatchUnits" scope="settings">Uhreinstellung verwenden</string>
+    <string id="Meters" scope="settings">Meter (m)</string>
+    <string id="Feet" scope="settings">Fuß (ft)</string>
+    <string id="Celsius" scope="settings">Celsius (°C)</string>
+    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
 </strings>
