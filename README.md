@@ -1,6 +1,6 @@
 # Mountain Solar Watchface
 
-Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combines a large digital clock with weather, daylight progress, steps, heart rate, elevation, and battery information. The design started on the 47 mm fēnix 7 Solar and now scales across nine device profiles.
+Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combines a large digital clock with weather, daylight progress, steps, heart rate, elevation, and battery information. The design started on the 47 mm fēnix 7 Solar. The manifest now declares 42 device profiles: nine visually verified profiles and 33 additional candidates selected from Garmin's device specifications.
 
 <img src="screenshots/screenshot1.jpeg" alt="Mountain Solar watch face preview" width="320">
 
@@ -16,9 +16,9 @@ Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combine
 - Altitude and temperature follow the watch's unit settings by default, with independent overrides in Connect IQ settings.
 - Resources for 36 watch languages, font fallbacks, and `--` for missing or expired data.
 
-Simulator validation for unit settings passed 31 tests on each of the nine profiles (279 total), including text-width checks with vector and native fallback fonts. Production `.prg` builds also passed for all nine profiles. The maintainer's visual review and the signed release `.iq` package built on 6 October 2026 cover the earlier version; the package used SDK 9.2.0 and included 15 device variants across those profiles.
+Simulator validation for unit settings passed 31 tests on each of the original nine profiles (279 total), including text-width checks with vector and native fallback fonts. Production `.prg` builds also passed for those nine profiles. The maintainer's visual review and the signed release `.iq` package built on 6 October 2026 cover the earlier version; the package used SDK 9.2.0 and included 15 device variants across those profiles. On 16 October 2026, device builds passed for all 42 declared profiles, including all 33 newly declared profiles. Simulator startup checks passed on nine representative profiles; visual review of the additions remains pending.
 
-Memory and battery-life measurements on physical watches remain pending. The AMOLED profile is experimental: a dedicated always-on display (AOD) presentation is still pending. Time format is currently fixed at 24 hours.
+Memory and battery-life measurements on physical watches remain pending. AMOLED/MicroLED support is experimental: a dedicated always-on display (AOD) presentation is still pending. Time format is currently fixed at 24 hours.
 
 ## Quick Start
 
@@ -41,7 +41,7 @@ Run the following commands from the project root.
 python3 tools/ciq.py build fenix7
 ```
 
-This creates `bin/mountain-fenix7.prg`. Build several profiles by listing them after `build`:
+This creates `bin/devices/fenix7/mountain-fenix7.prg`. Build several profiles by listing them after `build`:
 
 ```sh
 python3 tools/ciq.py build fenix7 fenix7s fenix7x
@@ -74,13 +74,13 @@ python3 tools/ciq.py run fenix7
 
 ### Install on a Physical Watch
 
-Build for the watch's exact profile, connect it by USB, and copy the corresponding `bin/mountain-<profile>.prg` into `GARMIN/APPS`. Use an MTP client if your system requires one. Disconnect safely and select Mountain Solar on the watch.
+Build for the watch's exact profile, connect it by USB, and copy the corresponding `bin/devices/<profile>/mountain-<profile>.prg` into `GARMIN/APPS`. Use an MTP client if your system requires one. Disconnect safely and select Mountain Solar on the watch.
 
 A `.prg` is for a specific profile and local installation. A `.iq` packages the manifest's profiles for upload to Connect IQ.
 
 ## Device Profiles
 
-These are the profiles currently declared in [manifest.xml](manifest.xml). Display information comes from the installed SDK device definitions.
+The original nine profiles below are declared in [manifest.xml](manifest.xml) and visually verified by the maintainer. Display information comes from the installed SDK device definitions.
 
 | Profile | Display | Resolution |
 | --- | --- | --- |
@@ -94,7 +94,49 @@ These are the profiles currently declared in [manifest.xml](manifest.xml). Displ
 | `fenix8solar51mm` | MIP | 280 × 280 |
 | `fenix947mm` | AMOLED, experimental | 454 × 454 |
 
-The installed `fenix947mm` definition covers the 47 and 51 mm fēnix 9. Passing builds and simulator tests do not certify physical-device performance or AOD support. Profiles absent from the manifest have not been included in the release package.
+Several profiles cover multiple commercial models: `fenix7` also covers quatix 7; `fenix7x` covers tactix 7, quatix 7X Solar and Enduro 2; `fenix8solar51mm` covers tactix 8 Solar 51 mm; and `fenix947mm` covers both 47 and 51 mm fēnix 9.
+
+### Additional Declared Profiles
+
+These 33 profiles are compatibility candidates based on Garmin's [device reference](https://developer.garmin.com/connect-iq/device-reference/), [API levels](https://developer.garmin.com/connect-iq/compatible-devices/) and [graphics capabilities](https://developer.garmin.com/connect-iq/api-docs/Toybox/Graphics.html#getVectorFont-instance_function), checked on 14 October 2026. They support API 5.2 or newer, round displays, the requested vector fonts, 128 KiB watch-face memory and 64 KiB background memory. All 33 profiles are installed and passed builds on 16 October 2026. Visual validation remains pending for the additions.
+
+| Models | Profiles | Resolution |
+| --- | --- | --- |
+| fēnix 7 Pro / 7X Pro Solar, no Wi-Fi | `fenix7pronowifi`, `fenix7xpronowifi` | 260 / 280 square |
+| fēnix 9 Pro Solar 47 / 51 mm | `fenix9prosolar47mm`, `fenix9prosolar51mm` | 260 / 280 square |
+| Enduro 3 / 4 | `enduro3`, `enduro4` | 280 × 280 |
+| Forerunner 955 / Solar | `fr955` | 260 × 260 |
+| fēnix 8 AMOLED 43 mm | `fenix843mm` | 416 × 416 |
+| fēnix 8 / tactix 8 / quatix 8 AMOLED 47 / 51 mm | `fenix847mm` | 454 × 454 |
+| fēnix 8 Pro / MicroLED / quatix 8 Pro | `fenix8pro47mm` | 454 × 454 |
+| fēnix 9 43 mm / 9 Pro 43 mm | `fenix943mm`, `fenix9pro43mm` | 416 × 416 |
+| fēnix 9 Pro 47 mm | `fenix9pro47mm` | 454 × 454 |
+| fēnix 9 Pro 51 mm | `fenix9pro51mm` | 466 × 466 |
+| fēnix E | `fenixe` | 416 × 416 |
+| epix Gen 2 / quatix 7 Sapphire | `epix2` | 416 × 416 |
+| epix Pro Gen 2 42 mm | `epix2pro42mm` | 390 × 390 |
+| epix Pro Gen 2 47 mm / quatix 7 Pro | `epix2pro47mm` | 416 × 416 |
+| epix Pro Gen 2 51 mm / D2 Mach 1 Pro / tactix 7 AMOLED | `epix2pro51mm` | 454 × 454 |
+| Forerunner 165 / 165 Music | `fr165`, `fr165m` | 390 × 390 |
+| Forerunner 265 / 265S | `fr265`, `fr265s` | 416 / 360 square |
+| Forerunner 965 | `fr965` | 454 × 454 |
+| MARQ Gen 2, including Carbon variants / Aviator | `marq2`, `marq2aviator` | 390 × 390 |
+| D2 Mach 1 | `d2mach1` | 416 × 416 |
+| D2 Mach 2 / Mach 2 Pro | `d2mach2`, `d2mach2pro` | 454 × 454 |
+| Approach S72 43 / 47 mm | `approachs7243mm`, `approachs7247mm` | 416 / 454 square |
+| Venu 4 41 / 45 mm; D2 Air X15 uses the 45 mm profile | `venu441mm`, `venu445mm` | 390 / 454 square |
+
+The first four rows are MIP; the remaining rows are AMOLED, with MicroLED also covered by `fenix8pro47mm`. Representative visual checks can focus on `fr265s` (360 px), `epix2pro42mm` (390 px), `epix2` (416 px) and `fenix9pro51mm` (466 px), supplementing the existing verified resolutions.
+
+### Deferred Profiles
+
+- Forerunner 70, 170 / Music, 570 and 970: the time would use Roboto Condensed instead of Bionic; visual review is pending.
+- Venu 3 / 3S: the requested fonts are absent; native font fallbacks and straight date text need review.
+- Venu X1: rectangular display layout needs review.
+- vívoactive 6: the elevation-history API is unsupported; altitude behavior needs review.
+- Approach S70 and Descent Mk3: Garmin lists API 5.1, below the manifest's minimum of 5.2.
+
+Declaring a profile does not update the store listing or the existing release package. Install its device definitions through SDK Manager to compile it, export a new signed `.iq` including all declared profiles, then upload that package as an app update. Each profile needs to compile, but does not need a separate simulator session. An uninstalled profile can produce an `Invalid device id found in the application manifest` compiler warning even when its ID matches Garmin's catalog. On 16 October 2026, headless Java builds passed for all 42 declared profiles. Simulator startup checks confirmed app-start events and four seconds without a crash on `fr265s`, `epix2pro42mm`, `epix2`, `fenix9pro51mm`, `fr955`, `enduro3`, `venu445mm`, `approachs7243mm` and `approachs7247mm`; these checks do not certify visual layout, long-running behavior, physical-device performance or AOD support. Local build and simulator logs are under `bin/devices/<profile>/`; aggregate validation summaries are under `bin/profile-checks/`.
 
 ## Data Behavior
 
@@ -140,7 +182,7 @@ With the simulator open:
 python3 tools/ciq.py test fenix7
 ```
 
-This creates `bin/tests-fenix7.prg` and runs the test suite. The current suite contains 31 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, and changes to units with cached readings. List several profiles after `test` to run them sequentially.
+This creates `bin/devices/fenix7/tests-fenix7.prg` and runs the test suite. The current suite contains 31 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, and changes to units with cached readings. List several profiles after `test` to run them sequentially.
 
 The helper accepts `monkeydo` exit code 1 only when the final summary explicitly reports passing tests with no failures or errors. If a batch stalls while changing profiles, restart the simulator and test each profile separately.
 
@@ -163,19 +205,20 @@ The manifest uses the public application's ID, `01f96394ed0545efbbff7daeb273c099
 Install all manifest device profiles, make Java available, and set `CIQ_SDK` to the SDK directory as shown in the simulator setup. Then create a signed release package:
 
 ```sh
-mkdir -p bin
+RELEASE_VERSION=1.2.0 # Example: set this to the new release version.
+mkdir -p bin/releases
 "$CIQ_SDK/bin/monkeyc" -f monkey.jungle -e -r -w -l 1 \
-  -o bin/mountainsolarwatchface.iq -y developer_key
+  -o "bin/releases/mountainsolarwatchface-v${RELEASE_VERSION}.iq" -y developer_key
 ```
 
-Use your actual key path after `-y` if it is stored elsewhere. `-e` packages all declared profiles and `-r` enables release mode. The output is `bin/mountainsolarwatchface.iq`. Build artifacts under `bin/` are ignored by Git and must be generated locally.
+Use your actual key path after `-y` if it is stored elsewhere. `-e` packages all declared profiles and `-r` enables release mode. The output is `bin/releases/mountainsolarwatchface-v<version>.iq`. Use a new version filename for each release and preserve earlier packages. The local archive currently contains versions `1.0.0` and `1.1.0`; the unversioned package was an identical copy of `1.1.0` and was removed. Build artifacts and the release archive under `bin/` are ignored by Git: back up the release packages separately, because a fresh checkout will not restore them.
 
 If the macOS export aborts while initializing Java's AWT application, the release export has also been verified with headless Java:
 
 ```sh
 JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:+$JAVA_TOOL_OPTIONS }-Djava.awt.headless=true" \
   "$CIQ_SDK/bin/monkeyc" -f monkey.jungle -e -r -w -l 1 \
-  -o bin/mountainsolarwatchface.iq -y developer_key
+  -o "bin/releases/mountainsolarwatchface-v${RELEASE_VERSION}.iq" -y developer_key
 ```
 
 Before public distribution, complete the outstanding device checks and the provider/privacy review described below. Generating a package does not publish the app.
@@ -203,7 +246,10 @@ City data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyrigh
 | [tools/](tools/) | Build/run/test helper and status-icon generation utility |
 | [specs/](specs/) | Original design brief and battery-efficiency requirements |
 | [screenshots/](screenshots/) | Visual references |
-| `bin/` | Generated PRGs, test binaries, compiler intermediates, and release packages |
+| `bin/releases/` | Versioned signed `.iq` packages retained as a local release archive |
+| `bin/devices/<profile>/` | Profile-specific PRGs, test binaries, settings, debug symbols, and validation logs |
+| `bin/profile-checks/` | Aggregate build and simulator validation summaries |
+| `bin/gen/` | Generated sources referenced by existing debug symbols; compiler caches and MIR intermediates can be regenerated |
 
 The [original watchface specification](specs/watchface-specification.md) records the initial single-device MVP brief. Some requirements have since changed, including device coverage and external city lookup; use this README and the implementation for current behavior. The [battery-efficiency specification](specs/battery-efficiency.md) documents refresh and caching decisions.
 

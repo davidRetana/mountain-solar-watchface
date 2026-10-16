@@ -73,10 +73,11 @@ def main():
             if not (sdk / "bin" / tool).is_file():
                 raise ValueError(f"No se encuentra {tool} en el SDK seleccionado.")
         env = environment()
-        (ROOT / "bin").mkdir(exist_ok=True)
         for device in args.devices:
             testing = args.action == "test"
-            output = ROOT / "bin" / f"{'tests' if testing else 'mountain'}-{device}.prg"
+            output_dir = ROOT / "bin" / "devices" / device
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output = output_dir / f"{'tests' if testing else 'mountain'}-{device}.prg"
             print(f"\n{args.action}: {device}", flush=True)
             command = [str(sdk / "bin/monkeyc"), "-f",
                        "tests/solar.jungle" if testing else "monkey.jungle",
