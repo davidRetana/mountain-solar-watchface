@@ -110,7 +110,7 @@ function unitChangesRefreshCachedReadingsWithoutExtraDataReads(logger) {
     var activity = provider.activityReads;
     var revision = provider.revision;
     provider.data.units.temperaturePreference = provider.data.units.STATUTE;
-    provider.invalidateUnits();
+    provider.invalidateSettings();
     provider.refresh(); // Settings event within the same minute.
     cache.prepare(dc, provider.data, provider.revision);
     Test.assert(cache.temperatureText.equals("59°F") && provider.revision == revision + 1);

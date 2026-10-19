@@ -2,11 +2,14 @@
     <string id="MinuteUnit">PERC</string>
     <string id="DayUnit">n</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Magasság mértékegysége</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Hőmérséklet mértékegysége</string>
-    <string id="UseWatchUnits" scope="settings">Óra beállításának használata</string>
-    <string id="Meters" scope="settings">Méter (m)</string>
-    <string id="Feet" scope="settings">Láb (ft)</string>
-    <string id="Celsius" scope="settings">Celsius (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Magasság mértékegysége</string>
+    <string id="TemperatureUnitsTitle">Hőmérséklet mértékegysége</string>
+    <string id="UseWatchUnits">Óra beállításának használata</string>
+    <string id="Meters">Méter (m)</string>
+    <string id="Feet">Láb (ft)</string>
+    <string id="Celsius">Celsius (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Akkumulátor kijelzése</string>
+    <string id="BatteryDays">Hátralévő napok</string>
+    <string id="BatteryPercentage">Százalék (%)</string>
 </strings>

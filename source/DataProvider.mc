@@ -27,6 +27,7 @@ class DataProvider {
     var schedulerDirty = true;
     var calendarDay = null;
     var localeDirty = true;
+    var batteryPreferenceDirty = true;
     var revision = 0;
 
     function initialize() {
@@ -46,13 +47,16 @@ class DataProvider {
         if (!minuteChanged && !cityCacheDirty && !localeDirty) { return data; }
         var languageChanged = false;
         var unitsChanged = false;
+        var batteryDisplayChanged = false;
         if (minuteChanged || localeDirty) {
             var settings = readDeviceSettings();
             languageChanged = data.locale.refresh(readLanguage(settings));
             unitsChanged = data.units.refresh(settings);
+            if (batteryPreferenceDirty) { batteryDisplayChanged = refreshBatteryPreference(); }
             localeDirty = false;
         }
-        if (!minuteChanged && !cityCacheDirty && !languageChanged && !unitsChanged) { return data; }
+        if (!minuteChanged && !cityCacheDirty && !languageChanged && !unitsChanged &&
+            !batteryDisplayChanged) { return data; }
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
         // Local offset modulo one day also detects DST/time-zone changes.
         data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
@@ -116,13 +120,29 @@ class DataProvider {
     }
 
     function invalidateLocale() { localeDirty = true; }
-    function invalidateUnits() {
+    function invalidateSettings() {
         data.units.invalidateSettings();
+        batteryPreferenceDirty = true;
         localeDirty = true;
     }
     function readDeviceSettings() { return System.getDeviceSettings(); }
     function readLanguage(settings) { return settings.systemLanguage; }
     function readCalendar(now) { return Gregorian.info(now, Time.FORMAT_MEDIUM); }
+
+    function readBatteryPreference() { return Toybox.Application.Properties.getValue("BatteryDisplay"); }
+
+    function refreshBatteryPreference() {
+        var asPercentage = false;
+        try {
+            asPercentage = readBatteryPreference() == 1;
+        } catch (e) {
+            // Missing settings on upgrade keep the existing days-first display.
+        }
+        batteryPreferenceDirty = false;
+        if (data.batteryAsPercentage == asPercentage) { return false; }
+        data.batteryAsPercentage = asPercentage;
+        return true;
+    }
 
     function refreshActivity() {
         // Clear previous readings so failures cannot leave stale values on screen.

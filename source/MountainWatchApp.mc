@@ -21,9 +21,13 @@ class MountainWatchApp extends Application.AppBase {
         return [new CityService()];
     }
 
+    function getSettingsView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates] or Null {
+        return [new WatchSettingsMenu(), new WatchSettingsDelegate(method(:onSettingsChanged))];
+    }
+
     function onSettingsChanged() {
         if (view != null) {
-            view.provider.invalidateUnits();
+            view.provider.invalidateSettings();
             WatchUi.requestUpdate();
         }
     }

@@ -2,11 +2,14 @@
     <string id="MinuteUnit">PH</string>
     <string id="DayUnit">ng</string>
     <string id="GroupSeparator">.</string>
-    <string id="ElevationUnitsTitle" scope="settings">Đơn vị độ cao</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Đơn vị nhiệt độ</string>
-    <string id="UseWatchUnits" scope="settings">Dùng cài đặt của đồng hồ</string>
-    <string id="Meters" scope="settings">Mét (m)</string>
-    <string id="Feet" scope="settings">Bộ (ft)</string>
-    <string id="Celsius" scope="settings">Độ C (°C)</string>
-    <string id="Fahrenheit" scope="settings">Độ F (°F)</string>
+    <string id="ElevationUnitsTitle">Đơn vị độ cao</string>
+    <string id="TemperatureUnitsTitle">Đơn vị nhiệt độ</string>
+    <string id="UseWatchUnits">Dùng cài đặt của đồng hồ</string>
+    <string id="Meters">Mét (m)</string>
+    <string id="Feet">Bộ (ft)</string>
+    <string id="Celsius">Độ C (°C)</string>
+    <string id="Fahrenheit">Độ F (°F)</string>
+    <string id="BatteryDisplayTitle">Hiển thị pin</string>
+    <string id="BatteryDays">Số ngày còn lại</string>
+    <string id="BatteryPercentage">Phần trăm (%)</string>
 </strings>

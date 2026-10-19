@@ -2,11 +2,14 @@
     <string id="MinuteUnit">นาที</string>
     <string id="DayUnit">ว</string>
     <string id="GroupSeparator">,</string>
-    <string id="ElevationUnitsTitle" scope="settings">หน่วยความสูง</string>
-    <string id="TemperatureUnitsTitle" scope="settings">หน่วยอุณหภูมิ</string>
-    <string id="UseWatchUnits" scope="settings">ใช้การตั้งค่านาฬิกา</string>
-    <string id="Meters" scope="settings">เมตร (m)</string>
-    <string id="Feet" scope="settings">ฟุต (ft)</string>
-    <string id="Celsius" scope="settings">เซลเซียส (°C)</string>
-    <string id="Fahrenheit" scope="settings">ฟาเรนไฮต์ (°F)</string>
+    <string id="ElevationUnitsTitle">หน่วยความสูง</string>
+    <string id="TemperatureUnitsTitle">หน่วยอุณหภูมิ</string>
+    <string id="UseWatchUnits">ใช้การตั้งค่านาฬิกา</string>
+    <string id="Meters">เมตร (m)</string>
+    <string id="Feet">ฟุต (ft)</string>
+    <string id="Celsius">เซลเซียส (°C)</string>
+    <string id="Fahrenheit">ฟาเรนไฮต์ (°F)</string>
+    <string id="BatteryDisplayTitle">การแสดงแบตเตอรี่</string>
+    <string id="BatteryDays">จำนวนวันที่เหลือ</string>
+    <string id="BatteryPercentage">เปอร์เซ็นต์ (%)</string>
 </strings>

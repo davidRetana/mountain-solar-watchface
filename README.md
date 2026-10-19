@@ -12,8 +12,8 @@ Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combine
 - Temperature in °C or °F and a cached city name for the weather observation's location.
 - Sunrise/sunset bar with a sun during the day and a moon at night.
 - Steps, daily goal, and an amber progress bar.
-- Recent heart rate with sample age, elevation in meters or feet, and estimated battery days with a percentage fallback.
-- Altitude and temperature follow the watch's unit settings by default, with independent overrides in Connect IQ settings.
+- Recent heart rate with sample age, elevation in meters or feet, and battery shown as days remaining or percentage.
+- Altitude and temperature follow the watch's unit settings by default, with independent overrides on the watch or in Connect IQ settings.
 - Resources for 36 watch languages, font fallbacks, and `--` for missing or expired data.
 
 Simulator validation for unit settings passed 31 tests on each of the original nine profiles (279 total), including text-width checks with vector and native fallback fonts. Production `.prg` builds also passed for those nine profiles. The maintainer's visual review and the signed release `.iq` package built on 6 October 2026 cover the earlier version; the package used SDK 9.2.0 and included 15 device variants across those profiles. On 16 October 2026, device builds passed for all 42 declared profiles, including all 33 newly declared profiles. Simulator startup checks passed on nine representative profiles; visual review of the additions remains pending.
@@ -140,18 +140,23 @@ Declaring a profile does not update the store listing or the existing release pa
 
 ## Data Behavior
 
-### Unit Settings
+### Display Settings
 
-In the Connect IQ mobile app, open Mountain Solar's settings to choose units independently:
+Open Mountain Solar's settings on the watch or in the Connect IQ mobile app to choose display preferences:
 
 | Setting | Choices | Default |
 | --- | --- | --- |
 | Altitude units | Use watch setting / Meters (m) / Feet (ft) | Use watch setting |
 | Temperature units | Use watch setting / Celsius (°C) / Fahrenheit (°F) | Use watch setting |
+| Battery display | Days remaining / Percentage (%) | Days remaining |
 
-Automatic mode reads the watch's altitude and temperature preferences separately, so mixed units are supported. Changes to watch units appear on the next minute update or layout restoration; changes to the app's settings request an immediate update. Settings labels are translated for all 36 declared watch languages. Unit symbols (`m`, `ft`, `°C`, and `°F`) are preserved in every language, and settings-only strings are excluded from the watch face's runtime resources.
+Automatic mode reads the watch's altitude and temperature preferences separately, so mixed units are supported. Changes to watch units appear on the next minute update or layout restoration; changes to the app's settings request an immediate update. Settings labels are translated for all 36 declared watch languages and shared by the on-watch menus and Connect IQ. Unit symbols (`m`, `ft`, `°C`, and `°F`) are preserved in every language.
 
 Garmin supplies elevation in meters and weather temperature in Celsius. Those source values stay unchanged in the data snapshot; conversion and integer rounding happen only when formatting display text. For example, `1371 m` becomes `4498 ft` and `15°C` becomes `59°F`. Missing readings retain the selected unit (`-- m`, `-- ft`, `--°C`, or `--°F`). Longer values use a smaller font when needed; if native fallback fonts cannot fit altitude and unit together, the unit appears below the number.
+
+To change these preferences directly on the watch, open the system's watch-face menu, select Mountain Solar and open its settings. The menu lists **Battery display**, **Temperature units** and **Altitude units**, with each saved choice shown below its label. Open a category to choose an option; the current choice is focused. Selecting an option saves it and returns to the settings list. Back leaves the choice unchanged; Back from the main settings list returns to the watch face. This works without a phone and uses the same saved preferences as Connect IQ. Menu names and the route to watch-face settings vary by watch model.
+
+Battery display defaults to estimated days remaining, with `<1 d` for less than a day and a percentage fallback when the watch does not supply an estimate. Percentage mode always uses the charge percentage (for example, `50%`) and shows `--` if that reading is unavailable. Saving the setting updates the display immediately using cached readings; battery stats retain their five-minute refresh interval. The battery icon and its color continue to reflect the charge percentage in both modes. Battery menu labels are available at runtime for the on-watch menu and are translated in all 36 languages.
 
 ### Sources and Refresh
 
@@ -182,7 +187,7 @@ With the simulator open:
 python3 tools/ciq.py test fenix7
 ```
 
-This creates `bin/devices/fenix7/tests-fenix7.prg` and runs the test suite. The current suite contains 31 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, and changes to units with cached readings. List several profiles after `test` to run them sequentially.
+This creates `bin/devices/fenix7/tests-fenix7.prg` and runs the test suite. The current suite contains 39 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, battery display preferences and fallbacks, on-watch menu navigation, persistence and cancellation, and settings changes with cached readings. List several profiles after `test` to run them sequentially.
 
 The helper accepts `monkeydo` exit code 1 only when the final summary explicitly reports passing tests with no failures or errors. If a batch stalls while changing profiles, restart the simulator and test each profile separately.
 
@@ -191,6 +196,8 @@ For manual validation, check:
 - Clipping, long city names and numbers, reached step goals, and spacing, especially on the 240 × 240 profiles.
 - Language changes and readability, including accented, Cyrillic, Asian, and right-to-left text. Automated tests do not certify all 36 languages visually.
 - Automatic and manual units, mixed units, negative temperatures/altitudes, and five-digit altitudes in feet. In the simulator, change device units or use the app settings editor to exercise overrides.
+- Battery display changes between days remaining and percentage, including `100%`, `0%`, less than a day, and unavailable estimates/readings.
+- The on-watch settings menu: with the watch face running in the simulator, use **Settings → Trigger App Settings**, open Battery display, Temperature units or Altitude units, and select an option. Confirm that the main settings list shows the new choice and the face updates after leaving settings. Check Celsius/Fahrenheit, meters/feet and automatic watch units independently. Reopen a category to check the saved choice, or press Back to cancel. This opens the local watch UI through `getSettingsView()`.
 - Missing and expired readings, midnight, sunrise/sunset transitions, and return from low-power mode.
 - Production memory usage and battery life on physical devices. Test drawing buffers do not represent production memory use.
 
@@ -241,7 +248,7 @@ City data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyrigh
 | --- | --- |
 | [manifest.xml](manifest.xml), [monkey.jungle](monkey.jungle) | Device profiles, permissions, source paths, and localized resource mappings |
 | [source/](source/) | Application and view, data provider, solar bar, city service, layout, fonts, and presentation caches |
-| [resources/](resources/) | Icons, localized strings, and unit settings; the font directory is a placeholder |
+| [resources/](resources/) | Icons, localized strings, and display settings; the font directory is a placeholder |
 | [tests/](tests/) | Simulator unit tests and their Jungle configuration |
 | [tools/](tools/) | Build/run/test helper and status-icon generation utility |
 | [specs/](specs/) | Original design brief and battery-efficiency requirements |

@@ -2,11 +2,14 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator">.</string>
-    <string id="ElevationUnitsTitle" scope="settings">Enote nadmorske višine</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Enote temperature</string>
-    <string id="UseWatchUnits" scope="settings">Uporabi nastavitev ure</string>
-    <string id="Meters" scope="settings">Metri (m)</string>
-    <string id="Feet" scope="settings">Čevlji (ft)</string>
-    <string id="Celsius" scope="settings">Celzij (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Enote nadmorske višine</string>
+    <string id="TemperatureUnitsTitle">Enote temperature</string>
+    <string id="UseWatchUnits">Uporabi nastavitev ure</string>
+    <string id="Meters">Metri (m)</string>
+    <string id="Feet">Čevlji (ft)</string>
+    <string id="Celsius">Celzij (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Prikaz baterije</string>
+    <string id="BatteryDays">Preostali dnevi</string>
+    <string id="BatteryPercentage">Odstotek (%)</string>
 </strings>

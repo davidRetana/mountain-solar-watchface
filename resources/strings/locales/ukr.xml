@@ -2,11 +2,14 @@
     <string id="MinuteUnit">ХВ</string>
     <string id="DayUnit">д</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Одиниці висоти</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Одиниці температури</string>
-    <string id="UseWatchUnits" scope="settings">Використовувати налаштування годинника</string>
-    <string id="Meters" scope="settings">Метри (m)</string>
-    <string id="Feet" scope="settings">Фути (ft)</string>
-    <string id="Celsius" scope="settings">Цельсій (°C)</string>
-    <string id="Fahrenheit" scope="settings">Фаренгейт (°F)</string>
+    <string id="ElevationUnitsTitle">Одиниці висоти</string>
+    <string id="TemperatureUnitsTitle">Одиниці температури</string>
+    <string id="UseWatchUnits">Використовувати налаштування годинника</string>
+    <string id="Meters">Метри (m)</string>
+    <string id="Feet">Фути (ft)</string>
+    <string id="Celsius">Цельсій (°C)</string>
+    <string id="Fahrenheit">Фаренгейт (°F)</string>
+    <string id="BatteryDisplayTitle">Відображення батареї</string>
+    <string id="BatteryDays">Залишилося днів</string>
+    <string id="BatteryPercentage">Відсоток (%)</string>
 </strings>

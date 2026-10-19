@@ -2,11 +2,14 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">z</string>
     <string id="GroupSeparator">.</string>
-    <string id="ElevationUnitsTitle" scope="settings">Unități de altitudine</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Unități de temperatură</string>
-    <string id="UseWatchUnits" scope="settings">Folosește setarea ceasului</string>
-    <string id="Meters" scope="settings">Metri (m)</string>
-    <string id="Feet" scope="settings">Picioare (ft)</string>
-    <string id="Celsius" scope="settings">Celsius (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Unități de altitudine</string>
+    <string id="TemperatureUnitsTitle">Unități de temperatură</string>
+    <string id="UseWatchUnits">Folosește setarea ceasului</string>
+    <string id="Meters">Metri (m)</string>
+    <string id="Feet">Picioare (ft)</string>
+    <string id="Celsius">Celsius (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Afișare baterie</string>
+    <string id="BatteryDays">Zile rămase</string>
+    <string id="BatteryPercentage">Procent (%)</string>
 </strings>

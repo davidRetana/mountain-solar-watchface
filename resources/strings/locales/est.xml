@@ -2,11 +2,14 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">p</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Kõrguseühikud</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Temperatuuriühikud</string>
-    <string id="UseWatchUnits" scope="settings">Kasuta kella seadistust</string>
-    <string id="Meters" scope="settings">Meetrid (m)</string>
-    <string id="Feet" scope="settings">Jalad (ft)</string>
-    <string id="Celsius" scope="settings">Celsius (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Kõrguseühikud</string>
+    <string id="TemperatureUnitsTitle">Temperatuuriühikud</string>
+    <string id="UseWatchUnits">Kasuta kella seadistust</string>
+    <string id="Meters">Meetrid (m)</string>
+    <string id="Feet">Jalad (ft)</string>
+    <string id="Celsius">Celsius (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Aku kuvamine</string>
+    <string id="BatteryDays">Järelejäänud päevad</string>
+    <string id="BatteryPercentage">Protsent (%)</string>
 </strings>

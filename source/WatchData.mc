@@ -20,6 +20,7 @@ class WatchData {
     var stepGoal = null;
     var battery = null;
     var batteryDays = null;
+    var batteryAsPercentage = false;
 
     function initialize() {
         locale = new WatchLocale();

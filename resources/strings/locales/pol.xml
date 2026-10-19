@@ -2,11 +2,14 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">d</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Jednostki wysokości</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Jednostki temperatury</string>
-    <string id="UseWatchUnits" scope="settings">Użyj ustawienia zegarka</string>
-    <string id="Meters" scope="settings">Metry (m)</string>
-    <string id="Feet" scope="settings">Stopy (ft)</string>
-    <string id="Celsius" scope="settings">Celsjusz (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Jednostki wysokości</string>
+    <string id="TemperatureUnitsTitle">Jednostki temperatury</string>
+    <string id="UseWatchUnits">Użyj ustawienia zegarka</string>
+    <string id="Meters">Metry (m)</string>
+    <string id="Feet">Stopy (ft)</string>
+    <string id="Celsius">Celsjusz (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Wyświetlanie baterii</string>
+    <string id="BatteryDays">Pozostałe dni</string>
+    <string id="BatteryPercentage">Procent (%)</string>
 </strings>

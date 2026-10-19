@@ -2,11 +2,14 @@
     <string id="MinuteUnit">МИН</string>
     <string id="DayUnit">д</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Единици за надморска височина</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Единици за температура</string>
-    <string id="UseWatchUnits" scope="settings">Използвай настройката на часовника</string>
-    <string id="Meters" scope="settings">Метри (m)</string>
-    <string id="Feet" scope="settings">Футове (ft)</string>
-    <string id="Celsius" scope="settings">Целзий (°C)</string>
-    <string id="Fahrenheit" scope="settings">Фаренхайт (°F)</string>
+    <string id="ElevationUnitsTitle">Единици за надморска височина</string>
+    <string id="TemperatureUnitsTitle">Единици за температура</string>
+    <string id="UseWatchUnits">Използвай настройката на часовника</string>
+    <string id="Meters">Метри (m)</string>
+    <string id="Feet">Футове (ft)</string>
+    <string id="Celsius">Целзий (°C)</string>
+    <string id="Fahrenheit">Фаренхайт (°F)</string>
+    <string id="BatteryDisplayTitle">Показване на батерията</string>
+    <string id="BatteryDays">Оставащи дни</string>
+    <string id="BatteryPercentage">Процент (%)</string>
 </strings>
