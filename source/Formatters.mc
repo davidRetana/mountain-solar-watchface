@@ -60,7 +60,7 @@ module Formatters {
     }
 
     function batteryText(data) {
-        if (data.batteryDays != null) {
+        if (!data.batteryAsPercentage && data.batteryDays != null) {
             if (data.batteryDays < 1) { return "<1 " + data.locale.dayUnit; }
             return data.batteryDays.toNumber().toString() + " " + data.locale.dayUnit;
         }

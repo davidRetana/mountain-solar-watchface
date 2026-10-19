@@ -2,11 +2,14 @@
     <string id="MinuteUnit">د</string>
     <string id="DayUnit">ي</string>
     <string id="GroupSeparator">٬</string>
-    <string id="ElevationUnitsTitle" scope="settings">وحدات الارتفاع</string>
-    <string id="TemperatureUnitsTitle" scope="settings">وحدات درجة الحرارة</string>
-    <string id="UseWatchUnits" scope="settings">استخدام إعداد الساعة</string>
-    <string id="Meters" scope="settings">أمتار (m)</string>
-    <string id="Feet" scope="settings">أقدام (ft)</string>
-    <string id="Celsius" scope="settings">درجة مئوية (°C)</string>
-    <string id="Fahrenheit" scope="settings">فهرنهايت (°F)</string>
+    <string id="ElevationUnitsTitle">وحدات الارتفاع</string>
+    <string id="TemperatureUnitsTitle">وحدات درجة الحرارة</string>
+    <string id="UseWatchUnits">استخدام إعداد الساعة</string>
+    <string id="Meters">أمتار (m)</string>
+    <string id="Feet">أقدام (ft)</string>
+    <string id="Celsius">درجة مئوية (°C)</string>
+    <string id="Fahrenheit">فهرنهايت (°F)</string>
+    <string id="BatteryDisplayTitle">عرض البطارية</string>
+    <string id="BatteryDays">الأيام المتبقية</string>
+    <string id="BatteryPercentage">النسبة المئوية (%)</string>
 </strings>

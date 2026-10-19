@@ -2,11 +2,14 @@
     <string id="MinuteUnit">MIN</string>
     <string id="DayUnit">h</string>
     <string id="GroupSeparator">,</string>
-    <string id="ElevationUnitsTitle" scope="settings">Unit altitud</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Unit suhu</string>
-    <string id="UseWatchUnits" scope="settings">Gunakan tetapan jam tangan</string>
-    <string id="Meters" scope="settings">Meter (m)</string>
-    <string id="Feet" scope="settings">Kaki (ft)</string>
-    <string id="Celsius" scope="settings">Celsius (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">Unit altitud</string>
+    <string id="TemperatureUnitsTitle">Unit suhu</string>
+    <string id="UseWatchUnits">Gunakan tetapan jam tangan</string>
+    <string id="Meters">Meter (m)</string>
+    <string id="Feet">Kaki (ft)</string>
+    <string id="Celsius">Celsius (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Paparan bateri</string>
+    <string id="BatteryDays">Baki hari</string>
+    <string id="BatteryPercentage">Peratus (%)</string>
 </strings>

@@ -2,11 +2,14 @@
     <string id="MinuteUnit">分钟</string>
     <string id="DayUnit">天</string>
     <string id="GroupSeparator">,</string>
-    <string id="ElevationUnitsTitle" scope="settings">高度单位</string>
-    <string id="TemperatureUnitsTitle" scope="settings">温度单位</string>
-    <string id="UseWatchUnits" scope="settings">使用手表设置</string>
-    <string id="Meters" scope="settings">米 (m)</string>
-    <string id="Feet" scope="settings">英尺 (ft)</string>
-    <string id="Celsius" scope="settings">摄氏度 (°C)</string>
-    <string id="Fahrenheit" scope="settings">华氏度 (°F)</string>
+    <string id="ElevationUnitsTitle">高度单位</string>
+    <string id="TemperatureUnitsTitle">温度单位</string>
+    <string id="UseWatchUnits">使用手表设置</string>
+    <string id="Meters">米 (m)</string>
+    <string id="Feet">英尺 (ft)</string>
+    <string id="Celsius">摄氏度 (°C)</string>
+    <string id="Fahrenheit">华氏度 (°F)</string>
+    <string id="BatteryDisplayTitle">电量显示</string>
+    <string id="BatteryDays">剩余天数</string>
+    <string id="BatteryPercentage">百分比 (%)</string>
 </strings>

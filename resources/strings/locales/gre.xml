@@ -2,11 +2,14 @@
     <string id="MinuteUnit">ΛΕΠ</string>
     <string id="DayUnit">ημ</string>
     <string id="GroupSeparator">.</string>
-    <string id="ElevationUnitsTitle" scope="settings">Μονάδες υψομέτρου</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Μονάδες θερμοκρασίας</string>
-    <string id="UseWatchUnits" scope="settings">Χρήση ρύθμισης ρολογιού</string>
-    <string id="Meters" scope="settings">Μέτρα (m)</string>
-    <string id="Feet" scope="settings">Πόδια (ft)</string>
-    <string id="Celsius" scope="settings">Κελσίου (°C)</string>
-    <string id="Fahrenheit" scope="settings">Φαρενάιτ (°F)</string>
+    <string id="ElevationUnitsTitle">Μονάδες υψομέτρου</string>
+    <string id="TemperatureUnitsTitle">Μονάδες θερμοκρασίας</string>
+    <string id="UseWatchUnits">Χρήση ρύθμισης ρολογιού</string>
+    <string id="Meters">Μέτρα (m)</string>
+    <string id="Feet">Πόδια (ft)</string>
+    <string id="Celsius">Κελσίου (°C)</string>
+    <string id="Fahrenheit">Φαρενάιτ (°F)</string>
+    <string id="BatteryDisplayTitle">Εμφάνιση μπαταρίας</string>
+    <string id="BatteryDays">Υπολειπόμενες ημέρες</string>
+    <string id="BatteryPercentage">Ποσοστό (%)</string>
 </strings>

@@ -2,11 +2,14 @@
     <string id="MinuteUnit">DK</string>
     <string id="DayUnit">g</string>
     <string id="GroupSeparator">.</string>
-    <string id="ElevationUnitsTitle" scope="settings">İrtifa birimi</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Sıcaklık birimi</string>
-    <string id="UseWatchUnits" scope="settings">Saat ayarını kullan</string>
-    <string id="Meters" scope="settings">Metre (m)</string>
-    <string id="Feet" scope="settings">Fit (ft)</string>
-    <string id="Celsius" scope="settings">Celsius (°C)</string>
-    <string id="Fahrenheit" scope="settings">Fahrenheit (°F)</string>
+    <string id="ElevationUnitsTitle">İrtifa birimi</string>
+    <string id="TemperatureUnitsTitle">Sıcaklık birimi</string>
+    <string id="UseWatchUnits">Saat ayarını kullan</string>
+    <string id="Meters">Metre (m)</string>
+    <string id="Feet">Fit (ft)</string>
+    <string id="Celsius">Celsius (°C)</string>
+    <string id="Fahrenheit">Fahrenheit (°F)</string>
+    <string id="BatteryDisplayTitle">Pil gösterimi</string>
+    <string id="BatteryDays">Kalan gün</string>
+    <string id="BatteryPercentage">Yüzde (%)</string>
 </strings>

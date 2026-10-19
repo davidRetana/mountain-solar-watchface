@@ -2,11 +2,14 @@
     <string id="MinuteUnit">דק׳</string>
     <string id="DayUnit">י</string>
     <string id="GroupSeparator">,</string>
-    <string id="ElevationUnitsTitle" scope="settings">יחידות גובה</string>
-    <string id="TemperatureUnitsTitle" scope="settings">יחידות טמפרטורה</string>
-    <string id="UseWatchUnits" scope="settings">שימוש בהגדרת השעון</string>
-    <string id="Meters" scope="settings">מטרים (m)</string>
-    <string id="Feet" scope="settings">רגל (ft)</string>
-    <string id="Celsius" scope="settings">צלזיוס (°C)</string>
-    <string id="Fahrenheit" scope="settings">פרנהייט (°F)</string>
+    <string id="ElevationUnitsTitle">יחידות גובה</string>
+    <string id="TemperatureUnitsTitle">יחידות טמפרטורה</string>
+    <string id="UseWatchUnits">שימוש בהגדרת השעון</string>
+    <string id="Meters">מטרים (m)</string>
+    <string id="Feet">רגל (ft)</string>
+    <string id="Celsius">צלזיוס (°C)</string>
+    <string id="Fahrenheit">פרנהייט (°F)</string>
+    <string id="BatteryDisplayTitle">תצוגת סוללה</string>
+    <string id="BatteryDays">ימים שנותרו</string>
+    <string id="BatteryPercentage">אחוזים (%)</string>
 </strings>

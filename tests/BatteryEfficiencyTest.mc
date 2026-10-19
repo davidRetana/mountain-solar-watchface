@@ -27,6 +27,9 @@ class EfficiencyProvider extends DataProvider {
     var clock = 1750000020;
     var settingsReads = 0;
     var deviceSettings;
+    var batteryPreference = 0;
+    var batteryPreferenceReads = 0;
+    var missingBatteryPreference = false;
     function initialize() {
         DataProvider.initialize();
         cityScheduler = new EfficiencyScheduler();
@@ -38,6 +41,11 @@ class EfficiencyProvider extends DataProvider {
     function readActivity() { activityReads += 1; return null; }
     function refresh() { return refreshAt(new Time.Moment(clock)); }
     function readBattery() { batteryReads += 1; return battery; }
+    function readBatteryPreference() {
+        batteryPreferenceReads += 1;
+        if (missingBatteryPreference) { throw new Toybox.Lang.InvalidValueException("Missing battery preference"); }
+        return batteryPreference;
+    }
     function readWeather() { weatherReads += 1; return weather; }
     function readCity(key) { cityReads += 1; return null; }
     function refreshSolar(location, now) {

@@ -2,11 +2,14 @@
     <string id="MinuteUnit">МИН</string>
     <string id="DayUnit">д</string>
     <string id="GroupSeparator"> </string>
-    <string id="ElevationUnitsTitle" scope="settings">Единицы высоты</string>
-    <string id="TemperatureUnitsTitle" scope="settings">Единицы температуры</string>
-    <string id="UseWatchUnits" scope="settings">Использовать настройку часов</string>
-    <string id="Meters" scope="settings">Метры (m)</string>
-    <string id="Feet" scope="settings">Футы (ft)</string>
-    <string id="Celsius" scope="settings">Цельсий (°C)</string>
-    <string id="Fahrenheit" scope="settings">Фаренгейт (°F)</string>
+    <string id="ElevationUnitsTitle">Единицы высоты</string>
+    <string id="TemperatureUnitsTitle">Единицы температуры</string>
+    <string id="UseWatchUnits">Использовать настройку часов</string>
+    <string id="Meters">Метры (m)</string>
+    <string id="Feet">Футы (ft)</string>
+    <string id="Celsius">Цельсий (°C)</string>
+    <string id="Fahrenheit">Фаренгейт (°F)</string>
+    <string id="BatteryDisplayTitle">Отображение батареи</string>
+    <string id="BatteryDays">Оставшиеся дни</string>
+    <string id="BatteryPercentage">Проценты (%)</string>
 </strings>
