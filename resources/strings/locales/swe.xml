@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Batterivisning</string>
     <string id="BatteryDays">Återstående dagar</string>
     <string id="BatteryPercentage">Procent (%)</string>
+    <string id="TimeFormatTitle">Tidsformat</string>
+    <string id="Time24Hours">24 timmar</string>
+    <string id="Time12Hours">12 timmar (AM/PM)</string>
+    <string id="HealthDisplayTitle">Hälsodata</string>
+    <string id="HeartRate">Puls</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

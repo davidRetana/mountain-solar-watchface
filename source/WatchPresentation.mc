@@ -22,6 +22,7 @@ class WatchPresentation {
     var solarStart = null;
     var solarEnd = null;
     var utcOffset = null;
+    var twelveHourTime = null;
     var cityText = "--";
     var temperatureText = "--°C";
     var temperatureFont;
@@ -101,15 +102,21 @@ class WatchPresentation {
         var interval = data.solarInterval;
         var start = interval == null ? null : interval[0];
         var end = interval == null ? null : interval[1];
-        if (first || start != solarStart || end != solarEnd || utcOffset != data.utcOffset) {
+        if (first || start != solarStart || end != solarEnd || utcOffset != data.utcOffset || twelveHourTime != data.twelveHourTime) {
             solarStart = start;
             solarEnd = end;
             utcOffset = data.utcOffset;
-            solarStartText = start == null ? "--:--" : Formatters.solarTime(new Time.Moment(start));
-            solarEndText = end == null ? "--:--" : Formatters.solarTime(new Time.Moment(end));
+            twelveHourTime = data.twelveHourTime;
+            solarStartText = start == null ? "--:--" : Formatters.solarTime(new Time.Moment(start), data.twelveHourTime);
+            solarEndText = end == null ? "--:--" : Formatters.solarTime(new Time.Moment(end), data.twelveHourTime);
         }
-        heartText = Formatters.count(data.heartRate, data.locale);
-        heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt, data.locale);
+        if (data.bodyBatterySelected) {
+            heartText = data.bodyBattery == null ? "--%" : data.bodyBattery.toNumber().toString() + "%";
+            heartAgeText = Formatters.heartAge(data.bodyBatteryWhen, data.updatedAt, data.locale);
+        } else {
+            heartText = Formatters.count(data.heartRate, data.locale);
+            heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt, data.locale);
+        }
         batteryText = Formatters.batteryText(data);
         revision = nextRevision;
         localeRevision = data.locale.revision;

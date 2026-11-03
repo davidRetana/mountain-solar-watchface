@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">การแสดงแบตเตอรี่</string>
     <string id="BatteryDays">จำนวนวันที่เหลือ</string>
     <string id="BatteryPercentage">เปอร์เซ็นต์ (%)</string>
+    <string id="TimeFormatTitle">รูปแบบเวลา</string>
+    <string id="Time24Hours">24 ชั่วโมง</string>
+    <string id="Time12Hours">12 ชั่วโมง (AM/PM)</string>
+    <string id="HealthDisplayTitle">ข้อมูลสุขภาพ</string>
+    <string id="HeartRate">อัตราการเต้นหัวใจ</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

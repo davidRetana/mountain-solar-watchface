@@ -53,7 +53,7 @@ function batteryDisplayChangesRefreshPresentationWithinSameMinute(logger) {
     var cache = new WatchPresentation(7, 5, 10);
     var dc = new EfficiencyDc();
     cache.prepare(dc, provider.data, provider.revision);
-    Test.assert(cache.batteryText.equals("12 d"));
+    Test.assert(cache.batteryText.equals("12 " + provider.data.locale.dayUnit));
     var revision = provider.revision;
     provider.batteryPreference = 1;
     provider.invalidateSettings();
@@ -64,7 +64,7 @@ function batteryDisplayChangesRefreshPresentationWithinSameMinute(logger) {
     provider.invalidateSettings();
     provider.refresh();
     cache.prepare(dc, provider.data, provider.revision);
-    Test.assert(cache.batteryText.equals("12 d") && provider.revision == revision + 2);
+    Test.assert(cache.batteryText.equals("12 " + provider.data.locale.dayUnit) && provider.revision == revision + 2);
     // Re-saving an unchanged setting must not create a new snapshot.
     provider.invalidateSettings();
     provider.refresh();
@@ -105,6 +105,7 @@ class DeviceSettingsProvider extends EfficiencyProvider {
         data.units = new WatchUnits();
     }
     function readBatteryPreference() { return Application.Properties.getValue("BatteryDisplay"); }
+    function readDisplayPreference(key) { return Application.Properties.getValue(key); }
 }
 
 (:test)

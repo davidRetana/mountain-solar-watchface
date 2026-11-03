@@ -4,13 +4,19 @@ using Toybox.WatchUi;
 
 // Both the native watch menu and Connect IQ use the same property values.
 module WatchSettings {
+    function keys() as Lang.Array<Lang.String> { return ["BatteryDisplay", "TemperatureUnits", "ElevationUnits", "TimeFormat", "HealthDisplay"]; }
+
     function title(key) {
+        if (key.equals("TimeFormat")) { return Rez.Strings.TimeFormatTitle; }
+        if (key.equals("HealthDisplay")) { return Rez.Strings.HealthDisplayTitle; }
         if (key.equals("BatteryDisplay")) { return Rez.Strings.BatteryDisplayTitle; }
         if (key.equals("TemperatureUnits")) { return Rez.Strings.TemperatureUnitsTitle; }
         return Rez.Strings.ElevationUnitsTitle;
     }
 
     function options(key) as Lang.Array<Lang.ResourceId> {
+        if (key.equals("TimeFormat")) { return [Rez.Strings.Time24Hours, Rez.Strings.Time12Hours]; }
+        if (key.equals("HealthDisplay")) { return [Rez.Strings.HeartRate, Rez.Strings.BodyBattery]; }
         if (key.equals("BatteryDisplay")) { return [Rez.Strings.BatteryDays, Rez.Strings.BatteryPercentage]; }
         if (key.equals("TemperatureUnits")) { return [Rez.Strings.UseWatchUnits, Rez.Strings.Celsius, Rez.Strings.Fahrenheit]; }
         return [Rez.Strings.UseWatchUnits, Rez.Strings.Meters, Rez.Strings.Feet];
@@ -20,9 +26,9 @@ module WatchSettings {
         try {
             var value = Application.Properties.getValue(key);
             if (value == 1) { return 1; }
-            if (value == 2 && !key.equals("BatteryDisplay")) { return 2; }
+            if (value == 2 && options(key).size() > 2) { return 2; }
         } catch (e) {
-            // Missing preferences keep days remaining or the watch's units.
+            // Missing preferences keep the default display and watch units.
         }
         return 0;
     }
@@ -32,7 +38,7 @@ module WatchSettings {
 class WatchSettingsMenu extends WatchUi.Menu2 {
     function initialize() {
         Menu2.initialize({:title => Rez.Strings.AppName});
-        var keys = ["BatteryDisplay", "TemperatureUnits", "ElevationUnits"];
+        var keys = WatchSettings.keys();
         for (var i = 0; i < keys.size(); i += 1) {
             addItem(new WatchUi.MenuItem(WatchSettings.title(keys[i]), null, keys[i], null));
         }
@@ -45,7 +51,8 @@ class WatchSettingsMenu extends WatchUi.Menu2 {
     }
 
     function refreshLabels() {
-        for (var i = 0; i < 3; i += 1) {
+        var count = WatchSettings.keys().size();
+        for (var i = 0; i < count; i += 1) {
             var item = getItem(i);
             var key = item.getId();
             var labels = WatchSettings.options(key);

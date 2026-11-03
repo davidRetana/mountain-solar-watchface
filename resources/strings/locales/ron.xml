@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Afișare baterie</string>
     <string id="BatteryDays">Zile rămase</string>
     <string id="BatteryPercentage">Procent (%)</string>
+    <string id="TimeFormatTitle">Format oră</string>
+    <string id="Time24Hours">24 de ore</string>
+    <string id="Time12Hours">12 ore (AM/PM)</string>
+    <string id="HealthDisplayTitle">Indicator de sănătate</string>
+    <string id="HeartRate">Puls</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

@@ -37,6 +37,7 @@ class EfficiencyProvider extends DataProvider {
         deviceSettings = new TestUnitDeviceSettings();
         data.units = new TestWatchUnits();
     }
+    function readDisplayPreference(key) { return 0; }
     function readDeviceSettings() { settingsReads += 1; return deviceSettings; }
     function readActivity() { activityReads += 1; return null; }
     function refresh() { return refreshAt(new Time.Moment(clock)); }

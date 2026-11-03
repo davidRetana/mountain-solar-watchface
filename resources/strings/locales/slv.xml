@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Prikaz baterije</string>
     <string id="BatteryDays">Preostali dnevi</string>
     <string id="BatteryPercentage">Odstotek (%)</string>
+    <string id="TimeFormatTitle">Oblika časa</string>
+    <string id="Time24Hours">24 ur</string>
+    <string id="Time12Hours">12 ur (AM/PM)</string>
+    <string id="HealthDisplayTitle">Zdravstveni podatek</string>
+    <string id="HeartRate">Srčni utrip</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>
