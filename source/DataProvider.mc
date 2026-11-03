@@ -12,6 +12,8 @@ class DataProvider {
     const BODY_BATTERY_MAX_AGE = 900;
     var lastHealthUpdate = null;
     var displayPreferencesDirty = true;
+    // Keep the existing saved choices: 0 = 24h, 1 = 12h; 2 follows the watch.
+    var timeFormatMode = 2;
     const ELEVATION_MAX_AGE = 1800;
     var solarDay = null;
     var solarKey = null;
@@ -57,7 +59,7 @@ class DataProvider {
             languageChanged = data.locale.refresh(readLanguage(settings));
             unitsChanged = data.units.refresh(settings);
             if (batteryPreferenceDirty) { batteryDisplayChanged = refreshBatteryPreference(); }
-            if (displayPreferencesDirty) { displayChanged = refreshDisplayPreferences(); }
+            displayChanged = refreshDisplayPreferences(settings);
             localeDirty = false;
         }
         if (!minuteChanged && !cityCacheDirty && !languageChanged && !unitsChanged &&
@@ -67,7 +69,6 @@ class DataProvider {
         data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
         data.updatedAt = seconds;
         data.timeText = Formatters.clockTime(info.hour, info.min, data.twelveHourTime);
-        data.timePeriod = Formatters.timePeriod(info.hour, data.twelveHourTime);
         if (minuteChanged) {
             lastMinute = minute;
             refreshActivity();
@@ -158,14 +159,24 @@ class DataProvider {
         try { return readDisplayPreference(key) == 1; } catch (e) { return false; }
     }
 
-    function refreshDisplayPreferences() {
-        var twelveHour = enabledPreference("TimeFormat");
-        var bodyBattery = enabledPreference("HealthDisplay");
+    function refreshDisplayPreferences(settings) {
+        var bodyBattery = data.bodyBatterySelected;
+        if (displayPreferencesDirty) {
+            timeFormatMode = 2;
+            try {
+                var value = readDisplayPreference("TimeFormat");
+                if (value == 0 || value == 1) { timeFormatMode = value; }
+            } catch (e) {
+                // Missing preferences follow the system's time format.
+            }
+            bodyBattery = enabledPreference("HealthDisplay");
+            displayPreferencesDirty = false;
+        }
+        var twelveHour = timeFormatMode == 1 || (timeFormatMode == 2 && !settings.is24Hour);
         var changed = data.twelveHourTime != twelveHour || data.bodyBatterySelected != bodyBattery;
         if (data.bodyBatterySelected != bodyBattery) { lastHealthUpdate = null; }
         data.twelveHourTime = twelveHour;
         data.bodyBatterySelected = bodyBattery;
-        displayPreferencesDirty = false;
         return changed;
     }
 

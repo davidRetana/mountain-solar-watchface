@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Procenta (%)</string>
     <string id="TimeFormatTitle">Formát času</string>
     <string id="Time24Hours">24 hodin</string>
-    <string id="Time12Hours">12 hodin (AM/PM)</string>
+    <string id="Time12Hours">12 hodin</string>
     <string id="HealthDisplayTitle">Zdravotní údaj</string>
     <string id="HeartRate">Tepová frekvence</string>
     <string id="BodyBattery">Body Battery (%)</string>

@@ -68,9 +68,6 @@ class MountainWatchView extends WatchUi.WatchFace {
         // Paint the padded time font first to preserve the adjacent rows.
         drawCentered(dc, layout.centerX, layout.timeY, timeFont, data.timeText, Theme.TEXT);
 
-        if (data.twelveHourTime) {
-            drawCentered(dc, layout.centerX, layout.timePeriodY, smallFont, data.timePeriod, Theme.MUTED);
-        }
         drawCentered(dc, layout.centerX, layout.dayY, dayFont, data.dayText, Theme.TEXT);
         dc.setColor(Theme.TEXT, Graphics.COLOR_BLACK);
         if (dateFont != null) {
@@ -124,7 +121,7 @@ class MountainWatchView extends WatchUi.WatchFace {
         } else {
             drawHeart(dc);
         }
-        drawCentered(dc, layout.heartX, layout.heartY, valueFont, presentation.heartText,
+        drawCentered(dc, layout.heartX, layout.heartY, presentation.heartFont, presentation.heartText,
             data.bodyBatterySelected ? Theme.TEXT : Theme.RED);
         drawCentered(dc, layout.heartX, layout.heartAgeY, smallFont, presentation.heartAgeText, Theme.MUTED);
         drawMountain(dc);

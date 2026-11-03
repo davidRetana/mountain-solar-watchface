@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Procent (%)</string>
     <string id="TimeFormatTitle">Format czasu</string>
     <string id="Time24Hours">24 godziny</string>
-    <string id="Time12Hours">12 godzin (AM/PM)</string>
+    <string id="Time12Hours">12 godzin</string>
     <string id="HealthDisplayTitle">Wskaźnik zdrowia</string>
     <string id="HeartRate">Tętno</string>
     <string id="BodyBattery">Body Battery (%)</string>

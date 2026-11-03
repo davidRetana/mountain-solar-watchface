@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Yüzde (%)</string>
     <string id="TimeFormatTitle">Saat biçimi</string>
     <string id="Time24Hours">24 saat</string>
-    <string id="Time12Hours">12 saat (AM/PM)</string>
+    <string id="Time12Hours">12 saat</string>
     <string id="HealthDisplayTitle">Sağlık verisi</string>
     <string id="HeartRate">Kalp hızı</string>
     <string id="BodyBattery">Body Battery (%)</string>

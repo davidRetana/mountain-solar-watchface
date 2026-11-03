@@ -30,11 +30,6 @@ module Formatters {
         return hour.format("%02d") + ":" + minute.format("%02d");
     }
 
-    function timePeriod(hour, twelveHour) {
-        if (!twelveHour) { return ""; }
-        return hour < 12 ? "AM" : "PM";
-    }
-
     function solarTime(moment, twelveHour) {
         if (moment == null) { return "--:--"; }
         var info = Gregorian.info(moment, Time.FORMAT_SHORT);

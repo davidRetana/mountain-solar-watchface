@@ -9,7 +9,6 @@ class WatchData {
     var weekdayText = "--";
     var monthText = "--";
     var twelveHourTime = false;
-    var timePeriod = "";
     var bodyBatterySelected = false;
     var bodyBattery = null;
     var bodyBatteryWhen = null;

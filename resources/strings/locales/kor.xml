@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">백분율 (%)</string>
     <string id="TimeFormatTitle">시간 형식</string>
     <string id="Time24Hours">24시간</string>
-    <string id="Time12Hours">12시간 (AM/PM)</string>
+    <string id="Time12Hours">12시간</string>
     <string id="HealthDisplayTitle">건강 지표</string>
     <string id="HeartRate">심박수</string>
     <string id="BodyBattery">Body Battery (%)</string>

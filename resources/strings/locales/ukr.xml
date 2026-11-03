@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Відсоток (%)</string>
     <string id="TimeFormatTitle">Формат часу</string>
     <string id="Time24Hours">24 години</string>
-    <string id="Time12Hours">12 годин (AM/PM)</string>
+    <string id="Time12Hours">12 годин</string>
     <string id="HealthDisplayTitle">Показник здоров’я</string>
     <string id="HeartRate">Пульс</string>
     <string id="BodyBattery">Body Battery (%)</string>

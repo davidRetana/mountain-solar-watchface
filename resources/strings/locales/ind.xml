@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Persentase (%)</string>
     <string id="TimeFormatTitle">Format waktu</string>
     <string id="Time24Hours">24 jam</string>
-    <string id="Time12Hours">12 jam (AM/PM)</string>
+    <string id="Time12Hours">12 jam</string>
     <string id="HealthDisplayTitle">Metrik kesehatan</string>
     <string id="HeartRate">Denyut jantung</string>
     <string id="BodyBattery">Body Battery (%)</string>

@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Ποσοστό (%)</string>
     <string id="TimeFormatTitle">Μορφή ώρας</string>
     <string id="Time24Hours">24 ώρες</string>
-    <string id="Time12Hours">12 ώρες (AM/PM)</string>
+    <string id="Time12Hours">12 ώρες</string>
     <string id="HealthDisplayTitle">Δείκτης υγείας</string>
     <string id="HeartRate">Καρδιακή συχνότητα</string>
     <string id="BodyBattery">Body Battery (%)</string>

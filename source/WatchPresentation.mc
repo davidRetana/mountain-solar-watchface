@@ -36,6 +36,8 @@ class WatchPresentation {
     var elevationUnitText = null;
     var elevationFont;
     var heartText = "--";
+    var heartFont;
+    var heartSource = null;
     var heartAgeText = "--";
     var batteryText = "--";
     var solarStartText = "--:--";
@@ -116,6 +118,12 @@ class WatchPresentation {
         } else {
             heartText = Formatters.count(data.heartRate, data.locale);
             heartAgeText = Formatters.heartAge(data.heartRateWhen, data.updatedAt, data.locale);
+        }
+        if (first || !sameText(heartSource, heartText)) {
+            heartSource = heartText;
+            heartFont = valueFont;
+            if (dc.getTextWidthInPixels(heartText, heartFont) > layout.elevationWidth) { heartFont = labelFont; }
+            if (dc.getTextWidthInPixels(heartText, heartFont) > layout.elevationWidth) { heartFont = smallFont; }
         }
         batteryText = Formatters.batteryText(data);
         revision = nextRevision;

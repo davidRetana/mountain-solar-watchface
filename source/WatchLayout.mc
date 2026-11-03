@@ -13,7 +13,6 @@ class WatchLayout {
     var dayY;
     var timeY;
     var timeWidth;
-    var timePeriodY;
     var bodyBatteryIcon as Lang.Array<Lang.Array<Lang.Number>>;
     var dateRadius;
     var dateLeftX;
@@ -73,7 +72,6 @@ class WatchLayout {
         dayY = y(25);
         timeY = y(124);
         timeWidth = size(232);
-        timePeriodY = y(154);
         bodyBatteryIcon = points([[75, 200], [69, 207], [73, 207], [72, 213], [79, 204], [75, 204]]);
         dateRadius = size(109);
         dateLeftX = x(85);

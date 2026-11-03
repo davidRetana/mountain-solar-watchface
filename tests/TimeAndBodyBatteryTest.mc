@@ -57,9 +57,7 @@ function twelveHourFormattingHandlesMidnightNoonAndDayBoundaries(logger) {
     var expected = ["12:07", "01:07", "11:07", "12:07", "01:07", "11:07"];
     for (var i = 0; i < hours.size(); i += 1) {
         Test.assert(Formatters.clockTime(hours[i], 7, true).equals(expected[i]));
-        Test.assert(Formatters.timePeriod(hours[i], true).equals(hours[i] < 12 ? "AM" : "PM"));
         Test.assert(Formatters.clockTime(hours[i], 7, false).equals(hours[i].format("%02d") + ":07"));
-        Test.assert(Formatters.timePeriod(hours[i], false).equals(""));
     }
     Test.assert(Formatters.clockTime(23, 59, true).equals("11:59"));
     Test.assert(Formatters.solarTime(null, true).equals("--:--"));
@@ -84,14 +82,12 @@ function timePreferenceRefreshesClockAndSolarCacheInSameMinute(logger) {
     cache.prepare(dc, provider.data, provider.revision);
     Test.assert(provider.revision == revision + 1 && provider.data.twelveHourTime);
     Test.assert(provider.data.timeText.equals(Formatters.clockTime(info.hour, info.min, true)));
-    Test.assert(provider.data.timePeriod.equals(info.hour < 12 ? "AM" : "PM"));
     Test.assert(cache.solarStartText.equals(Formatters.solarTime(new Time.Moment(provider.clock), true)));
     Test.assert(provider.heartReads == 1 && provider.bodyReads == 0);
     Test.assert(provider.activityReads == 1 && provider.batteryReads == 1 && provider.weatherReads == 1);
     provider.twelveHour = 0;
     provider.invalidateSettings();
     provider.refresh();
-    Test.assert(provider.data.timePeriod.equals(""));
     Test.assert(provider.data.timeText.equals(Formatters.clockTime(info.hour, info.min, false)));
     revision = provider.revision;
     provider.invalidateSettings();
@@ -292,18 +288,115 @@ function newDisplayModesRenderAcrossSizesAndNativeFontFallbacks(logger) {
             view.onLayout(dc);
             view.onUpdate(dc);
             Test.assert(view.presentation.heartText.equals("100%"));
-            Test.assert(dc.getTextWidthInPixels(view.presentation.heartText, view.valueFont) <= view.layout.elevationWidth);
+            Test.assert(dc.getTextWidthInPixels(view.presentation.heartText, view.presentation.heartFont) <= view.layout.elevationWidth);
             Test.assert(dc.getTextWidthInPixels(provider.data.timeText, view.timeFont) <= view.layout.timeWidth);
-            Test.assert(dc.getTextWidthInPixels(provider.data.timePeriod, view.smallFont) <= view.layout.timeWidth);
             provider.bodyBattery = 0;
             provider.twelveHour = 0;
             provider.invalidateSettings();
             view.onUpdate(dc);
-            Test.assert(view.presentation.heartText.equals("65") && provider.data.timePeriod.equals(""));
+            Test.assert(view.presentation.heartText.equals("65"));
             provider.bodyBattery = 1;
             provider.twelveHour = 1;
             provider.invalidateSettings();
         }
+    }
+    return true;
+}
+
+(:test)
+function automaticTimeFormatFollowsSystemAndCachesProperties(logger) {
+    var provider = new HealthProvider();
+    provider.twelveHour = 2;
+    provider.deviceSettings.is24Hour = false;
+    provider.refresh();
+    Test.assert(provider.data.twelveHourTime && provider.preferenceReads == 2);
+    provider.data.solarInterval = [provider.clock, provider.clock + 3600, true];
+    var cache = new WatchPresentation(7, 5, 10);
+    var dc = new EfficiencyDc();
+    cache.prepare(dc, provider.data, provider.revision);
+    var revision = provider.revision;
+    var info = Gregorian.info(new Time.Moment(provider.clock), Time.FORMAT_SHORT);
+    Test.assert(provider.data.timeText.equals(Formatters.clockTime(info.hour, info.min, true)));
+    // A layout restoration sees the system change within the same minute.
+    provider.deviceSettings.is24Hour = true;
+    provider.invalidateLocale();
+    provider.refresh();
+    cache.solarStartText = "stale";
+    cache.prepare(dc, provider.data, provider.revision);
+    Test.assert(!provider.data.twelveHourTime && provider.revision == revision + 1);
+    Test.assert(provider.data.timeText.equals(Formatters.clockTime(info.hour, info.min, false)));
+    Test.assert(cache.solarStartText.equals(Formatters.solarTime(new Time.Moment(provider.clock), false)));
+    Test.assert(provider.activityReads == 1 && provider.batteryReads == 1 && provider.weatherReads == 1 && provider.heartReads == 1);
+    Test.assert(provider.preferenceReads == 2);
+    // Without layout restoration, the normal minute update sees the change.
+    provider.deviceSettings.is24Hour = false;
+    provider.clock += 60;
+    provider.refresh();
+    Test.assert(provider.data.twelveHourTime && provider.preferenceReads == 2);
+    return true;
+}
+
+(:test)
+function manualTimeFormatOverridesSystemAndMissingPreferencesFollowIt(logger) {
+    var provider = new HealthProvider();
+    provider.deviceSettings.is24Hour = false;
+    provider.twelveHour = 0;
+    provider.refresh();
+    Test.assert(!provider.data.twelveHourTime); // Preserve saved 24h overrides.
+    provider.deviceSettings.is24Hour = true;
+    provider.twelveHour = 1;
+    provider.invalidateSettings();
+    provider.refresh();
+    Test.assert(provider.data.twelveHourTime); // Preserve saved 12h overrides.
+    var revision = provider.revision;
+    provider.deviceSettings.is24Hour = false;
+    provider.invalidateLocale();
+    provider.refresh();
+    Test.assert(provider.data.twelveHourTime && provider.revision == revision);
+    var invalid = [null, 99, -1, "1"];
+    for (var i = 0; i < invalid.size(); i += 1) {
+        provider.twelveHour = invalid[i];
+        provider.invalidateSettings();
+        provider.refresh();
+        Test.assert(provider.data.twelveHourTime && provider.timeFormatMode == 2);
+        provider.deviceSettings.is24Hour = true;
+        provider.invalidateLocale();
+        provider.refresh();
+        Test.assert(!provider.data.twelveHourTime);
+        provider.deviceSettings.is24Hour = false;
+    }
+    provider.missingPreferences = true;
+    provider.invalidateSettings();
+    provider.refresh();
+    Test.assert(provider.data.twelveHourTime && provider.timeFormatMode == 2);
+    return true;
+}
+
+(:test)
+function onWatchAutomaticTimeFormatPersistsAndShowsSelectedLabel(logger) {
+    var original = Application.Properties.getValue("TimeFormat");
+    try {
+        Application.Properties.setValue("TimeFormat", 0);
+        var observer = new DeviceSettingsObserver();
+        observer.provider.deviceSettings.is24Hour = false;
+        var menu = new WatchPreferenceMenu("TimeFormat");
+        var delegate = new TestWatchPreferenceDelegate("TimeFormat", observer.method(:changed));
+        delegate.onSelect(menu.getItem(2));
+        observer.provider.refresh();
+        Test.assert(Application.Properties.getValue("TimeFormat") == 2 && WatchSettings.selection("TimeFormat") == 2);
+        Test.assert(observer.provider.data.twelveHourTime);
+        var root = new WatchSettingsMenu();
+        Test.assert(root.getItem(3).getSubLabel().equals(Application.loadResource(Rez.Strings.UseWatchUnits)));
+        var restarted = new DeviceSettingsProvider();
+        restarted.deviceSettings.is24Hour = false;
+        restarted.refresh();
+        Test.assert(restarted.data.twelveHourTime && restarted.timeFormatMode == 2);
+        delegate.onBack();
+        Test.assert(Application.Properties.getValue("TimeFormat") == 2 && observer.calls == 1);
+        Test.assert(observer.provider.activityReads == 1 && observer.provider.batteryReads == 1 && observer.provider.weatherReads == 1);
+    } finally {
+        Application.Properties.setValue("TimeFormat", original);
+        Application.getApp().onSettingsChanged();
     }
     return true;
 }

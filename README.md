@@ -8,7 +8,7 @@ Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combine
 
 ## Features and Current Status
 
-- Large clock with selectable 24-hour or 12-hour (AM/PM) format and a date in the watch's language.
+- Large clock with selectable 24-hour or 12-hour format, following the watch setting by default, and a date in the watch's language.
 - Temperature in °C or °F and a cached city name for the weather observation's location.
 - Sunrise/sunset bar with a sun during the day and a moon at night.
 - Steps, daily goal, and an amber progress bar.
@@ -18,7 +18,7 @@ Mountain Solar is a Garmin Connect IQ watch face written in Monkey C. It combine
 
 Simulator validation for unit settings passed 31 tests on each of the original nine profiles (279 total), including text-width checks with vector and native fallback fonts. Production `.prg` builds also passed for those nine profiles. The maintainer's visual review and the signed release `.iq` package built on 6 October 2026 cover the earlier version; the package used SDK 9.2.0 and included 15 device variants across those profiles. On 16 October 2026, device builds passed for all 42 declared profiles, including all 33 newly declared profiles. Simulator startup checks passed on nine representative profiles; visual review of the additions remains pending.
 
-On 3 November 2026, the 12-hour time and Body Battery changes passed all 48 simulator tests on each of `fenix7`, `fenix7s`, `fenix7x` and `fr965` (192 passing executions), with production builds passing on the same four profiles.
+On 3 November 2026, the 12-hour time and Body Battery changes passed all 48 simulator tests on each of `fenix7`, `fenix7s`, `fenix7x` and `fr965` (192 passing executions), with production builds passing on the same four profiles. The subsequent automatic time-format update and AM/PM removal passed 51 tests each on `fenix7`, `fenix7s` and `fr965` (153 passing executions).
 
 Memory and battery-life measurements on physical watches remain pending. AMOLED/MicroLED support is experimental: a dedicated always-on display (AOD) presentation is still pending.
 
@@ -151,7 +151,7 @@ Open Mountain Solar's settings on the watch or in the Connect IQ mobile app to c
 | Altitude units | Use watch setting / Meters (m) / Feet (ft) | Use watch setting |
 | Temperature units | Use watch setting / Celsius (°C) / Fahrenheit (°F) | Use watch setting |
 | Battery display | Days remaining / Percentage (%) | Days remaining |
-| Time format | 24 hours / 12 hours (AM/PM) | 24 hours |
+| Time format | 24 hours / 12 hours / Use watch setting | Use watch setting |
 | Health metric | Heart rate / Body Battery (%) | Heart rate |
 
 Automatic mode reads the watch's altitude and temperature preferences separately, so mixed units are supported. Changes to watch units appear on the next minute update or layout restoration; changes to the app's settings request an immediate update. Settings labels are translated for all 36 declared watch languages and shared by the on-watch menus and Connect IQ. Unit symbols (`m`, `ft`, `°C`, and `°F`) are preserved in every language.
@@ -162,7 +162,7 @@ To change these preferences directly on the watch, open the system's watch-face 
 
 Battery display defaults to estimated days remaining, with `<1 d` for less than a day and a percentage fallback when the watch does not supply an estimate. Percentage mode always uses the charge percentage (for example, `50%`) and shows `--` if that reading is unavailable. Saving the setting updates the display immediately using cached readings; battery stats retain their five-minute refresh interval. The battery icon and its color continue to reflect the charge percentage in both modes. Battery menu labels are available at runtime for the on-watch menu and are translated in all 36 languages.
 
-Time format applies to the main clock and solar event labels. The main clock adds AM/PM below the digits in 12-hour mode; solar labels keep their compact `hh:mm` layout. Midnight and noon appear as `12:00 AM` and `12:00 PM`. The default remains 24 hours, including after upgrades with no saved preference.
+Time format applies to the main clock and solar event labels, using a compact `hh:mm` layout without AM/PM. By default it follows the watch's system preference (`System.getDeviceSettings().is24Hour`). Manual 12-hour and 24-hour overrides remain available on the watch and in Connect IQ. Existing saved overrides are preserved; missing or invalid settings follow the system. System format changes appear on the next minute update or layout restoration, without rereading application properties. In the simulator, change **Settings → Time Display → 12 Hour / 24 Hour** and select **Use watch setting** in Mountain Solar to check automatic mode.
 
 Health metric replaces the heart-rate field with Body Battery percentage and a lightning icon when selected. It reads Garmin's existing [Body Battery history](https://developer.garmin.com/connect-iq/api-docs/Toybox/SensorHistory.html#getBodyBatteryHistory-instance_function), displays values from `0%` to `100%`, and keeps the sample age below the value. Missing, unsupported or expired Body Battery data displays `--%`. Changing the metric reads the selected history immediately; subsequent reads retain the five-minute interval. The unselected health history is not queried. Both new settings persist across restarts and work without a phone.
 
@@ -195,7 +195,7 @@ With the simulator open:
 python3 tools/ciq.py test fenix7
 ```
 
-This creates `bin/devices/fenix7/tests-fenix7.prg` and runs the test suite. The current suite contains 48 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, battery display preferences and fallbacks, 12-hour time boundaries, Body Battery validation and expiry, on-watch menu navigation, persistence and cancellation, and settings changes with cached readings. List several profiles after `test` to run them sequentially.
+This creates `bin/devices/fenix7/tests-fenix7.prg` and runs the test suite. The current suite contains 51 test functions covering solar intervals, city caching and retries, background scheduling, refresh intervals, layout/font fallbacks, locale changes, unit conversions and overrides, battery display preferences and fallbacks, 12-hour time boundaries, automatic system time format and manual overrides, Body Battery validation and expiry, on-watch menu navigation, persistence and cancellation, and settings changes with cached readings. List several profiles after `test` to run them sequentially.
 
 The helper accepts `monkeydo` exit code 1 only when the final summary explicitly reports passing tests with no failures or errors. If a batch stalls while changing profiles, restart the simulator and test each profile separately.
 

@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Phần trăm (%)</string>
     <string id="TimeFormatTitle">Định dạng giờ</string>
     <string id="Time24Hours">24 giờ</string>
-    <string id="Time12Hours">12 giờ (AM/PM)</string>
+    <string id="Time12Hours">12 giờ</string>
     <string id="HealthDisplayTitle">Chỉ số sức khỏe</string>
     <string id="HeartRate">Nhịp tim</string>
     <string id="BodyBattery">Body Battery (%)</string>

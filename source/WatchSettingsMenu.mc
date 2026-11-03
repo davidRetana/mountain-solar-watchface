@@ -15,7 +15,7 @@ module WatchSettings {
     }
 
     function options(key) as Lang.Array<Lang.ResourceId> {
-        if (key.equals("TimeFormat")) { return [Rez.Strings.Time24Hours, Rez.Strings.Time12Hours]; }
+        if (key.equals("TimeFormat")) { return [Rez.Strings.Time24Hours, Rez.Strings.Time12Hours, Rez.Strings.UseWatchUnits]; }
         if (key.equals("HealthDisplay")) { return [Rez.Strings.HeartRate, Rez.Strings.BodyBattery]; }
         if (key.equals("BatteryDisplay")) { return [Rez.Strings.BatteryDays, Rez.Strings.BatteryPercentage]; }
         if (key.equals("TemperatureUnits")) { return [Rez.Strings.UseWatchUnits, Rez.Strings.Celsius, Rez.Strings.Fahrenheit]; }
@@ -25,12 +25,13 @@ module WatchSettings {
     function selection(key) as Lang.Number {
         try {
             var value = Application.Properties.getValue(key);
+            if (value == 0) { return 0; }
             if (value == 1) { return 1; }
             if (value == 2 && options(key).size() > 2) { return 2; }
         } catch (e) {
             // Missing preferences keep the default display and watch units.
         }
-        return 0;
+        return key.equals("TimeFormat") ? 2 : 0;
     }
 }
 

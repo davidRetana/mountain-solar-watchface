@@ -45,7 +45,7 @@ function onWatchSettingsRoutesEachPreferenceAndCancelsWithoutChanges(logger) {
             Test.assert(Application.Properties.getValue(key) == 1 && cancel.closes == 1);
             // Invalid saved values use the default in the local menu too.
             Application.Properties.setValue(key, 99);
-            Test.assert(WatchSettings.selection(key) == 0);
+            Test.assert(WatchSettings.selection(key) == (key.equals("TimeFormat") ? 2 : 0));
         }
         Test.assert(observer.calls == 0);
     } finally {

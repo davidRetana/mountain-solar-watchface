@@ -4,6 +4,7 @@ using Toybox.Test;
 
 (:test)
 class TestUnitDeviceSettings {
+    var is24Hour = true;
     var systemLanguage = System.getDeviceSettings().systemLanguage;
     var elevationUnits = System.UNIT_METRIC;
     var temperatureUnits = System.UNIT_METRIC;

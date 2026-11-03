@@ -73,7 +73,10 @@ including when the reading itself has not changed. Repeated redraws reuse them.
 The 12/24-hour and heart-rate/Body Battery preferences are cached at startup and
 invalidated by the same settings callback as units and battery display. Time
 format changes rebuild clock and solar labels immediately from the cached time,
-without repeating sensor or weather reads. AM/PM is drawn below the main clock.
+without repeating sensor or weather reads. No AM/PM indicator is drawn. Time format
+defaults to the system preference, checked with the existing once-per-minute
+device-settings read and layout restoration. Explicit 12/24-hour choices remain
+cached until the application settings change.
 Only the selected health history is queried, at startup and every five minutes.
 Switching the metric resets its history deadline and reads it immediately without
 refreshing elevation, activity, battery or weather. Body Battery accepts 0–100,

@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Százalék (%)</string>
     <string id="TimeFormatTitle">Időformátum</string>
     <string id="Time24Hours">24 órás</string>
-    <string id="Time12Hours">12 órás (AM/PM)</string>
+    <string id="Time12Hours">12 órás</string>
     <string id="HealthDisplayTitle">Egészségadat</string>
     <string id="HeartRate">Pulzus</string>
     <string id="BodyBattery">Body Battery (%)</string>

@@ -14,7 +14,7 @@
     <string id="BatteryPercentage">Protsent (%)</string>
     <string id="TimeFormatTitle">Kellaajavorming</string>
     <string id="Time24Hours">24 tundi</string>
-    <string id="Time12Hours">12 tundi (AM/PM)</string>
+    <string id="Time12Hours">12 tundi</string>
     <string id="HealthDisplayTitle">Tervisenäit</string>
     <string id="HeartRate">Pulsisagedus</string>
     <string id="BodyBattery">Body Battery (%)</string>
