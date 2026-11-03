@@ -116,8 +116,13 @@ class MountainWatchView extends WatchUi.WatchFace {
             var line = layout.dividers[i];
             dc.drawLine(line[0], line[1], line[2], line[3]);
         }
-        drawHeart(dc);
-        drawCentered(dc, layout.heartX, layout.heartY, valueFont, presentation.heartText, Theme.RED);
+        if (data.bodyBatterySelected) {
+            drawBodyBattery(dc);
+        } else {
+            drawHeart(dc);
+        }
+        drawCentered(dc, layout.heartX, layout.heartY, presentation.heartFont, presentation.heartText,
+            data.bodyBatterySelected ? Theme.TEXT : Theme.RED);
         drawCentered(dc, layout.heartX, layout.heartAgeY, smallFont, presentation.heartAgeText, Theme.MUTED);
         drawMountain(dc);
         drawCentered(dc, layout.centerX, layout.valueY, presentation.elevationFont, presentation.elevationText, Theme.TEXT);
@@ -154,6 +159,11 @@ class MountainWatchView extends WatchUi.WatchFace {
         dc.fillPolygon(layout.rightSole);
         heel = layout.rightHeel;
         dc.fillRoundedRectangle(heel[0], heel[1], heel[2], heel[3], layout.marker2);
+    }
+
+    function drawBodyBattery(dc) {
+        dc.setColor(Theme.AMBER, Graphics.COLOR_BLACK);
+        dc.fillPolygon(layout.bodyBatteryIcon);
     }
 
     function drawHeart(dc) {

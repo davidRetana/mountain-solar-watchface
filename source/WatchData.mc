@@ -8,6 +8,10 @@ class WatchData {
     var dayText = "--";
     var weekdayText = "--";
     var monthText = "--";
+    var twelveHourTime = false;
+    var bodyBatterySelected = false;
+    var bodyBattery = null;
+    var bodyBatteryWhen = null;
     var heartRate = null;
     var heartRateWhen = null;
     var elevation = null;

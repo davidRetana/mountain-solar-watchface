@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Zobrazenie batérie</string>
     <string id="BatteryDays">Zostávajúce dni</string>
     <string id="BatteryPercentage">Percentá (%)</string>
+    <string id="TimeFormatTitle">Formát času</string>
+    <string id="Time24Hours">24 hodín</string>
+    <string id="Time12Hours">12 hodín</string>
+    <string id="HealthDisplayTitle">Zdravotný údaj</string>
+    <string id="HeartRate">Tepová frekvencia</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

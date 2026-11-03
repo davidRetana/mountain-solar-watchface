@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">电量显示</string>
     <string id="BatteryDays">剩余天数</string>
     <string id="BatteryPercentage">百分比 (%)</string>
+    <string id="TimeFormatTitle">时间格式</string>
+    <string id="Time24Hours">24小时</string>
+    <string id="Time12Hours">12小时</string>
+    <string id="HealthDisplayTitle">健康指标</string>
+    <string id="HeartRate">心率</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

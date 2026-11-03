@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">عرض البطارية</string>
     <string id="BatteryDays">الأيام المتبقية</string>
     <string id="BatteryPercentage">النسبة المئوية (%)</string>
+    <string id="TimeFormatTitle">تنسيق الوقت</string>
+    <string id="Time24Hours">24 ساعة</string>
+    <string id="Time12Hours">12 ساعة</string>
+    <string id="HealthDisplayTitle">مقياس الصحة</string>
+    <string id="HeartRate">معدل ضربات القلب</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

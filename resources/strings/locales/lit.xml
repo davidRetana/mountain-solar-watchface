@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Baterijos rodymas</string>
     <string id="BatteryDays">Likusios dienos</string>
     <string id="BatteryPercentage">Procentai (%)</string>
+    <string id="TimeFormatTitle">Laiko formatas</string>
+    <string id="Time24Hours">24 valandos</string>
+    <string id="Time12Hours">12 valandų</string>
+    <string id="HealthDisplayTitle">Sveikatos rodiklis</string>
+    <string id="HeartRate">Pulsas</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

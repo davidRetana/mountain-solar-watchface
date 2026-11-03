@@ -9,6 +9,11 @@ class DataProvider {
     var data as WatchData;
     var lastHistoryUpdate = null;
     const HEART_MAX_AGE = 900;
+    const BODY_BATTERY_MAX_AGE = 900;
+    var lastHealthUpdate = null;
+    var displayPreferencesDirty = true;
+    // Keep the existing saved choices: 0 = 24h, 1 = 12h; 2 follows the watch.
+    var timeFormatMode = 2;
     const ELEVATION_MAX_AGE = 1800;
     var solarDay = null;
     var solarKey = null;
@@ -48,22 +53,24 @@ class DataProvider {
         var languageChanged = false;
         var unitsChanged = false;
         var batteryDisplayChanged = false;
+        var displayChanged = false;
         if (minuteChanged || localeDirty) {
             var settings = readDeviceSettings();
             languageChanged = data.locale.refresh(readLanguage(settings));
             unitsChanged = data.units.refresh(settings);
             if (batteryPreferenceDirty) { batteryDisplayChanged = refreshBatteryPreference(); }
+            displayChanged = refreshDisplayPreferences(settings);
             localeDirty = false;
         }
         if (!minuteChanged && !cityCacheDirty && !languageChanged && !unitsChanged &&
-            !batteryDisplayChanged) { return data; }
+            !batteryDisplayChanged && !displayChanged) { return data; }
         var info = Gregorian.info(now, Time.FORMAT_SHORT);
         // Local offset modulo one day also detects DST/time-zone changes.
         data.utcOffset = (info.hour * 3600 + info.min * 60 + info.sec - seconds % 86400 + 86400) % 86400;
         data.updatedAt = seconds;
+        data.timeText = Formatters.clockTime(info.hour, info.min, data.twelveHourTime);
         if (minuteChanged) {
             lastMinute = minute;
-            data.timeText = info.hour.format("%02d") + ":" + info.min.format("%02d");
             refreshActivity();
             if (isDue(lastBatteryUpdate, seconds, SLOW_REFRESH_INTERVAL)) {
                 lastBatteryUpdate = seconds;
@@ -71,6 +78,7 @@ class DataProvider {
             }
             refreshHistory(seconds);
         }
+        refreshHealth(seconds);
         var day = info.year * 10000 + info.month * 100 + info.day;
         if (day != calendarDay || languageChanged) {
             calendarDay = day;
@@ -123,6 +131,7 @@ class DataProvider {
     function invalidateSettings() {
         data.units.invalidateSettings();
         batteryPreferenceDirty = true;
+        displayPreferencesDirty = true;
         localeDirty = true;
     }
     function readDeviceSettings() { return System.getDeviceSettings(); }
@@ -142,6 +151,33 @@ class DataProvider {
         if (data.batteryAsPercentage == asPercentage) { return false; }
         data.batteryAsPercentage = asPercentage;
         return true;
+    }
+
+    function readDisplayPreference(key) { return Toybox.Application.Properties.getValue(key); }
+
+    function enabledPreference(key) {
+        try { return readDisplayPreference(key) == 1; } catch (e) { return false; }
+    }
+
+    function refreshDisplayPreferences(settings) {
+        var bodyBattery = data.bodyBatterySelected;
+        if (displayPreferencesDirty) {
+            timeFormatMode = 2;
+            try {
+                var value = readDisplayPreference("TimeFormat");
+                if (value == 0 || value == 1) { timeFormatMode = value; }
+            } catch (e) {
+                // Missing preferences follow the system's time format.
+            }
+            bodyBattery = enabledPreference("HealthDisplay");
+            displayPreferencesDirty = false;
+        }
+        var twelveHour = timeFormatMode == 1 || (timeFormatMode == 2 && !settings.is24Hour);
+        var changed = data.twelveHourTime != twelveHour || data.bodyBatterySelected != bodyBattery;
+        if (data.bodyBatterySelected != bodyBattery) { lastHealthUpdate = null; }
+        data.twelveHourTime = twelveHour;
+        data.bodyBatterySelected = bodyBattery;
+        return changed;
     }
 
     function refreshActivity() {
@@ -276,23 +312,9 @@ class DataProvider {
     function refreshHistory(now) {
         if (lastHistoryUpdate == null || now < lastHistoryUpdate || now - lastHistoryUpdate >= 300) {
             lastHistoryUpdate = now;
-            data.heartRate = null;
-            data.heartRateWhen = null;
             data.elevation = null;
             data.elevationWhen = null;
             // Read existing history only; never start optical sensing or GPS.
-            try {
-                var heart = newestValid(SensorHistory.getHeartRateHistory({
-                    :period => new Time.Duration(HEART_MAX_AGE),
-                    :order => SensorHistory.ORDER_NEWEST_FIRST
-                }), now, HEART_MAX_AGE, true);
-                if (heart != null) {
-                    data.heartRate = heart.data;
-                    data.heartRateWhen = heart.when.value();
-                }
-            } catch (e) {
-                // Permission denied or history unavailable: keep null.
-            }
             try {
                 var elevation = newestValid(SensorHistory.getElevationHistory({
                     :period => new Time.Duration(ELEVATION_MAX_AGE),
@@ -307,14 +329,78 @@ class DataProvider {
             }
         }
         // Expire cached readings each minute, even between history queries.
-        if (data.heartRateWhen != null && (now < data.heartRateWhen || now - data.heartRateWhen > HEART_MAX_AGE)) {
-            data.heartRate = null;
-            data.heartRateWhen = null;
-        }
         if (data.elevationWhen != null && (now < data.elevationWhen || now - data.elevationWhen > ELEVATION_MAX_AGE)) {
             data.elevation = null;
             data.elevationWhen = null;
         }
+    }
+
+    function readHeartHistory() {
+        return SensorHistory.getHeartRateHistory({
+            :period => new Time.Duration(HEART_MAX_AGE),
+            :order => SensorHistory.ORDER_NEWEST_FIRST
+        });
+    }
+
+    function readBodyBatteryHistory() {
+        if (SensorHistory has :getBodyBatteryHistory) {
+            return SensorHistory.getBodyBatteryHistory({
+                :period => new Time.Duration(BODY_BATTERY_MAX_AGE),
+                :order => SensorHistory.ORDER_NEWEST_FIRST
+            });
+        }
+        return null;
+    }
+
+    function refreshHealth(now) {
+        if (isDue(lastHealthUpdate, now, SLOW_REFRESH_INTERVAL)) {
+            lastHealthUpdate = now;
+            if (data.bodyBatterySelected) {
+                data.bodyBattery = null;
+                data.bodyBatteryWhen = null;
+                try {
+                    var history = readBodyBatteryHistory();
+                    var sample = history == null ? null : newestValidBodyBattery(history, now);
+                    if (sample != null) {
+                        data.bodyBattery = sample.data;
+                        data.bodyBatteryWhen = sample.when.value();
+                    }
+                } catch (e) {
+                    // Unsupported hardware, missing permission or absent data.
+                }
+            } else {
+                data.heartRate = null;
+                data.heartRateWhen = null;
+                try {
+                    var heart = newestValid(readHeartHistory(), now, HEART_MAX_AGE, true);
+                    if (heart != null) {
+                        data.heartRate = heart.data;
+                        data.heartRateWhen = heart.when.value();
+                    }
+                } catch (e) {
+                    // Permission denied or history unavailable: keep null.
+                }
+            }
+        }
+        if (data.heartRateWhen != null && (now < data.heartRateWhen || now - data.heartRateWhen > HEART_MAX_AGE)) {
+            data.heartRate = null;
+            data.heartRateWhen = null;
+        }
+        if (data.bodyBatteryWhen != null && (now < data.bodyBatteryWhen || now - data.bodyBatteryWhen > BODY_BATTERY_MAX_AGE)) {
+            data.bodyBattery = null;
+            data.bodyBatteryWhen = null;
+        }
+    }
+
+    function newestValidBodyBattery(history, now) {
+        for (var i = 0; i < 30; i += 1) {
+            var sample = history.next();
+            if (sample == null) { return null; }
+            var age = now - sample.when.value();
+            if (age > BODY_BATTERY_MAX_AGE) { return null; }
+            if (age >= 0 && sample.data != null && sample.data >= 0 && sample.data <= 100) { return sample; }
+        }
+        return null;
     }
 
     function newestValid(history, now, maxAge, positiveOnly) {

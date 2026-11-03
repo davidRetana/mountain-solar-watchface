@@ -22,10 +22,18 @@ module Formatters {
         return (width * steps.toFloat() / goal).toNumber();
     }
 
-    function solarTime(moment) {
+    function clockTime(hour, minute, twelveHour) {
+        if (twelveHour) {
+            hour = hour % 12;
+            if (hour == 0) { hour = 12; }
+        }
+        return hour.format("%02d") + ":" + minute.format("%02d");
+    }
+
+    function solarTime(moment, twelveHour) {
         if (moment == null) { return "--:--"; }
         var info = Gregorian.info(moment, Time.FORMAT_SHORT);
-        return info.hour.format("%02d") + ":" + info.min.format("%02d");
+        return clockTime(info.hour, info.min, twelveHour);
     }
 
     function temperature(value, unit) {

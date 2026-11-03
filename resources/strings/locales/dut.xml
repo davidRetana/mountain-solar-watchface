@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Batterijweergave</string>
     <string id="BatteryDays">Resterende dagen</string>
     <string id="BatteryPercentage">Percentage (%)</string>
+    <string id="TimeFormatTitle">Tijdnotatie</string>
+    <string id="Time24Hours">24 uur</string>
+    <string id="Time12Hours">12 uur</string>
+    <string id="HealthDisplayTitle">Gezondheidswaarde</string>
+    <string id="HeartRate">Hartslag</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

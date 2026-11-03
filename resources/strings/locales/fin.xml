@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Akun näyttö</string>
     <string id="BatteryDays">Päiviä jäljellä</string>
     <string id="BatteryPercentage">Prosentti (%)</string>
+    <string id="TimeFormatTitle">Aikamuoto</string>
+    <string id="Time24Hours">24 tuntia</string>
+    <string id="Time12Hours">12 tuntia</string>
+    <string id="HealthDisplayTitle">Terveystieto</string>
+    <string id="HeartRate">Syke</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

@@ -15,7 +15,7 @@ class TestWatchSettingsDelegate extends WatchSettingsDelegate {
 
 (:test)
 function onWatchSettingsRoutesEachPreferenceAndCancelsWithoutChanges(logger) {
-    var keys = ["BatteryDisplay", "TemperatureUnits", "ElevationUnits"];
+    var keys = WatchSettings.keys();
     var originals = [];
     for (var i = 0; i < keys.size(); i += 1) {
         originals.add(Application.Properties.getValue(keys[i]));
@@ -37,7 +37,7 @@ function onWatchSettingsRoutesEachPreferenceAndCancelsWithoutChanges(logger) {
             Test.assert(delegate.openedMenu instanceof WatchPreferenceMenu);
             Test.assert(delegate.openedDelegate.propertyKey.equals(key));
             var options = delegate.openedMenu as WatchPreferenceMenu;
-            var last = key.equals("BatteryDisplay") ? 1 : 2;
+            var last = WatchSettings.options(key).size() - 1;
             Test.assert(options.getItem(0).getId() == 0 && options.getItem(last).getId() == last);
             Test.assert(WatchSettings.selection(key) == 1);
             var cancel = new TestWatchPreferenceDelegate(key, observer.method(:changed));
@@ -45,7 +45,7 @@ function onWatchSettingsRoutesEachPreferenceAndCancelsWithoutChanges(logger) {
             Test.assert(Application.Properties.getValue(key) == 1 && cancel.closes == 1);
             // Invalid saved values use the default in the local menu too.
             Application.Properties.setValue(key, 99);
-            Test.assert(WatchSettings.selection(key) == 0);
+            Test.assert(WatchSettings.selection(key) == (key.equals("TimeFormat") ? 2 : 0));
         }
         Test.assert(observer.calls == 0);
     } finally {
@@ -59,7 +59,7 @@ function onWatchSettingsRoutesEachPreferenceAndCancelsWithoutChanges(logger) {
 
 (:test)
 function onWatchUnitMenusSaveIndependentOverridesAndRestoreWatchUnits(logger) {
-    var keys = ["BatteryDisplay", "TemperatureUnits", "ElevationUnits"];
+    var keys = WatchSettings.keys();
     var originals = [];
     for (var i = 0; i < keys.size(); i += 1) {
         originals.add(Application.Properties.getValue(keys[i]));

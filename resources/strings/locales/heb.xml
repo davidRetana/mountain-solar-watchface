@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">תצוגת סוללה</string>
     <string id="BatteryDays">ימים שנותרו</string>
     <string id="BatteryPercentage">אחוזים (%)</string>
+    <string id="TimeFormatTitle">תבנית שעה</string>
+    <string id="Time24Hours">24 שעות</string>
+    <string id="Time12Hours">12 שעות</string>
+    <string id="HealthDisplayTitle">מדד בריאות</string>
+    <string id="HeartRate">דופק</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

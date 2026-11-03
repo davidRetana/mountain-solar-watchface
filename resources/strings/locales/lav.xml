@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Akumulatora rādījums</string>
     <string id="BatteryDays">Atlikušās dienas</string>
     <string id="BatteryPercentage">Procenti (%)</string>
+    <string id="TimeFormatTitle">Laika formāts</string>
+    <string id="Time24Hours">24 stundas</string>
+    <string id="Time12Hours">12 stundas</string>
+    <string id="HealthDisplayTitle">Veselības rādītājs</string>
+    <string id="HeartRate">Pulss</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

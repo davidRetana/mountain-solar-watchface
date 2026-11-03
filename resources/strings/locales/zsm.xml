@@ -12,4 +12,10 @@
     <string id="BatteryDisplayTitle">Paparan bateri</string>
     <string id="BatteryDays">Baki hari</string>
     <string id="BatteryPercentage">Peratus (%)</string>
+    <string id="TimeFormatTitle">Format masa</string>
+    <string id="Time24Hours">24 jam</string>
+    <string id="Time12Hours">12 jam</string>
+    <string id="HealthDisplayTitle">Metrik kesihatan</string>
+    <string id="HeartRate">Kadar denyutan jantung</string>
+    <string id="BodyBattery">Body Battery (%)</string>
 </strings>

@@ -7,3 +7,4 @@ build/
 *.der
 *.pem
 developer_key
+user_feedback.txt
